@@ -198,7 +198,7 @@
   - _Boundary: OutputCheck_
   - _Depends: 7.1, 7.2, 7.3, 7.4_
   - _Requirements: 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 5.1, 5.2, 5.3, 5.4, 11.1, 11.2_
-- [ ] 8.2 Build automated data failure test suite
+- [x] 8.2 Build automated data failure test suite
   - Implement Node.js test runner `scripts/test-data-pages.mjs` executing builds against mutated sample datasets in temporary directories
   - Assert build fails with exact error messages on major version mismatch, SHA-256 hash mismatch, unzoned kick-off times, invalid match status, missing foreign keys, and file budget overflow
   - Assert missing channel country generates build warning while rendering empty channel list without failing build

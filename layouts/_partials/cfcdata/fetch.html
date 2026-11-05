@@ -96,7 +96,7 @@
 {{ if and (ne $sha256 "") }}
   {{ $actualSha := crypto.SHA256 $content }}
   {{ if ne (lower $actualSha) (lower $sha256) }}
-    {{ errorf "data-pages: %s: integrity check failed (expected %s, got %s)" $file $sha256 $actualSha }}
+    {{ errorf "data-pages: %s: integrity check failed - SHA-256 mismatch (expected %s, got %s)" $file $sha256 $actualSha }}
     {{ return dict }}
   {{ end }}
 {{ end }}

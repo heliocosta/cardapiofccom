@@ -11,6 +11,7 @@
     "check": "node scripts/check-site.mjs",
     "check:components": "node scripts/check-site.mjs --components",
     "check:data": "node scripts/check-data-pages.mjs",
+    "test:failures": "node scripts/test-data-pages.mjs",
     "preview": "node scripts/themeGenerator.js && hugo server --disableFastRender --navigateToChanged --templateMetrics --templateMetricsHints --watch --forceSyncStatic -e production --minify",
     "dev:example": "concurrently \"node scripts/themeGenerator.js --watch\" \"hugo server -s exampleSite\"",
     "build:example": "cd exampleSite && node ../scripts/themeGenerator.js && hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic",
