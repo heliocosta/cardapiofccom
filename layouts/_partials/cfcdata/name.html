@@ -1,0 +1,100 @@
+{{/* layouts/_partials/cfcdata/name.html */}}
+{{/* Resolves localized entity text through edition code, language subtag, and English fallback. */}}
+{{/* Signature: partial "cfcdata/name.html" (dict "names" $names "lang" $lang) */}}
+{{/* Also supports direct invocation with $names map if "en" or language keys are present. */}}
+
+{{ $names := dict }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "names" }}
+    {{ $names = .names }}
+    {{ if isset . "lang" }}
+      {{ $lang = .lang }}
+    {{ end }}
+  {{ else }}
+    {{ $names = . }}
+  {{ end }}
+{{ else if reflect.IsSlice . }}
+  {{/* Slices cannot be resolved as localized text */}}
+  {{ return "" }}
+{{ else if . }}
+  {{/* String or primitive passed directly */}}
+  {{ return (printf "%v" .) }}
+{{ end }}
+
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+{{ $lang = lower (printf "%v" $lang) }}
+
+{{ $result := "" }}
+{{ if reflect.IsMap $names }}
+  {{/* 1. Exact edition match (e.g. "pt-br") */}}
+  {{ with index $names $lang }}
+    {{ if and (ne . nil) (ne (printf "%v" .) "") }}
+      {{ $result = printf "%v" . }}
+    {{ end }}
+  {{ end }}
+  {{ if eq $result "" }}
+    {{ range $k, $v := $names }}
+      {{ if and (eq $result "") (eq (lower (printf "%v" $k)) $lang) (ne $v nil) (ne (printf "%v" $v) "") }}
+        {{ $result = printf "%v" $v }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 2. Subtag match (e.g. "pt" from "pt-br") */}}
+  {{ if eq $result "" }}
+    {{ $parts := split (replace $lang "_" "-") "-" }}
+    {{ if gt (len $parts) 1 }}
+      {{ $subtag := index $parts 0 }}
+      {{ with index $names $subtag }}
+        {{ if and (ne . nil) (ne (printf "%v" .) "") }}
+          {{ $result = printf "%v" . }}
+        {{ end }}
+      {{ end }}
+      {{ if eq $result "" }}
+        {{ range $k, $v := $names }}
+          {{ if and (eq $result "") (eq (lower (printf "%v" $k)) $subtag) (ne $v nil) (ne (printf "%v" $v) "") }}
+            {{ $result = printf "%v" $v }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 3. Base English fallback ("en") */}}
+  {{ if eq $result "" }}
+    {{ with index $names "en" }}
+      {{ if and (ne . nil) (ne (printf "%v" .) "") }}
+        {{ $result = printf "%v" . }}
+      {{ end }}
+    {{ end }}
+    {{ if eq $result "" }}
+      {{ with index $names "EN" }}
+        {{ if and (ne . nil) (ne (printf "%v" .) "") }}
+          {{ $result = printf "%v" . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 4. Fallback to any non-empty string or "" */}}
+  {{ if eq $result "" }}
+    {{ range $k, $v := $names }}
+      {{ if and (eq $result "") (ne $v nil) (ne (printf "%v" $v) "") }}
+        {{ $result = printf "%v" $v }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ else if $names }}
+  {{ $result = printf "%v" $names }}
+{{ end }}
+
+{{ return $result }}

@@ -1,0 +1,97 @@
+{{/* layouts/_partials/cfcdata/url.html */}}
+{{/* Builds canonical, edition-prefixed entity URLs matching mobile app patterns. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/url.html" (dict "kind" $kind "slug" $slug "edition" $edition) */}}
+
+{{ $kind := "" }}
+{{ $slug := "" }}
+{{ $edition := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "kind" }}
+    {{ $kind = printf "%v" .kind }}
+  {{ end }}
+  {{ if isset . "slug" }}
+    {{ $slug = printf "%v" .slug }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+{{ end }}
+
+{{/* Clean slug */}}
+{{ $slug = strings.Trim $slug "/" }}
+
+{{/* Determine edition prefix */}}
+{{ $prefix := "" }}
+
+{{ if reflect.IsMap $edition }}
+  {{ if isset $edition "prefix" }}
+    {{ $rawPrefix := strings.Trim (printf "%v" $edition.prefix) "/" }}
+    {{ if eq $rawPrefix "" }}
+      {{ $prefix = "/" }}
+    {{ else }}
+      {{ $prefix = printf "/%s/" $rawPrefix }}
+    {{ end }}
+  {{ else if isset $edition "code" }}
+    {{ $code := lower (strings.Trim (printf "%v" $edition.code) "/") }}
+    {{ if or (eq $code "") (eq $code "en") (eq $code "global") ($edition.isGlobal | default false) }}
+      {{ $prefix = "/" }}
+    {{ else }}
+      {{ $prefix = printf "/%s/" $code }}
+    {{ end }}
+  {{ else if isset $edition "isGlobal" }}
+    {{ if $edition.isGlobal }}
+      {{ $prefix = "/" }}
+    {{ end }}
+  {{ end }}
+{{ else if and (ne $edition nil) (ne (printf "%v" $edition) "") }}
+  {{ $edStr := lower (strings.Trim (printf "%v" $edition) "/") }}
+  {{ if or (eq $edStr "") (eq $edStr "en") (eq $edStr "global") }}
+    {{ $prefix = "/" }}
+  {{ else }}
+    {{ $prefix = printf "/%s/" $edStr }}
+  {{ end }}
+{{ end }}
+
+{{/* Default to current edition if prefix could not be determined from argument */}}
+{{ if eq $prefix "" }}
+  {{ $isGlobal := false }}
+  {{ with site.Params.edition }}
+    {{ if or .isGlobal .isglobal }}
+      {{ $isGlobal = true }}
+    {{ end }}
+  {{ end }}
+  {{ if or $isGlobal (eq site.Language.Lang "en") }}
+    {{ $prefix = "/" }}
+  {{ else if site.Language.Lang }}
+    {{ $prefix = printf "/%s/" (strings.Trim site.Language.Lang "/") }}
+  {{ else }}
+    {{ $prefix = "/" }}
+  {{ end }}
+{{ end }}
+
+{{/* Construct URL according to kind */}}
+{{ $url := "" }}
+{{ if eq $kind "match" }}
+  {{ if eq $slug "" }}
+    {{ errorf "cfcdata/url.html: slug is required for kind \"match\"" }}
+  {{ end }}
+  {{ $url = printf "%smatch/%s/" $prefix $slug }}
+{{ else if eq $kind "team" }}
+  {{ if eq $slug "" }}
+    {{ errorf "cfcdata/url.html: slug is required for kind \"team\"" }}
+  {{ end }}
+  {{ $url = printf "%steam/%s/" $prefix $slug }}
+{{ else if eq $kind "league" }}
+  {{ if eq $slug "" }}
+    {{ errorf "cfcdata/url.html: slug is required for kind \"league\"" }}
+  {{ end }}
+  {{ $url = printf "%sleague/%s/" $prefix $slug }}
+{{ else if eq $kind "leagues" }}
+  {{ $url = printf "%sleague/" $prefix }}
+{{ else }}
+  {{ errorf "cfcdata/url.html: unsupported kind %q (allowed: match, team, league, leagues; lineups out of scope)" $kind }}
+{{ end }}
+
+{{ return $url }}

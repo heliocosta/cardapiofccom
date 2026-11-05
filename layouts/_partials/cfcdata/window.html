@@ -1,0 +1,152 @@
+{{/* layouts/_partials/cfcdata/window.html */}}
+{{/* Filters and windows ordered match slugs by time range, statuses, and limits. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/window.html" (dict "slugs" $slugs "dataset" $dataset "from" $from "to" $to "statuses" $statuses "limit" $limit "fromEnd" $fromEnd) */}}
+
+{{ $slugs := slice }}
+{{ $dataset := index (dict) "nil" }}
+{{ $from := "" }}
+{{ $to := "" }}
+{{ $statuses := slice }}
+{{ $limit := 0 }}
+{{ $fromEnd := false }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "slugs" }}
+    {{ $slugs = .slugs }}
+  {{ end }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "from" }}
+    {{ $from = .from }}
+  {{ end }}
+  {{ if isset . "to" }}
+    {{ $to = .to }}
+  {{ end }}
+  {{ if isset . "statuses" }}
+    {{ $statuses = .statuses }}
+  {{ end }}
+  {{ if isset . "limit" }}
+    {{ $limit = int .limit }}
+  {{ end }}
+  {{ if isset . "fromEnd" }}
+    {{ $fromEnd = .fromEnd }}
+  {{ end }}
+{{ else if reflect.IsSlice . }}
+  {{ $slugs = . }}
+{{ end }}
+
+{{/* Auto-resolve dataset if omitted */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Default to dataset.order if slugs not provided */}}
+{{ if and (eq (len $slugs) 0) $dataset }}
+  {{ with $dataset.order }}
+    {{ $slugs = . }}
+  {{ end }}
+{{ end }}
+
+{{/* Normalize "from" timestamp to UTC RFC 3339 string */}}
+{{ $fromStr := "" }}
+{{ $hasFrom := false }}
+{{ if and (ne $from nil) (ne (printf "%v" $from) "") }}
+  {{ $fromStr = (time.In "UTC" (time.AsTime $from)).Format "2006-01-02T15:04:05Z07:00" }}
+  {{ $hasFrom = true }}
+{{ end }}
+
+{{/* Normalize "to" timestamp to UTC RFC 3339 string */}}
+{{ $toStr := "" }}
+{{ $hasTo := false }}
+{{ if and (ne $to nil) (ne (printf "%v" $to) "") }}
+  {{ $toStr = (time.In "UTC" (time.AsTime $to)).Format "2006-01-02T15:04:05Z07:00" }}
+  {{ $hasTo = true }}
+{{ end }}
+
+{{/* Normalize statuses slice */}}
+{{ $statusesSlice := slice }}
+{{ if reflect.IsSlice $statuses }}
+  {{ $statusesSlice = $statuses }}
+{{ else if and (ne $statuses nil) (ne (printf "%v" $statuses) "") }}
+  {{ $statusesSlice = slice (printf "%v" $statuses) }}
+{{ end }}
+{{ $hasStatuses := gt (len $statusesSlice) 0 }}
+
+{{/* Extract matches dictionary from dataset */}}
+{{ $allMatches := dict }}
+{{ with $dataset }}
+  {{ with .matches }}
+    {{ if reflect.IsMap . }}
+      {{ $allMatches = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $filtered := slice }}
+{{ range $slug := $slugs }}
+  {{/* If not fromEnd, limit > 0, and no to-filter, we can break early once limit is reached */}}
+  {{ if and (not $fromEnd) (gt $limit 0) (ge (len $filtered) $limit) }}
+    {{ break }}
+  {{ end }}
+
+  {{ $match := index $allMatches $slug }}
+  {{ if not $match }}
+    {{ continue }}
+  {{ end }}
+
+  {{/* Filter by match status */}}
+  {{ if $hasStatuses }}
+    {{ if not (in $statusesSlice $match.status) }}
+      {{ continue }}
+    {{ end }}
+  {{ end }}
+
+  {{/* Resolve and normalize kickoff */}}
+  {{ $kickoff := $match.kickoff | default "" }}
+  {{ if and (ne $kickoff "") (not (strings.HasSuffix $kickoff "Z")) }}
+    {{ $kickoff = (time.In "UTC" (time.AsTime $kickoff)).Format "2006-01-02T15:04:05Z07:00" }}
+  {{ end }}
+
+  {{/* Filter by from: kickoff >= from */}}
+  {{ if $hasFrom }}
+    {{ if eq $kickoff "" }}
+      {{ continue }}
+    {{ end }}
+    {{ if lt $kickoff $fromStr }}
+      {{ continue }}
+    {{ end }}
+  {{ end }}
+
+  {{/* Filter by to: kickoff <= to */}}
+  {{ if $hasTo }}
+    {{ if eq $kickoff "" }}
+      {{ continue }}
+    {{ end }}
+    {{ if gt $kickoff $toStr }}
+      {{/* Slugs are ordered by kickoff; subsequent matches will also exceed to */}}
+      {{ break }}
+    {{ end }}
+  {{ end }}
+
+  {{ $filtered = $filtered | append $slug }}
+{{ end }}
+
+{{/* Apply limit / fromEnd */}}
+{{ $result := $filtered }}
+{{ if and (gt $limit 0) (gt (len $result) $limit) }}
+  {{ if $fromEnd }}
+    {{ $result = last $limit $result }}
+  {{ else }}
+    {{ $result = first $limit $result }}
+  {{ end }}
+{{ end }}
+
+{{ if and (reflect.IsMap .) (isset . "reverse") .reverse }}
+  {{ $result = collections.Reverse $result }}
+{{ else if and (reflect.IsMap .) (isset . "order") (eq .order "desc") }}
+  {{ $result = collections.Reverse $result }}
+{{ end }}
+
+{{ return $result }}

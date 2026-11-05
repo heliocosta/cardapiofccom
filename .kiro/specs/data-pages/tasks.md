@@ -74,7 +74,7 @@
 
 ## 4. Core Data Helpers, View-Models, and Downstream Contracts
 - [ ] 4. Core data helpers, view-models, and downstream contracts
-- [ ] 4.1 Implement localized name resolver, canonical URL builder, and time-window slug selector
+- [x] 4.1 Implement localized name resolver, canonical URL builder, and time-window slug selector
   - Implement `layouts/_partials/cfcdata/name.html` resolving localized text through edition code, language subtag, and required English fallback
   - Implement `layouts/_partials/cfcdata/url.html` building edition-prefixed canonical URLs for matches, teams, leagues, and league directory matching mobile app patterns (lineups out of scope)
   - Implement `layouts/_partials/cfcdata/window.html` filtering ordered match slugs by time range (`from`, `to`), match statuses, limits, and chronological vs reverse ordering
