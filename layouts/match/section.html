@@ -1,0 +1,48 @@
+{{/* layouts/match/section.html */}}
+{{/* Match entity page template. */}}
+{{ define "main" }}
+  {{- $slug := "" -}}
+  {{- with .Params.cfc -}}
+    {{- with .slug -}}
+      {{- $slug = . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $slug -}}
+    {{- with .File -}}
+      {{- $slug = .ContentBaseName -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $m := partialCached "cfcdata/match.html" $slug $slug -}}
+
+  {{- $title := .Title -}}
+  {{- with $m -}}
+    {{- with .title -}}
+      {{- $title = . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) -}}
+  {{- with $m -}}
+    {{- with .league -}}
+      {{- if and .name .url -}}
+        {{- $breadcrumbs = $breadcrumbs | append (dict "name" .name "label" .name "url" .url) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $breadcrumbs = $breadcrumbs | append (dict "name" $title "label" $title) -}}
+
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/page-header.html" (dict "title" $title "heading" $title "breadcrumbs" $breadcrumbs "breadcrumb" $breadcrumbs) }}
+    {{ partial "cfcpage/match-hero.html" (dict "match" $m) }}
+    {{ partial "cfcpage/channels.html" (dict "match" $m) }}
+    {{ partial "cfcpage/edition-links.html" (dict "match" $m) }}
+    {{ if templates.Exists "_partials/cfcpage/faq-section.html" }}
+      {{ partial "cfcpage/faq-section.html" . }}
+    {{ end }}
+    {{ partial "cfcpage/freshness.html" . }}
+  </div>
+{{ end }}

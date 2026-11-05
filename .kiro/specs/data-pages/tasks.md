@@ -158,7 +158,7 @@
 
 ## 7. Entity Page Templates and Layout Integration
 - [ ] 7. Entity page templates and layout integration
-- [ ] 7.1 Build match entity page template
+- [x] 7.1 Build match entity page template
   - Implement `layouts/match/section.html` composing page header breadcrumbs, match hero, channel section, edition links, downstream FAQ hook (`cfcpage/faq-section.html` if exists), and freshness footer (lineups out of scope)
   - Observable completed state: Full match pages render under `/match/{slug}/` across all editions
   - _Boundary: MatchPage_
