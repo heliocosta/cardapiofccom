@@ -1,2 +1,7 @@
 home_intro: "Encontrá dónde ver los partidos de fútbol en vivo con horarios locales y canales de transmisión."
 not_found_text: "La página que buscás no existe o fue movida."
+
+# data-pages
+round: "Fecha"
+no_broadcaster_check_app: "Sin transmisión confirmada — consultá la app CardápioFC."
+

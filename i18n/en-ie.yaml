@@ -1,2 +1,7 @@
 fixtures: "Fixtures"
 kickoff: "Kick-off"
+
+# data-pages
+upcoming_matches: "Upcoming Fixtures"
+next_match: "Next fixture"
+

@@ -132,7 +132,7 @@
 
 ## 6. Interface Localization and Component Partials
 - [ ] 6. Interface localization and component partials
-- [ ] 6.1 (P) Append feature localization strings and regional overrides
+- [x] 6.1 (P) Append feature localization strings and regional overrides
   - Add all data-pages translation keys (round, venue, leagues, channel headers, freshness) to `i18n/en.yaml`, `i18n/pt.yaml`, and `i18n/es.yaml`
   - Add regional wording overrides to `i18n/en-gb.yaml`, `i18n/en-ie.yaml`, `i18n/pt-pt.yaml`, and `i18n/es-ar.yaml`
   - Observable completed state: All base and regional translation files contain feature i18n keys without syntax errors or missing keys

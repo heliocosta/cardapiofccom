@@ -4,3 +4,9 @@ no_broadcaster: "Nenhum canal de TV ou streaming anunciado até ao momento"
 status_halftime: "Intervalo"
 status_finished: "Terminado"
 channel_type_free_tv: "TV em sinal aberto"
+
+# data-pages
+round: "Jornada"
+where_to_watch_in: "Onde ver em {{ .Country }}"
+watch_in_other_countries: "Ver noutros países"
+
