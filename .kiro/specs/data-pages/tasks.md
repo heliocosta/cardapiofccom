@@ -1,7 +1,7 @@
 # Implementation Plan: data-pages
 
 ## 1. Spike and Build Environment Verification
-- [ ] 1. Spike Hugo 0.165.0 content adapter multi-language capabilities
+- [x] 1. Spike Hugo 0.165.0 content adapter multi-language capabilities
   - Test content adapter execution using `EnableAllLanguages` with `sites.matrix` configuration across all six edition language codes
   - Validate that Hugo built-ins (`hugo.Sites`, `hugo.Data`, `resources.GetRemote`, `os.Getenv`, `partialCached`) execute reliably inside adapter templates
   - Verify section page rendering suppression (`build.render: "never"`) and URL translation links across editions
