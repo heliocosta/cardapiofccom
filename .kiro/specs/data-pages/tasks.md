@@ -107,7 +107,7 @@
   - _Requirements: 2.10, 5.1, 5.2, 5.3, 5.4, 12.1, 12.2, 12.3, 12.5_
 
 ## 5. Content Generation and Section Adapters
-- [ ] 5. Content generation and section adapters
+- [x] 5. Content generation and section adapters
 - [x] 5.1 Scaffolding content sections with cross-edition language matrix
   - Create `content/en/match/_index.md`, `content/en/team/_index.md`, and `content/en/league/_index.md` with `sites.matrix.languages: ["**"]`
   - Configure `build.render: "never"` and `build.list: "always"` for match and team sections to suppress unwanted `/match/` and `/team/` listing pages
@@ -122,7 +122,7 @@
   - _Boundary: MatchAdapter_
   - _Depends: 3.4, 4.1, 5.1_
   - _Requirements: 3.1, 3.4, 3.5, 3.7, 11.3_
-- [ ] 5.3 Build team and league content adapters
+- [x] 5.3 Build team and league content adapters
   - Implement `content/en/team/_content.gotmpl` generating pages via `.AddPage` for every team at `/team/{slug}/` with entity parameters
   - Implement `content/en/league/_content.gotmpl` generating pages via `.AddPage` for every league at `/league/{slug}/` with entity parameters and weights
   - Observable completed state: Hugo build registers page items for all teams and leagues across all active editions

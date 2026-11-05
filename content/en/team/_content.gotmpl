@@ -1,0 +1,19 @@
+{{ .EnableAllLanguages }}
+{{ $dataset := partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ range $slug, $team := $dataset.teams }}
+  {{ $teamName := partial "cfcdata/name.html" (dict "names" $team.names "lang" site.Language.Lang) }}
+  {{ if not $teamName }}{{ $teamName = $slug }}{{ end }}
+  {{ $.AddPage (dict
+    "kind" "page"
+    "path" $slug
+    "title" $teamName
+    "dates" (dict "date" (time.AsTime $dataset.generatedAt) "lastmod" (time.AsTime $dataset.generatedAt) "publishDate" (time.AsTime $dataset.generatedAt))
+    "params" (dict
+      "cfc" (dict
+        "kind" "team"
+        "slug" $slug
+        "appPath" (printf "/team/%s" $slug)
+      )
+    )
+  ) }}
+{{ end }}
