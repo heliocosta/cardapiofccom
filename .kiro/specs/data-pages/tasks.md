@@ -164,7 +164,7 @@
   - _Boundary: MatchPage_
   - _Depends: 5.2, 6.2, 6.3_
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 5.1, 5.2, 5.3, 5.4, 5.5, 10.3, 10.4, 10.5, 11.1_
-- [ ] 7.2 Build team entity page template
+- [x] 7.2 Build team entity page template
   - Implement `layouts/team/page.html` with team crest header, upcoming matches list (capped at 10), recent results list (capped at 5), participating league links, empty states, and freshness footer
   - Connect breadcrumb navigation from edition home to team page
   - Observable completed state: Full team pages render under `/team/{slug}/` across all editions displaying upcoming and past fixtures

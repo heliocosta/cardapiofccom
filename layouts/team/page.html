@@ -1,0 +1,93 @@
+{{/* layouts/team/page.html */}}
+{{/* Team entity page template. */}}
+{{ define "main" }}
+  {{- $slug := "" -}}
+  {{- with .Params.cfc -}}
+    {{- with .slug -}}
+      {{- $slug = . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $slug -}}
+    {{- with .File -}}
+      {{- $slug = .ContentBaseName -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $team := partialCached "cfcdata/team.html" $slug $slug -}}
+  {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+  {{- $settings := partialCached "cfcdata/settings.html" . "settings" -}}
+
+  {{- $teamTitle := .Title -}}
+  {{- with $team -}}
+    {{- with .name -}}
+      {{- $teamTitle = . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $teamTitle "label" $teamTitle) -}}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    {{- with $team -}}
+      <header class="cfc-team-header flex items-center gap-4 my-6">
+        {{ partial "cfc/team-crest.html" (dict "size" "lg" "name" .name "shortName" .shortName "src" .crest "decorative" false) }}
+        <div>
+          <h1 class="cfc-team__name text-2xl md:text-3xl font-bold">{{ .name }}</h1>
+          {{- $countryName := "" -}}
+          {{- with .country -}}
+            {{- with .code -}}
+              {{- $countryKey := printf "country_%s" (lower .) -}}
+              {{- $countryName = i18n $countryKey -}}
+            {{- end -}}
+            {{- if not $countryName -}}
+              {{- with .name -}}
+                {{- $countryName = . -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+          {{- with $countryName -}}
+            <p class="cfc-team__country text-sm text-muted mt-1">{{ . }}</p>
+          {{- end -}}
+        </div>
+      </header>
+
+      {{- $upcomingStatuses := slice "scheduled" "live" "halftime" "postponed" "suspended" -}}
+      {{- $upcomingSlugs := partial "cfcdata/window.html" (dict "dataset" $dataset "slugs" .matchSlugs "statuses" $upcomingStatuses "limit" ($settings.team.upcoming | default 10)) -}}
+
+      <section class="cfc-team-upcoming my-8">
+        <h2 class="text-xl font-bold mb-4">{{ i18n "upcoming_matches" }}</h2>
+        {{ partial "cfcpage/match-days.html" (dict "matches" $upcomingSlugs "emptyMessage" (i18n "no_upcoming_matches") "headingLevel" 3 "showLeague" true) }}
+      </section>
+
+      {{- $recentStatuses := slice "finished" -}}
+      {{- $recentSlugs := partial "cfcdata/window.html" (dict "dataset" $dataset "slugs" .matchSlugs "statuses" $recentStatuses "limit" ($settings.team.recent | default 5) "fromEnd" true) -}}
+
+      {{- if gt (len $recentSlugs) 0 -}}
+        <section class="cfc-team-recent my-8">
+          <h2 class="text-xl font-bold mt-8 mb-4">{{ i18n "recent_results" }}</h2>
+          {{ partial "cfcpage/match-days.html" (dict "matches" $recentSlugs "headingLevel" 3 "showLeague" true) }}
+        </section>
+      {{- end -}}
+
+      {{- if and .leagues (gt (len .leagues) 0) -}}
+        <section class="cfc-team-leagues my-8">
+          <h2 class="text-base font-semibold mb-3">{{ i18n "leagues" }}</h2>
+          <ul class="flex flex-wrap gap-2">
+            {{- range .leagues -}}
+              <li>
+                <a href="{{ .url }}" class="inline-block px-3 py-1 text-sm font-medium border border-border rounded-full hover:bg-theme-light transition">
+                  {{ .name }}
+                </a>
+              </li>
+            {{- end -}}
+          </ul>
+        </section>
+      {{- end -}}
+    {{- end -}}
+
+    {{ partial "cfcpage/freshness.html" . }}
+  </div>
+{{ end }}
