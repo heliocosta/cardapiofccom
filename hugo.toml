@@ -98,6 +98,10 @@ maxAge = "720h"
 dir = ":resourceDir/_gen"
 maxAge = "720h"
 
+[caches.getresource]
+dir = ":cacheDir/:project"
+maxAge = "720h"
+
 
 ############################ Markup ##############################
 [markup]

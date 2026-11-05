@@ -1,0 +1,139 @@
+{{/* layouts/_partials/cfcdata/settings.html */}}
+{{/* Resolves CFC data configuration from data/cfc/settings.yaml and environment variables. */}}
+{{/* Designed to be called via: partialCached "cfcdata/settings.html" . "settings" */}}
+
+{{ $raw := dict }}
+{{ with hugo.Data }}
+  {{ with .cfc }}
+    {{ with .settings }}
+      {{ $raw = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ if not $raw }}
+  {{ with site.Data }}
+    {{ with .cfc }}
+      {{ with .settings }}
+        {{ $raw = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 1. source: "sample" | "remote" (auto -> sample in dev, remote in prod; env wins) */}}
+{{ $source := $raw.source | default "auto" }}
+{{ $envSource := os.Getenv "HUGO_CFC_DATA_SOURCE" }}
+{{ if ne $envSource "" }}
+  {{ $source = $envSource }}
+{{ end }}
+{{ if eq $source "auto" }}
+  {{ if hugo.IsDevelopment }}
+    {{ $source = "sample" }}
+  {{ else }}
+    {{ $source = "remote" }}
+  {{ end }}
+{{ end }}
+
+{{/* 2. baseURL */}}
+{{ $baseURL := $raw.baseURL | default "https://firebasestorage.googleapis.com/v0/b/cardapiofutebol.appspot.com/o/" }}
+{{ $envBaseURL := os.Getenv "HUGO_CFC_DATA_BASEURL" }}
+{{ if ne $envBaseURL "" }}
+  {{ $baseURL = $envBaseURL }}
+{{ end }}
+
+{{/* 3. prefix */}}
+{{ $prefix := $raw.prefix | default "web/v1/" }}
+
+{{/* 4. sampleDir */}}
+{{ $sampleDir := $raw.sampleDir | default "cfc-data/sample/" }}
+{{ $envSample := os.Getenv "HUGO_CFC_DATA_SAMPLE" }}
+{{ if ne $envSample "" }}
+  {{ $sampleDir = $envSample }}
+{{ end }}
+
+{{/* 5. token: env only, never stored in data file */}}
+{{ $token := os.Getenv "HUGO_CFC_DATA_TOKEN" | default "" }}
+
+{{/* 6. timeout */}}
+{{ $timeout := $raw.timeout | default "20s" }}
+
+{{/* 7. supportedMajor */}}
+{{ $supportedMajor := $raw.supportedMajor | default 1 | int }}
+
+{{/* 8. fileBudget */}}
+{{ $fileBudget := $raw.fileBudget | default 18000 | int }}
+{{ $envBudget := os.Getenv "HUGO_CFC_FILE_BUDGET" }}
+{{ if ne $envBudget "" }}
+  {{ $fileBudget = int $envBudget }}
+{{ end }}
+
+{{/* 9. staticFiles */}}
+{{ $staticFiles := $raw.staticFiles | default 200 | int }}
+
+{{/* 10. fixedPerEdition */}}
+{{ $fixedPerEdition := $raw.fixedPerEdition | default 5 | int }}
+
+{{/* 11. lineupPages */}}
+{{ $lineupPages := $raw.lineupPages | default "all" }}
+{{ $envLineupPages := os.Getenv "HUGO_CFC_LINEUP_PAGES" }}
+{{ if ne $envLineupPages "" }}
+  {{ $lineupPages = $envLineupPages }}
+{{ end }}
+
+{{/* 12. home window settings */}}
+{{ $homeDays := 7 }}
+{{ $homeMax := 120 }}
+{{ with $raw.home }}
+  {{ if isset . "days" }}{{ $homeDays = int .days }}{{ end }}
+  {{ if isset . "max" }}{{ $homeMax = int .max }}{{ end }}
+{{ end }}
+{{ $home := dict "days" $homeDays "max" $homeMax }}
+
+{{/* 13. league window settings */}}
+{{ $leaguePastDays := 7 }}
+{{ $leagueFutureDays := 30 }}
+{{ $leagueMax := 100 }}
+{{ with $raw.league }}
+  {{ if isset . "pastDays" }}{{ $leaguePastDays = int .pastDays }}{{ end }}
+  {{ if isset . "futureDays" }}{{ $leagueFutureDays = int .futureDays }}{{ end }}
+  {{ if isset . "max" }}{{ $leagueMax = int .max }}{{ end }}
+{{ end }}
+{{ $league := dict "pastDays" $leaguePastDays "futureDays" $leagueFutureDays "max" $leagueMax }}
+
+{{/* 14. team window settings */}}
+{{ $teamUpcoming := 10 }}
+{{ $teamRecent := 5 }}
+{{ $teamLiveGraceHours := 3 }}
+{{ with $raw.team }}
+  {{ if isset . "upcoming" }}{{ $teamUpcoming = int .upcoming }}{{ end }}
+  {{ if isset . "recent" }}{{ $teamRecent = int .recent }}{{ end }}
+  {{ if isset . "liveGraceHours" }}{{ $teamLiveGraceHours = int .liveGraceHours }}{{ end }}
+{{ end }}
+{{ $team := dict "upcoming" $teamUpcoming "recent" $teamRecent "liveGraceHours" $teamLiveGraceHours }}
+
+{{/* 15. asOfOverride */}}
+{{ $asOfOverride := index (dict) "nil" }}
+{{ $envNow := os.Getenv "HUGO_CFC_NOW" }}
+{{ if ne $envNow "" }}
+  {{ $asOfOverride = time.AsTime $envNow }}
+{{ end }}
+
+{{ $settings := dict
+  "source" $source
+  "baseURL" $baseURL
+  "prefix" $prefix
+  "sampleDir" $sampleDir
+  "token" $token
+  "timeout" $timeout
+  "supportedMajor" $supportedMajor
+  "fileBudget" $fileBudget
+  "staticFiles" $staticFiles
+  "fixedPerEdition" $fixedPerEdition
+  "lineupPages" $lineupPages
+  "home" $home
+  "league" $league
+  "team" $team
+  "asOfOverride" $asOfOverride
+}}
+
+{{ return $settings }}

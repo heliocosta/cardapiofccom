@@ -39,7 +39,7 @@
 
 ## 3. Data Configuration, Fetching, Validation, and Budgeting Layer
 - [ ] 3. Data configuration, fetching, validation, and budgeting layer
-- [ ] 3.1 Configure data settings and persistent HTTP resource cache
+- [x] 3.1 Configure data settings and persistent HTTP resource cache
   - Create `data/cfc/settings.yaml` with defaults for source (`auto`), Firebase Storage endpoint, sample path, timeout (`20s`), budget limits (18,000 files), and time windows
   - Append `[caches.getresource]` with `dir = ":cacheDir/:project"` and `maxAge = "720h"` to `hugo.toml`
   - Implement settings resolution partial `layouts/_partials/cfcdata/settings.html` applying environment variable overrides (`HUGO_CFC_DATA_SOURCE`, `HUGO_CFC_DATA_TOKEN`, `HUGO_CFC_FILE_BUDGET`, `HUGO_CFC_LINEUP_PAGES`, `HUGO_CFC_NOW`)

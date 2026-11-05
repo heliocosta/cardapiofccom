@@ -1,0 +1,21 @@
+source: "auto"
+baseURL: "https://firebasestorage.googleapis.com/v0/b/cardapiofutebol.appspot.com/o/"
+prefix: "web/v1/"
+sampleDir: "cfc-data/sample/"
+timeout: "20s"
+supportedMajor: 1
+fileBudget: 18000
+staticFiles: 200
+fixedPerEdition: 5
+lineupPages: "all" # "all" | "available"
+home:
+  days: 7
+  max: 120
+league:
+  pastDays: 7
+  futureDays: 30
+  max: 100
+team:
+  upcoming: 10
+  recent: 5
+  liveGraceHours: 3
