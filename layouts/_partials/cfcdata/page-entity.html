@@ -1,0 +1,90 @@
+{{/* layouts/_partials/cfcdata/page-entity.html */}}
+{{/* Exposes unified PageEntity contract for downstream features (SEO JSON-LD, social meta, etc.) */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/page-entity.html" . (Page context) */}}
+
+{{ $cfc := index (dict) "nil" }}
+{{ with . }}
+  {{ with .Params }}
+    {{ with .cfc }}
+      {{ if reflect.IsMap . }}
+        {{ $cfc = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if not $cfc }}
+  {{ if reflect.IsMap . }}
+    {{ with index . "cfc" }}
+      {{ if reflect.IsMap . }}
+        {{ $cfc = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if not (and $cfc (reflect.IsMap $cfc) (isset $cfc "kind") $cfc.kind) }}
+  {{ return nil }}
+{{ end }}
+
+{{ $kind := printf "%v" $cfc.kind }}
+{{ $slug := "" }}
+{{ with index $cfc "slug" }}
+  {{ $slug = printf "%v" . }}
+{{ end }}
+
+{{ $edition := partialCached "edition/current.html" . }}
+{{ $dataset := partialCached "cfcdata/dataset.html" . "dataset" }}
+
+{{ $editionCode := "" }}
+{{ with $edition }}
+  {{ with .code }}
+    {{ $editionCode = printf "%v" . }}
+  {{ end }}
+{{ end }}
+
+{{ $generatedAt := "" }}
+{{ with $dataset }}
+  {{ with .generatedAt }}
+    {{ $generatedAt = printf "%v" . }}
+  {{ end }}
+{{ end }}
+
+{{ if eq $kind "match" }}
+  {{ $match := partial "cfcdata/match.html" (dict "slug" $slug "edition" $edition "dataset" $dataset) }}
+  {{ $channels := partial "cfcdata/channels.html" (dict "slug" $slug "edition" $edition "dataset" $dataset) }}
+  {{ return (dict
+    "kind" "match"
+    "edition" $editionCode
+    "generatedAt" $generatedAt
+    "match" $match
+    "channels" $channels
+  ) }}
+{{ else if eq $kind "team" }}
+  {{ $team := partial "cfcdata/team.html" (dict "slug" $slug "edition" $edition "dataset" $dataset) }}
+  {{ return (dict
+    "kind" "team"
+    "edition" $editionCode
+    "generatedAt" $generatedAt
+    "team" $team
+  ) }}
+{{ else if eq $kind "league" }}
+  {{ $league := partial "cfcdata/league.html" (dict "slug" $slug "edition" $edition "dataset" $dataset) }}
+  {{ return (dict
+    "kind" "league"
+    "edition" $editionCode
+    "generatedAt" $generatedAt
+    "league" $league
+  ) }}
+{{ else if eq $kind "leagues" }}
+  {{ $leagues := partialCached "cfcdata/league-list.html" . site.Language.Lang }}
+  {{ return (dict
+    "kind" "leagues"
+    "edition" $editionCode
+    "generatedAt" $generatedAt
+    "leagues" $leagues
+  ) }}
+{{ else }}
+  {{ return nil }}
+{{ end }}

@@ -1,0 +1,257 @@
+{{/* layouts/_partials/cfcdata/channels.html */}}
+{{/* Resolves broadcasting channels for a match across countries or for a specific regional edition. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/channels.html" (dict "slug" $slug "edition"? $edition "dataset"? $dataset) */}}
+{{/* or: partial "cfcdata/channels.html" $slug */}}
+
+{{ $slug := "" }}
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "slug" }}
+    {{ $slug = printf "%v" .slug }}
+  {{ end }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+{{ else if . }}
+  {{ $slug = printf "%v" . }}
+{{ end }}
+
+{{/* Normalize slug */}}
+{{ $slug = strings.Trim (trim $slug " ") "/" }}
+
+{{ if eq $slug "" }}
+  {{ return slice }}
+{{ end }}
+
+{{/* Auto-resolve dataset */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* If match not found in $dataset.matches, return empty slice */}}
+{{ $matchExists := false }}
+{{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.matches) }}
+  {{ if isset $dataset.matches $slug }}
+    {{ $matchExists = true }}
+  {{ end }}
+{{ end }}
+
+{{ if not $matchExists }}
+  {{ return slice }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ else if not (reflect.IsMap $edition) }}
+  {{ $edCode := printf "%v" $edition }}
+  {{ range partialCached "edition/all.html" . }}
+    {{ if eq .code $edCode }}
+      {{ $edition = . }}
+    {{ end }}
+  {{ end }}
+{{ else if and (not (isset $edition "isGlobal")) (isset $edition "code") }}
+  {{ $edCode := printf "%v" $edition.code }}
+  {{ range partialCached "edition/all.html" . }}
+    {{ if eq .code $edCode }}
+      {{ $edition = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $isGlobal := false }}
+{{ if reflect.IsMap $edition }}
+  {{ if or (index $edition "isGlobal") (index $edition "isglobal") }}
+    {{ $isGlobal = true }}
+  {{ end }}
+{{ end }}
+
+{{ $groups := slice }}
+
+{{ if $isGlobal }}
+  {{ range partialCached "edition/all.html" . }}
+    {{ $ed := . }}
+    {{ $edCountry := $ed.country | default "" }}
+    {{ if and (not $ed.isGlobal) (ne $edCountry "") }}
+      {{/* Find channel file for edition country */}}
+      {{ $chFile := index (dict) "nil" }}
+      {{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.channels) }}
+        {{ with index $dataset.channels $edCountry }}
+          {{ $chFile = . }}
+        {{ else }}
+          {{ with index $dataset.channels (upper $edCountry) }}
+            {{ $chFile = . }}
+          {{ else }}
+            {{ with index $dataset.channels (printf "channels/%s.json" $edCountry) }}
+              {{ $chFile = . }}
+            {{ else }}
+              {{ with index $dataset.channels (printf "channels/%s.json" (upper $edCountry)) }}
+                {{ $chFile = . }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ if not (and $chFile (reflect.IsMap $chFile)) }}
+        {{ warnf "data-pages: channel file missing for edition country \"%s\"" $edCountry }}
+      {{ else }}
+        {{ $chIds := slice }}
+        {{ with $chFile.matches }}
+          {{ if reflect.IsMap . }}
+            {{ with index . $slug }}
+              {{ if reflect.IsSlice . }}
+                {{ $chIds = . }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+
+        {{ if gt (len $chIds) 0 }}
+          {{ $channelList := slice }}
+          {{ range $chId := $chIds }}
+            {{ $chIdStr := printf "%v" $chId }}
+            {{ $chObj := index (dict) "nil" }}
+            {{ with $chFile.channels }}
+              {{ if reflect.IsMap . }}
+                {{ with index . $chIdStr }}
+                  {{ $chObj = . }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
+
+            {{ $name := $chIdStr }}
+            {{ $type := "" }}
+            {{ $url := "" }}
+            {{ $logo := "" }}
+            {{ if reflect.IsMap $chObj }}
+              {{ $name = $chObj.name | default $chIdStr }}
+              {{ $type = $chObj.type | default "" }}
+              {{ $url = $chObj.url | default "" }}
+              {{ $logo = $chObj.logo | default "" }}
+            {{ end }}
+
+            {{ $channelList = $channelList | append (dict
+              "name" $name
+              "id" $chIdStr
+              "type" $type
+              "url" $url
+              "logo" $logo
+            ) }}
+          {{ end }}
+
+          {{ $groupUrl := partial "cfcdata/url.html" (dict "kind" "match" "slug" $slug "edition" $ed) }}
+          {{ $groups = $groups | append (dict
+            "country" $edCountry
+            "countryName" ($ed.label | default "")
+            "edition" ($ed.code | default "")
+            "url" $groupUrl
+            "channels" $channelList
+          ) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ return $groups }}
+{{ else }}
+  {{/* Regional edition */}}
+  {{ $edCountry := "" }}
+  {{ $edLabel := "" }}
+  {{ $edCode := "" }}
+  {{ if reflect.IsMap $edition }}
+    {{ $edCountry = $edition.country | default "" }}
+    {{ $edLabel = $edition.label | default "" }}
+    {{ $edCode = $edition.code | default "" }}
+  {{ end }}
+
+  {{/* Find channel file for edition country */}}
+  {{ $chFile := index (dict) "nil" }}
+  {{ if and (ne $edCountry "") (reflect.IsMap $dataset) (reflect.IsMap $dataset.channels) }}
+    {{ with index $dataset.channels $edCountry }}
+      {{ $chFile = . }}
+    {{ else }}
+      {{ with index $dataset.channels (upper $edCountry) }}
+        {{ $chFile = . }}
+      {{ else }}
+        {{ with index $dataset.channels (printf "channels/%s.json" $edCountry) }}
+          {{ $chFile = . }}
+        {{ else }}
+          {{ with index $dataset.channels (printf "channels/%s.json" (upper $edCountry)) }}
+            {{ $chFile = . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ $groupUrl := partial "cfcdata/url.html" (dict "kind" "match" "slug" $slug "edition" $edition) }}
+
+  {{ if not (and $chFile (reflect.IsMap $chFile)) }}
+    {{ warnf "data-pages: channel file missing for edition country \"%s\"" $edCountry }}
+    {{ return (slice (dict
+      "country" $edCountry
+      "countryName" $edLabel
+      "edition" $edCode
+      "url" $groupUrl
+      "channels" slice
+    )) }}
+  {{ else }}
+    {{ $chIds := slice }}
+    {{ with $chFile.matches }}
+      {{ if reflect.IsMap . }}
+        {{ with index . $slug }}
+          {{ if reflect.IsSlice . }}
+            {{ $chIds = . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{ $channelList := slice }}
+    {{ range $chId := $chIds }}
+      {{ $chIdStr := printf "%v" $chId }}
+      {{ $chObj := index (dict) "nil" }}
+      {{ with $chFile.channels }}
+        {{ if reflect.IsMap . }}
+          {{ with index . $chIdStr }}
+            {{ $chObj = . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ $name := $chIdStr }}
+      {{ $type := "" }}
+      {{ $url := "" }}
+      {{ $logo := "" }}
+      {{ if reflect.IsMap $chObj }}
+        {{ $name = $chObj.name | default $chIdStr }}
+        {{ $type = $chObj.type | default "" }}
+        {{ $url = $chObj.url | default "" }}
+        {{ $logo = $chObj.logo | default "" }}
+      {{ end }}
+
+      {{ $channelList = $channelList | append (dict
+        "name" $name
+        "id" $chIdStr
+        "type" $type
+        "url" $url
+        "logo" $logo
+      ) }}
+    {{ end }}
+
+    {{ return (slice (dict
+      "country" $edCountry
+      "countryName" $edLabel
+      "edition" $edCode
+      "url" $groupUrl
+      "channels" $channelList
+    )) }}
+  {{ end }}
+{{ end }}

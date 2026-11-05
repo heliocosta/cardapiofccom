@@ -1,0 +1,178 @@
+{{/* layouts/_partials/cfcdata/entity-list.html */}}
+{{/* Returns searchable list of entities: leagues (popular first, then alphabetical), teams (alphabetical), matches (kickoff order). */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partialCached "cfcdata/entity-list.html" . site.Language.Lang */}}
+{{/* or: partial "cfcdata/entity-list.html" (dict "dataset"? $dataset "edition"? $edition "lang"? $lang) */}}
+
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+  {{ if isset . "lang" }}
+    {{ $lang = printf "%v" .lang }}
+  {{ end }}
+{{ end }}
+
+{{/* Auto-resolve dataset */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ end }}
+
+{{/* Auto-resolve lang */}}
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{ $entityList := slice }}
+
+{{/* 1. Leagues (from cfcdata/league-list.html: popular first, then regular, alphabetical) */}}
+{{ $leagues := partial "cfcdata/league-list.html" (dict "dataset" $dataset "edition" $edition "lang" $lang) }}
+{{ if reflect.IsSlice $leagues }}
+  {{ range $l := $leagues }}
+    {{ $rawLeague := index (dict) "nil" }}
+    {{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.leagues) }}
+      {{ with index $dataset.leagues $l.slug }}
+        {{ $rawLeague = . }}
+      {{ end }}
+    {{ end }}
+
+    {{ $altNames := slice }}
+    {{ with $rawLeague }}
+      {{ with .names }}
+        {{ if reflect.IsMap . }}
+          {{ range $k, $v := . }}
+            {{ $str := trim (printf "%v" $v) " " }}
+            {{ if and (ne $str "") (ne $str $l.name) }}
+              {{ if not (in $altNames $str) }}
+                {{ $altNames = $altNames | append $str }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+      {{ with .shortNames }}
+        {{ if reflect.IsMap . }}
+          {{ range $k, $v := . }}
+            {{ $str := trim (printf "%v" $v) " " }}
+            {{ if and (ne $str "") (ne $str $l.name) }}
+              {{ if not (in $altNames $str) }}
+                {{ $altNames = $altNames | append $str }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    {{ $altNames = sort $altNames }}
+
+    {{ $entityList = $entityList | append (dict
+      "kind" "league"
+      "slug" $l.slug
+      "name" $l.name
+      "altNames" $altNames
+      "url" $l.url
+      "appPath" $l.appPath
+      "crest" ($l.logo | default "")
+    ) }}
+  {{ end }}
+{{ end }}
+
+{{/* 2. Teams (all teams in $dataset.teams, sorted alphabetically by localized name) */}}
+{{ $teamList := slice }}
+{{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.teams) }}
+  {{ range $slug, $rawTeam := $dataset.teams }}
+    {{ $t := partial "cfcdata/team.html" (dict "slug" $slug "dataset" $dataset "edition" $edition "lang" $lang) }}
+    {{ if $t }}
+      {{ $altNames := slice }}
+      {{ with $rawTeam }}
+        {{ with .names }}
+          {{ if reflect.IsMap . }}
+            {{ range $k, $v := . }}
+              {{ $str := trim (printf "%v" $v) " " }}
+              {{ if and (ne $str "") (ne $str $t.name) }}
+                {{ if not (in $altNames $str) }}
+                  {{ $altNames = $altNames | append $str }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+        {{ with .shortNames }}
+          {{ if reflect.IsMap . }}
+            {{ range $k, $v := . }}
+              {{ $str := trim (printf "%v" $v) " " }}
+              {{ if and (ne $str "") (ne $str $t.name) }}
+                {{ if not (in $altNames $str) }}
+                  {{ $altNames = $altNames | append $str }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+      {{ $altNames = sort $altNames }}
+
+      {{ $teamList = $teamList | append (dict
+        "kind" "team"
+        "slug" $t.slug
+        "name" $t.name
+        "altNames" $altNames
+        "url" $t.url
+        "appPath" $t.appPath
+        "crest" ($t.crest | default "")
+      ) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $sortedTeams := sort $teamList "name" "asc" }}
+{{ range $sortedTeams }}
+  {{ $entityList = $entityList | append . }}
+{{ end }}
+
+{{/* 3. Matches (in kickoff order from $dataset.order) */}}
+{{ if and (reflect.IsMap $dataset) (reflect.IsSlice $dataset.order) }}
+  {{ range $slug := $dataset.order }}
+    {{ $m := partial "cfcdata/match.html" (dict "slug" $slug "dataset" $dataset "edition" $edition "lang" $lang) }}
+    {{ if $m }}
+      {{ $leagueSlug := "" }}
+      {{ $leagueName := "" }}
+      {{ with $m.league }}
+        {{ if reflect.IsMap . }}
+          {{ $leagueSlug = .slug | default "" }}
+          {{ $leagueName = .name | default "" }}
+        {{ end }}
+      {{ end }}
+
+      {{ $entityList = $entityList | append (dict
+        "kind" "match"
+        "slug" $m.slug
+        "name" $m.title
+        "altNames" (slice)
+        "url" $m.url
+        "appPath" $m.appPath
+        "kickoff" $m.kickoff
+        "league" (dict "slug" $leagueSlug "name" $leagueName)
+      ) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return $entityList }}

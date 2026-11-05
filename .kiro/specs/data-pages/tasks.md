@@ -73,7 +73,7 @@
   - _Requirements: 1.9, 2.3, 2.4, 2.6, 11.3, 11.4_
 
 ## 4. Core Data Helpers, View-Models, and Downstream Contracts
-- [ ] 4. Core data helpers, view-models, and downstream contracts
+- [x] 4. Core data helpers, view-models, and downstream contracts
 - [x] 4.1 Implement localized name resolver, canonical URL builder, and time-window slug selector
   - Implement `layouts/_partials/cfcdata/name.html` resolving localized text through edition code, language subtag, and required English fallback
   - Implement `layouts/_partials/cfcdata/url.html` building edition-prefixed canonical URLs for matches, teams, leagues, and league directory matching mobile app patterns (lineups out of scope)
@@ -96,7 +96,7 @@
   - _Boundary: TeamViewModel, LeagueViewModel_
   - _Depends: 4.1_
   - _Requirements: 7.1, 7.3, 8.1, 8.3, 8.6, 12.1_
-- [ ] 4.4 Implement channel resolver and downstream feature contracts
+- [x] 4.4 Implement channel resolver and downstream feature contracts
   - Implement `layouts/_partials/cfcdata/channels.html` resolving country channels for regional editions and grouped channels for Global edition
   - Emit build warning when an edition country has no channel file while continuing build with empty channel groups
   - Implement `layouts/_partials/cfcdata/page-entity.html` exposing structured entity data on all generated pages for downstream SEO and social features
