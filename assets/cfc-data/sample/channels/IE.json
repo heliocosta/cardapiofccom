@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "country": "IE",
+  "channels": {
+    "premier-sports-1": {
+      "id": "premier-sports-1",
+      "name": "Premier Sports 1",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/premier-sports.webp",
+      "url": "https://www.premiersports.com/ie"
+    },
+    "rte-two": {
+      "id": "rte-two",
+      "name": "RTÉ2",
+      "type": "free_tv",
+      "logo": "https://images.cardapiofc.com/channels/rte-two.webp",
+      "url": "https://www.rte.ie/player"
+    },
+    "now-tv-ie": {
+      "id": "now-tv-ie",
+      "name": "NOW TV Ireland",
+      "type": "streaming",
+      "logo": "https://images.cardapiofc.com/channels/now-tv.webp",
+      "url": "https://www.nowtv.com/ie"
+    }
+  },
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": [
+      "premier-sports-1",
+      "now-tv-ie"
+    ],
+    "manchester-city-vs-arsenal-2026-11-06": [
+      "premier-sports-1"
+    ],
+    "chelsea-vs-manchester-city-2026-11-08": [
+      "premier-sports-1"
+    ]
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "teams": {
+    "arsenal": {
+      "uuid": "t-arsenal",
+      "slug": "arsenal",
+      "names": {
+        "en": "Arsenal",
+        "pt": "Arsenal",
+        "es": "Arsenal"
+      },
+      "shortNames": {
+        "en": "ARS"
+      },
+      "crest": "https://images.cardapiofc.com/teams/arsenal.webp",
+      "country": {
+        "code": "GB"
+      },
+      "leagueSlugs": [
+        "premier-league"
+      ],
+      "matchSlugs": [
+        "arsenal-vs-chelsea-2026-11-06",
+        "manchester-city-vs-arsenal-2026-11-06"
+      ]
+    },
+    "chelsea": {
+      "uuid": "t-chelsea",
+      "slug": "chelsea",
+      "names": {
+        "en": "Chelsea",
+        "pt": "Chelsea",
+        "es": "Chelsea"
+      },
+      "shortNames": {
+        "en": "CHE"
+      },
+      "crest": "https://images.cardapiofc.com/teams/chelsea.webp",
+      "country": {
+        "code": "GB"
+      },
+      "leagueSlugs": [
+        "premier-league"
+      ],
+      "matchSlugs": [
+        "arsenal-vs-chelsea-2026-11-06",
+        "chelsea-vs-manchester-city-2026-11-08"
+      ]
+    },
+    "manchester-city": {
+      "uuid": "t-manchester-city",
+      "slug": "manchester-city",
+      "names": {
+        "en": "Manchester City",
+        "pt": "Manchester City",
+        "es": "Manchester City"
+      },
+      "shortNames": {
+        "en": "MCI"
+      },
+      "crest": "https://images.cardapiofc.com/teams/manchester-city.webp",
+      "country": {
+        "code": "GB"
+      },
+      "leagueSlugs": [
+        "premier-league"
+      ],
+      "matchSlugs": [
+        "manchester-city-vs-arsenal-2026-11-06",
+        "chelsea-vs-manchester-city-2026-11-08"
+      ]
+    },
+    "flamengo": {
+      "uuid": "t-flamengo",
+      "slug": "flamengo",
+      "names": {
+        "en": "Flamengo",
+        "pt": "Flamengo",
+        "es": "Flamengo"
+      },
+      "shortNames": {
+        "en": "FLA",
+        "pt": "FLA"
+      },
+      "crest": "https://images.cardapiofc.com/teams/flamengo.webp",
+      "country": {
+        "code": "BR"
+      },
+      "leagueSlugs": [
+        "brasileirao-serie-a"
+      ],
+      "matchSlugs": [
+        "flamengo-vs-palmeiras-2026-11-07",
+        "sao-paulo-vs-flamengo-2026-11-08"
+      ]
+    },
+    "palmeiras": {
+      "uuid": "t-palmeiras",
+      "slug": "palmeiras",
+      "names": {
+        "en": "Palmeiras",
+        "pt": "Palmeiras",
+        "es": "Palmeiras"
+      },
+      "shortNames": {
+        "en": "PAL",
+        "pt": "PAL"
+      },
+      "crest": "https://images.cardapiofc.com/teams/palmeiras.webp",
+      "country": {
+        "code": "BR"
+      },
+      "leagueSlugs": [
+        "brasileirao-serie-a"
+      ],
+      "matchSlugs": [
+        "flamengo-vs-palmeiras-2026-11-07",
+        "palmeiras-vs-sao-paulo-2026-11-09"
+      ]
+    },
+    "sao-paulo": {
+      "uuid": "t-sao-paulo",
+      "slug": "sao-paulo",
+      "names": {
+        "en": "São Paulo",
+        "pt": "São Paulo",
+        "es": "São Paulo"
+      },
+      "shortNames": {
+        "en": "SAO",
+        "pt": "SAO"
+      },
+      "crest": "https://images.cardapiofc.com/teams/sao-paulo.webp",
+      "country": {
+        "code": "BR"
+      },
+      "leagueSlugs": [
+        "brasileirao-serie-a"
+      ],
+      "matchSlugs": [
+        "sao-paulo-vs-flamengo-2026-11-08",
+        "palmeiras-vs-sao-paulo-2026-11-09"
+      ]
+    },
+    "real-madrid": {
+      "uuid": "t-real-madrid",
+      "slug": "real-madrid",
+      "names": {
+        "en": "Real Madrid",
+        "pt": "Real Madrid",
+        "es": "Real Madrid"
+      },
+      "shortNames": {
+        "en": "RMA",
+        "es": "RMA"
+      },
+      "crest": "https://images.cardapiofc.com/teams/real-madrid.webp",
+      "country": {
+        "code": "ES"
+      },
+      "leagueSlugs": [
+        "la-liga"
+      ],
+      "matchSlugs": [
+        "real-madrid-vs-barcelona-2026-11-08",
+        "barcelona-vs-real-madrid-2026-11-09"
+      ]
+    },
+    "barcelona": {
+      "uuid": "t-barcelona",
+      "slug": "barcelona",
+      "names": {
+        "en": "Barcelona",
+        "pt": "Barcelona",
+        "es": "Barcelona"
+      },
+      "shortNames": {
+        "en": "BAR",
+        "es": "FCB"
+      },
+      "crest": "https://images.cardapiofc.com/teams/barcelona.webp",
+      "country": {
+        "code": "ES"
+      },
+      "leagueSlugs": [
+        "la-liga"
+      ],
+      "matchSlugs": [
+        "real-madrid-vs-barcelona-2026-11-08",
+        "barcelona-vs-real-madrid-2026-11-09"
+      ]
+    }
+  }
+}

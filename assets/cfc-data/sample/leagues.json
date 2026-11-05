@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "leagues": {
+    "premier-league": {
+      "uuid": "l-premier-league",
+      "slug": "premier-league",
+      "names": {
+        "en": "Premier League",
+        "pt": "Premier League",
+        "es": "Premier League"
+      },
+      "shortNames": {
+        "en": "EPL",
+        "pt": "EPL"
+      },
+      "logo": "https://images.cardapiofc.com/leagues/premier-league.webp",
+      "country": {
+        "code": "GB",
+        "names": {
+          "en": "United Kingdom",
+          "pt": "Reino Unido",
+          "es": "Reino Unido"
+        }
+      },
+      "popular": true,
+      "season": "2026-27",
+      "matchSlugs": [
+        "arsenal-vs-chelsea-2026-11-06",
+        "manchester-city-vs-arsenal-2026-11-06",
+        "chelsea-vs-manchester-city-2026-11-08"
+      ]
+    },
+    "brasileirao-serie-a": {
+      "uuid": "l-brasileirao-serie-a",
+      "slug": "brasileirao-serie-a",
+      "names": {
+        "en": "Brasileirão Série A",
+        "pt": "Brasileirão Série A",
+        "es": "Brasileirao Serie A"
+      },
+      "shortNames": {
+        "en": "Série A",
+        "pt": "Série A"
+      },
+      "logo": "https://images.cardapiofc.com/leagues/brasileirao-serie-a.webp",
+      "country": {
+        "code": "BR",
+        "names": {
+          "en": "Brazil",
+          "pt": "Brasil",
+          "es": "Brasil"
+        }
+      },
+      "popular": true,
+      "season": "2026",
+      "matchSlugs": [
+        "flamengo-vs-palmeiras-2026-11-07",
+        "sao-paulo-vs-flamengo-2026-11-08",
+        "palmeiras-vs-sao-paulo-2026-11-09"
+      ]
+    },
+    "la-liga": {
+      "uuid": "l-la-liga",
+      "slug": "la-liga",
+      "names": {
+        "en": "La Liga",
+        "pt": "La Liga",
+        "es": "La Liga"
+      },
+      "shortNames": {
+        "en": "La Liga",
+        "pt": "La Liga"
+      },
+      "logo": "https://images.cardapiofc.com/leagues/la-liga.webp",
+      "country": {
+        "code": "ES",
+        "names": {
+          "en": "Spain",
+          "pt": "Espanha",
+          "es": "España"
+        }
+      },
+      "popular": false,
+      "season": "2026-27",
+      "matchSlugs": [
+        "real-madrid-vs-barcelona-2026-11-08",
+        "barcelona-vs-real-madrid-2026-11-09"
+      ]
+    }
+  }
+}

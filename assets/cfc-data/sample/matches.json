@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "order": [
+    "arsenal-vs-chelsea-2026-11-06",
+    "manchester-city-vs-arsenal-2026-11-06",
+    "flamengo-vs-palmeiras-2026-11-07",
+    "sao-paulo-vs-flamengo-2026-11-08",
+    "real-madrid-vs-barcelona-2026-11-08",
+    "chelsea-vs-manchester-city-2026-11-08",
+    "palmeiras-vs-sao-paulo-2026-11-09",
+    "barcelona-vs-real-madrid-2026-11-09"
+  ],
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": {
+      "uuid": "m-arsenal-vs-chelsea-2026-11-06",
+      "slug": "arsenal-vs-chelsea-2026-11-06",
+      "kickoff": "2026-11-06T15:00:00Z",
+      "leagueSlug": "premier-league",
+      "homeSlug": "arsenal",
+      "awaySlug": "chelsea",
+      "status": "finished",
+      "statusShort": "FT",
+      "score": {
+        "home": 2,
+        "away": 1
+      },
+      "round": "Regular Season - 11",
+      "venue": {
+        "name": "Emirates Stadium",
+        "city": "London"
+      },
+      "hasLineup": true
+    },
+    "manchester-city-vs-arsenal-2026-11-06": {
+      "uuid": "m-manchester-city-vs-arsenal-2026-11-06",
+      "slug": "manchester-city-vs-arsenal-2026-11-06",
+      "kickoff": "2026-11-06T17:30:00Z",
+      "leagueSlug": "premier-league",
+      "homeSlug": "manchester-city",
+      "awaySlug": "arsenal",
+      "status": "halftime",
+      "statusShort": "HT",
+      "score": {
+        "home": 1,
+        "away": 0
+      },
+      "round": "Regular Season - 11",
+      "venue": {
+        "name": "Etihad Stadium",
+        "city": "Manchester"
+      },
+      "hasLineup": true
+    },
+    "flamengo-vs-palmeiras-2026-11-07": {
+      "uuid": "m-flamengo-vs-palmeiras-2026-11-07",
+      "slug": "flamengo-vs-palmeiras-2026-11-07",
+      "kickoff": "2026-11-07T19:00:00Z",
+      "leagueSlug": "brasileirao-serie-a",
+      "homeSlug": "flamengo",
+      "awaySlug": "palmeiras",
+      "status": "live",
+      "statusShort": "2H",
+      "score": {
+        "home": 1,
+        "away": 1
+      },
+      "round": "Rodada 33",
+      "venue": {
+        "name": "Maracanã",
+        "city": "Rio de Janeiro"
+      },
+      "hasLineup": true
+    },
+    "sao-paulo-vs-flamengo-2026-11-08": {
+      "uuid": "m-sao-paulo-vs-flamengo-2026-11-08",
+      "slug": "sao-paulo-vs-flamengo-2026-11-08",
+      "kickoff": "2026-11-08T01:30:00Z",
+      "leagueSlug": "brasileirao-serie-a",
+      "homeSlug": "sao-paulo",
+      "awaySlug": "flamengo",
+      "status": "scheduled",
+      "statusShort": "NS",
+      "score": null,
+      "round": "Rodada 34",
+      "venue": {
+        "name": "MorumBIS",
+        "city": "São Paulo"
+      },
+      "hasLineup": false
+    },
+    "real-madrid-vs-barcelona-2026-11-08": {
+      "uuid": "m-real-madrid-vs-barcelona-2026-11-08",
+      "slug": "real-madrid-vs-barcelona-2026-11-08",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "leagueSlug": "la-liga",
+      "homeSlug": "real-madrid",
+      "awaySlug": "barcelona",
+      "status": "postponed",
+      "statusShort": "PST",
+      "score": null,
+      "round": "Jornada 12",
+      "venue": {
+        "name": "Santiago Bernabéu",
+        "city": "Madrid"
+      },
+      "hasLineup": false
+    },
+    "chelsea-vs-manchester-city-2026-11-08": {
+      "uuid": "m-chelsea-vs-manchester-city-2026-11-08",
+      "slug": "chelsea-vs-manchester-city-2026-11-08",
+      "kickoff": "2026-11-08T16:30:00Z",
+      "leagueSlug": "premier-league",
+      "homeSlug": "chelsea",
+      "awaySlug": "manchester-city",
+      "status": "suspended",
+      "statusShort": "SUSP",
+      "score": {
+        "home": 0,
+        "away": 0
+      },
+      "round": "Regular Season - 12",
+      "venue": {
+        "name": "Stamford Bridge",
+        "city": "London"
+      },
+      "hasLineup": false
+    },
+    "palmeiras-vs-sao-paulo-2026-11-09": {
+      "uuid": "m-palmeiras-vs-sao-paulo-2026-11-09",
+      "slug": "palmeiras-vs-sao-paulo-2026-11-09",
+      "kickoff": "2026-11-09T20:00:00Z",
+      "leagueSlug": "brasileirao-serie-a",
+      "homeSlug": "palmeiras",
+      "awaySlug": "sao-paulo",
+      "status": "cancelled",
+      "statusShort": "CANC",
+      "score": null,
+      "round": "Rodada 35",
+      "venue": {
+        "name": "Allianz Parque",
+        "city": "São Paulo"
+      },
+      "hasLineup": false
+    },
+    "barcelona-vs-real-madrid-2026-11-09": {
+      "uuid": "m-barcelona-vs-real-madrid-2026-11-09",
+      "slug": "barcelona-vs-real-madrid-2026-11-09",
+      "kickoff": "2026-11-09T21:00:00Z",
+      "leagueSlug": "la-liga",
+      "homeSlug": "barcelona",
+      "awaySlug": "real-madrid",
+      "status": "scheduled",
+      "statusShort": "NS",
+      "score": null,
+      "round": "Jornada 13",
+      "venue": {
+        "name": "Spotify Camp Nou",
+        "city": "Barcelona"
+      },
+      "hasLineup": false
+    }
+  }
+}

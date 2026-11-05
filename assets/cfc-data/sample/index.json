@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "window": {
+    "from": "2026-11-06T15:00:00Z",
+    "to": "2026-11-09T21:00:00Z"
+  },
+  "countries": [
+    "AR",
+    "BR",
+    "GB",
+    "IE",
+    "PT"
+  ],
+  "files": {
+    "leagues.json": {
+      "sha256": "abf8c93b8191049b7f548f0ddf5ccd4ec6d4b0f4d0df1562c4a1cebc997fa325",
+      "bytes": 2282
+    },
+    "teams.json": {
+      "sha256": "92e17e91cb240bb9b4a6b57005d31d236072b81c49f0bcc2287ce2a41287e1d8",
+      "bytes": 4495
+    },
+    "matches.json": {
+      "sha256": "56e37813b81b8a0475c43541d758d8eaca5eb386e21f2e11c13fade20c0d69b9",
+      "bytes": 4763
+    },
+    "lineups.json": {
+      "sha256": "5418c06488572f4a13bd1b01fa327261ec7901ad1cc2357c0c6f17c2f612f16e",
+      "bytes": 15783
+    },
+    "channels/AR.json": {
+      "sha256": "c09d87b9adb41b941713c0093049deb2420ba5de50bac74c13e566f938539f3d",
+      "bytes": 1060
+    },
+    "channels/BR.json": {
+      "sha256": "9063c789a9ba0483af83b8641ccf9cec7ff2cc9dd6c7f74dbf8c86e342ff94fa",
+      "bytes": 1508
+    },
+    "channels/GB.json": {
+      "sha256": "e8bce02bcde2e34c31940230062e81e37f53e4d037af14e465c3c0f0ea609c2f",
+      "bytes": 1333
+    },
+    "channels/IE.json": {
+      "sha256": "44840e2f57f3fab70c27c49dcb6f91929d10d42925c78450374c7be4eb0ef187",
+      "bytes": 1044
+    },
+    "channels/PT.json": {
+      "sha256": "f8333b42d2fa14bce0241eebe0fe7ae2ecb9d3088fee4ea1db17a945f55edc67",
+      "bytes": 941
+    }
+  },
+  "counts": {
+    "leagues": 3,
+    "teams": 8,
+    "matches": 8,
+    "lineups": 3
+  }
+}

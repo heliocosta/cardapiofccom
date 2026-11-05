@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "country": "AR",
+  "channels": {
+    "espn-argentina": {
+      "id": "espn-argentina",
+      "name": "ESPN Argentina",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/espn.webp",
+      "url": "https://www.espn.com.ar"
+    },
+    "tyc-sports": {
+      "id": "tyc-sports",
+      "name": "TyC Sports",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/tyc-sports.webp",
+      "url": "https://www.tycsports.com"
+    },
+    "disney-plus-ar": {
+      "id": "disney-plus-ar",
+      "name": "Disney+ Argentina",
+      "type": "streaming",
+      "logo": "https://images.cardapiofc.com/channels/disney-plus.webp",
+      "url": "https://www.disneyplus.com"
+    }
+  },
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": [
+      "espn-argentina",
+      "disney-plus-ar"
+    ],
+    "sao-paulo-vs-flamengo-2026-11-08": [
+      "tyc-sports"
+    ],
+    "barcelona-vs-real-madrid-2026-11-09": [
+      "espn-argentina",
+      "disney-plus-ar"
+    ]
+  }
+}

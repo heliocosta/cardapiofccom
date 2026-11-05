@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "country": "PT",
+  "channels": {
+    "sport-tv-1": {
+      "id": "sport-tv-1",
+      "name": "Sport TV 1",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/sport-tv.webp",
+      "url": "https://www.sporttv.pt"
+    },
+    "dazn-1-pt": {
+      "id": "dazn-1-pt",
+      "name": "DAZN 1",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/dazn.webp",
+      "url": "https://www.dazn.com/pt-PT"
+    },
+    "rtp-1": {
+      "id": "rtp-1",
+      "name": "RTP 1",
+      "type": "free_tv",
+      "logo": "https://images.cardapiofc.com/channels/rtp-1.webp",
+      "url": "https://www.rtp.pt/play"
+    }
+  },
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": [
+      "dazn-1-pt"
+    ],
+    "flamengo-vs-palmeiras-2026-11-07": [
+      "sport-tv-1"
+    ],
+    "barcelona-vs-real-madrid-2026-11-09": [
+      "dazn-1-pt"
+    ]
+  }
+}

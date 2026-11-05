@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "country": "BR",
+  "channels": {
+    "tv-globo": {
+      "id": "tv-globo",
+      "name": "TV Globo",
+      "type": "free_tv",
+      "logo": "https://images.cardapiofc.com/channels/tv-globo.webp",
+      "url": "https://globoplay.globo.com"
+    },
+    "sportv": {
+      "id": "sportv",
+      "name": "SporTV",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/sportv.webp",
+      "url": "https://ge.globo.com/sportv"
+    },
+    "premiere": {
+      "id": "premiere",
+      "name": "Premiere",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/premiere.webp",
+      "url": "https://premiere.globo.com"
+    },
+    "cazetv": {
+      "id": "cazetv",
+      "name": "CazéTV",
+      "type": "streaming",
+      "logo": "https://images.cardapiofc.com/channels/cazetv.webp",
+      "url": "https://www.youtube.com/@CazeTV"
+    },
+    "disney-plus-br": {
+      "id": "disney-plus-br",
+      "name": "Disney+",
+      "type": "streaming",
+      "logo": "https://images.cardapiofc.com/channels/disney-plus.webp",
+      "url": "https://www.disneyplus.com"
+    }
+  },
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": [
+      "disney-plus-br"
+    ],
+    "flamengo-vs-palmeiras-2026-11-07": [
+      "tv-globo",
+      "premiere"
+    ],
+    "sao-paulo-vs-flamengo-2026-11-08": [
+      "sportv",
+      "premiere"
+    ],
+    "palmeiras-vs-sao-paulo-2026-11-09": [
+      "cazetv",
+      "premiere"
+    ]
+  }
+}

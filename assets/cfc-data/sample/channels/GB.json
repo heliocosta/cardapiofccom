@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-05T06:00:00Z",
+  "country": "GB",
+  "channels": {
+    "sky-sports-main-event": {
+      "id": "sky-sports-main-event",
+      "name": "Sky Sports Main Event",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/sky-sports.webp",
+      "url": "https://www.skysports.com"
+    },
+    "tnt-sports-1": {
+      "id": "tnt-sports-1",
+      "name": "TNT Sports 1",
+      "type": "tv",
+      "logo": "https://images.cardapiofc.com/channels/tnt-sports.webp",
+      "url": "https://www.tntsports.co.uk"
+    },
+    "bbc-one": {
+      "id": "bbc-one",
+      "name": "BBC One",
+      "type": "free_tv",
+      "logo": "https://images.cardapiofc.com/channels/bbc-one.webp",
+      "url": "https://www.bbc.co.uk/iplayer"
+    },
+    "discovery-plus": {
+      "id": "discovery-plus",
+      "name": "discovery+",
+      "type": "streaming",
+      "logo": "https://images.cardapiofc.com/channels/discovery-plus.webp",
+      "url": "https://www.discoveryplus.com/gb"
+    }
+  },
+  "matches": {
+    "arsenal-vs-chelsea-2026-11-06": [
+      "sky-sports-main-event",
+      "discovery-plus"
+    ],
+    "manchester-city-vs-arsenal-2026-11-06": [
+      "sky-sports-main-event"
+    ],
+    "chelsea-vs-manchester-city-2026-11-08": [
+      "tnt-sports-1",
+      "discovery-plus"
+    ]
+  }
+}

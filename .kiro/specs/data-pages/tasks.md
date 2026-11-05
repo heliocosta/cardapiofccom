@@ -11,7 +11,7 @@
   - _Requirements: 3.1, 3.5, 3.7_
 
 ## 2. Data Contract, Sample Dataset, and Dataset Index Tooling
-- [ ] 2. Data contract, sample dataset, and dataset index tooling
+- [x] 2. Data contract, sample dataset, and dataset index tooling
 - [x] 2.1 (P) Validate Data Contract v1 and JSON Schema specification
   - Finalize operator-facing contract documentation specifying required files, field types, slug formats, UTC timestamps, and country channels
   - Validate JSON Schema Draft 2020-12 definition in `contract/cfc-data-v1.schema.json` against all Data Contract v1 constraints
@@ -27,7 +27,7 @@
   - Observable completed state: Executing `node scripts/cfc-data-index.mjs` on a dataset directory updates `index.json` hashes and entity counts without external dependencies
   - _Boundary: DatasetTool_
   - _Requirements: 1.8, 1.10, 11.6_
-- [ ] 2.3 Author comprehensive sample football dataset
+- [x] 2.3 Author comprehensive sample football dataset
   - Create `assets/cfc-data/sample/` containing `index.json`, `leagues.json`, `teams.json`, `matches.json`, `lineups.json`, and `channels/{GB,IE,BR,PT,AR}.json`
   - Populate at least two leagues (one flagged popular), multiple teams, and matches in all statuses (`scheduled`, `live`, `halftime`, `finished`, `postponed`, `cancelled`, `suspended`)
   - Include fixtures with official lineups, fixtures without lineups, matches with multi-country broadcasts, matches with no channels, and kick-off times spanning midnight across edition time zones
