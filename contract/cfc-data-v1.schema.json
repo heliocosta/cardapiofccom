@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cardapiofc.com/contracts/cfc-data-v1.schema.json",
+  "title": "CardápioFC Data Contract v1",
+  "description": "Files published by the Retool export under web/v1/ in Firebase Storage. Each file is validated against the matching $defs entry: index.json -> IndexFile, leagues.json -> LeaguesFile, teams.json -> TeamsFile, matches.json -> MatchesFile, lineups.json -> LineupsFile, channels/<CC>.json -> ChannelsFile. Cross-file rules (references, sha256, counts, order, hasLineup) are documented in contract/README.md and design.md 'Validation Rules Enforced by the Build' and enforced by the Hugo build and scripts/cfc-data-index.mjs --check.",
+  "oneOf": [
+    { "$ref": "#/$defs/IndexFile" },
+    { "$ref": "#/$defs/LeaguesFile" },
+    { "$ref": "#/$defs/TeamsFile" },
+    { "$ref": "#/$defs/MatchesFile" },
+    { "$ref": "#/$defs/LineupsFile" },
+    { "$ref": "#/$defs/ChannelsFile" }
+  ],
+  "$defs": {
+    "SemVer": { "type": "string", "pattern": "^1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "Instant": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" },
+    "Slug": { "type": "string", "maxLength": 120, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "MatchSlug": { "type": "string", "maxLength": 250, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-vs-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "CountryCode": { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "ChannelId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+    "Url": { "type": "string", "pattern": "^https://" },
+    "NullableUrl": { "oneOf": [ { "$ref": "#/$defs/Url" }, { "type": "null" } ] },
+    "LocalisedText": {
+      "type": "object",
+      "required": ["en"],
+      "properties": { "en": { "type": "string", "minLength": 1 } },
+      "propertyNames": { "pattern": "^[a-z]{2}(-[a-z]{2})?$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "FileHeader": {
+      "type": "object",
+      "required": ["schemaVersion", "generatedAt"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SemVer" },
+        "generatedAt": { "$ref": "#/$defs/Instant" }
+      }
+    },
+    "IndexFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["window", "countries", "files", "counts"],
+      "properties": {
+        "window": {
+          "type": "object",
+          "required": ["from", "to"],
+          "properties": { "from": { "$ref": "#/$defs/Instant" }, "to": { "$ref": "#/$defs/Instant" } }
+        },
+        "countries": { "type": "array", "items": { "$ref": "#/$defs/CountryCode" }, "uniqueItems": true },
+        "files": {
+          "type": "object",
+          "required": ["leagues.json", "teams.json", "matches.json", "lineups.json"],
+          "propertyNames": { "pattern": "^(leagues|teams|matches|lineups)\\.json$|^channels/[A-Z]{2}\\.json$" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["sha256", "bytes"],
+            "properties": {
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "bytes": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "counts": {
+          "type": "object",
+          "required": ["leagues", "teams", "matches", "lineups"],
+          "properties": {
+            "leagues": { "type": "integer", "minimum": 0 },
+            "teams": { "type": "integer", "minimum": 0 },
+            "matches": { "type": "integer", "minimum": 0 },
+            "lineups": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "League": {
+      "type": "object",
+      "required": ["uuid", "slug", "names", "popular", "matchSlugs"],
+      "properties": {
+        "uuid": { "type": "string", "minLength": 1 },
+        "slug": { "$ref": "#/$defs/Slug" },
+        "names": { "$ref": "#/$defs/LocalisedText" },
+        "shortNames": { "$ref": "#/$defs/LocalisedText" },
+        "logo": { "$ref": "#/$defs/NullableUrl" },
+        "country": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["code"],
+              "properties": { "code": { "$ref": "#/$defs/CountryCode" }, "names": { "$ref": "#/$defs/LocalisedText" } }
+            },
+            { "type": "null" }
+          ]
+        },
+        "popular": { "type": "boolean" },
+        "season": { "type": ["string", "null"] },
+        "matchSlugs": { "type": "array", "items": { "$ref": "#/$defs/MatchSlug" }, "uniqueItems": true }
+      }
+    },
+    "LeaguesFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["leagues"],
+      "properties": {
+        "leagues": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/Slug" },
+          "additionalProperties": { "$ref": "#/$defs/League" }
+        }
+      }
+    },
+    "Team": {
+      "type": "object",
+      "required": ["uuid", "slug", "names", "leagueSlugs", "matchSlugs"],
+      "properties": {
+        "uuid": { "type": "string", "minLength": 1 },
+        "slug": { "$ref": "#/$defs/Slug" },
+        "names": { "$ref": "#/$defs/LocalisedText" },
+        "shortNames": { "$ref": "#/$defs/LocalisedText" },
+        "crest": { "$ref": "#/$defs/NullableUrl" },
+        "country": {
+          "oneOf": [
+            { "type": "object", "required": ["code"], "properties": { "code": { "$ref": "#/$defs/CountryCode" } } },
+            { "type": "null" }
+          ]
+        },
+        "leagueSlugs": { "type": "array", "items": { "$ref": "#/$defs/Slug" }, "uniqueItems": true },
+        "matchSlugs": { "type": "array", "items": { "$ref": "#/$defs/MatchSlug" }, "uniqueItems": true }
+      }
+    },
+    "TeamsFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["teams"],
+      "properties": {
+        "teams": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/Slug" },
+          "additionalProperties": { "$ref": "#/$defs/Team" }
+        }
+      }
+    },
+    "MatchStatus": { "enum": ["scheduled", "live", "halftime", "finished", "postponed", "cancelled", "suspended"] },
+    "Match": {
+      "type": "object",
+      "required": ["uuid", "slug", "kickoff", "leagueSlug", "homeSlug", "awaySlug", "status", "statusShort", "hasLineup"],
+      "properties": {
+        "uuid": { "type": "string", "minLength": 1 },
+        "slug": { "$ref": "#/$defs/MatchSlug" },
+        "kickoff": { "$ref": "#/$defs/Instant" },
+        "leagueSlug": { "$ref": "#/$defs/Slug" },
+        "homeSlug": { "$ref": "#/$defs/Slug" },
+        "awaySlug": { "$ref": "#/$defs/Slug" },
+        "status": { "$ref": "#/$defs/MatchStatus" },
+        "statusShort": { "type": "string", "minLength": 1, "maxLength": 8 },
+        "score": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["home", "away"],
+              "properties": {
+                "home": { "type": "integer", "minimum": 0 },
+                "away": { "type": "integer", "minimum": 0 }
+              }
+            },
+            { "type": "null" }
+          ]
+        },
+        "round": { "type": ["string", "null"] },
+        "venue": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["name"],
+              "properties": { "name": { "type": "string", "minLength": 1 }, "city": { "type": "string" } }
+            },
+            { "type": "null" }
+          ]
+        },
+        "hasLineup": { "type": "boolean" }
+      }
+    },
+    "MatchesFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["order", "matches"],
+      "properties": {
+        "order": { "type": "array", "items": { "$ref": "#/$defs/MatchSlug" }, "uniqueItems": true },
+        "matches": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/MatchSlug" },
+          "additionalProperties": { "$ref": "#/$defs/Match" }
+        }
+      }
+    },
+    "Player": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "number": { "type": ["integer", "null"], "minimum": 0, "maximum": 99 },
+        "pos": { "enum": ["G", "D", "M", "F", null] },
+        "grid": { "type": ["string", "null"], "pattern": "^[0-9]{1,2}:[0-9]{1,2}$" }
+      }
+    },
+    "TeamLineup": {
+      "type": "object",
+      "required": ["startXI", "substitutes"],
+      "properties": {
+        "formation": { "type": ["string", "null"], "pattern": "^[1-9](-[1-9]){1,4}$" },
+        "coach": { "type": ["string", "null"] },
+        "startXI": { "type": "array", "maxItems": 11, "items": { "$ref": "#/$defs/Player" } },
+        "substitutes": { "type": "array", "items": { "$ref": "#/$defs/Player" } }
+      }
+    },
+    "Lineup": {
+      "type": "object",
+      "required": ["home", "away"],
+      "properties": {
+        "home": { "$ref": "#/$defs/TeamLineup" },
+        "away": { "$ref": "#/$defs/TeamLineup" }
+      }
+    },
+    "LineupsFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["lineups"],
+      "properties": {
+        "lineups": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/MatchSlug" },
+          "additionalProperties": { "$ref": "#/$defs/Lineup" }
+        }
+      }
+    },
+    "Channel": {
+      "type": "object",
+      "required": ["id", "name", "type"],
+      "properties": {
+        "id": { "$ref": "#/$defs/ChannelId" },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["tv", "streaming", "free_tv"] },
+        "logo": { "$ref": "#/$defs/NullableUrl" },
+        "url": { "$ref": "#/$defs/NullableUrl" }
+      }
+    },
+    "ChannelsFile": {
+      "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
+      "type": "object",
+      "required": ["country", "channels", "matches"],
+      "properties": {
+        "country": { "$ref": "#/$defs/CountryCode" },
+        "channels": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/ChannelId" },
+          "additionalProperties": { "$ref": "#/$defs/Channel" }
+        },
+        "matches": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/MatchSlug" },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/ChannelId" }
+          }
+        }
+      }
+    }
+  }
+}

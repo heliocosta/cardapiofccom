@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cardapiofc.com/contracts/cfc-data-v1.schema.json",
   "title": "CardápioFC Data Contract v1",
-  "description": "Files published by the Retool export under web/v1/ in Firebase Storage. Each file is validated against the matching $defs entry: index.json -> IndexFile, leagues.json -> LeaguesFile, teams.json -> TeamsFile, matches.json -> MatchesFile, lineups.json -> LineupsFile, channels/<CC>.json -> ChannelsFile. Cross-file rules (references, sha256, counts, order, hasLineup) are documented in design.md 'Validation Rules Enforced by the Build' and enforced by the Hugo build and scripts/cfc-data-index.mjs --check.",
+  "description": "Files published by the Retool export under web/v1/ in Firebase Storage. Each file is validated against the matching $defs entry: index.json -> IndexFile, leagues.json -> LeaguesFile, teams.json -> TeamsFile, matches.json -> MatchesFile, lineups.json -> LineupsFile, channels/<CC>.json -> ChannelsFile. Cross-file rules (references, sha256, counts, order, hasLineup) are documented in contract/README.md and design.md 'Validation Rules Enforced by the Build' and enforced by the Hugo build and scripts/cfc-data-index.mjs --check.",
   "oneOf": [
     { "$ref": "#/$defs/IndexFile" },
     { "$ref": "#/$defs/LeaguesFile" },
@@ -211,6 +211,14 @@
         "substitutes": { "type": "array", "items": { "$ref": "#/$defs/Player" } }
       }
     },
+    "Lineup": {
+      "type": "object",
+      "required": ["home", "away"],
+      "properties": {
+        "home": { "$ref": "#/$defs/TeamLineup" },
+        "away": { "$ref": "#/$defs/TeamLineup" }
+      }
+    },
     "LineupsFile": {
       "allOf": [ { "$ref": "#/$defs/FileHeader" } ],
       "type": "object",
@@ -219,11 +227,7 @@
         "lineups": {
           "type": "object",
           "propertyNames": { "$ref": "#/$defs/MatchSlug" },
-          "additionalProperties": {
-            "type": "object",
-            "required": ["home", "away"],
-            "properties": { "home": { "$ref": "#/$defs/TeamLineup" }, "away": { "$ref": "#/$defs/TeamLineup" } }
-          }
+          "additionalProperties": { "$ref": "#/$defs/Lineup" }
         }
       }
     },

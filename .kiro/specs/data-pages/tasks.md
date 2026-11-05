@@ -12,7 +12,7 @@
 
 ## 2. Data Contract, Sample Dataset, and Dataset Index Tooling
 - [ ] 2. Data contract, sample dataset, and dataset index tooling
-- [ ] 2.1 (P) Validate Data Contract v1 and JSON Schema specification
+- [x] 2.1 (P) Validate Data Contract v1 and JSON Schema specification
   - Finalize operator-facing contract documentation specifying required files, field types, slug formats, UTC timestamps, and country channels
   - Validate JSON Schema Draft 2020-12 definition in `contract/cfc-data-v1.schema.json` against all Data Contract v1 constraints
   - Document the output file-count estimation formula and worked example for File Budget compliance
