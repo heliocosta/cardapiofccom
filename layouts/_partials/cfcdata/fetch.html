@@ -1,0 +1,122 @@
+{{/* layouts/_partials/cfcdata/fetch.html */}}
+{{/* Fetches and verifies a single CFC data contract file from remote storage or local sample. */}}
+{{/* Signature: partial "cfcdata/fetch.html" (dict "file" string "sha256"? string "settings" Settings?) */}}
+
+{{ $file := "" }}
+{{ $sha256 := "" }}
+{{ $settings := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ $file = .file | default "" }}
+  {{ $sha256 = .sha256 | default "" }}
+  {{ $settings = .settings }}
+{{ else }}
+  {{ $file = printf "%s" . }}
+{{ end }}
+
+{{ if not $settings }}
+  {{ $settings = partialCached "cfcdata/settings.html" . "settings" }}
+{{ end }}
+
+{{ if not $file }}
+  {{ errorf "data-pages: fetch: missing file parameter" }}
+  {{ return dict }}
+{{ end }}
+
+{{ $resource := index (dict) "nil" }}
+{{ $fetchErr := "" }}
+
+{{ if eq $settings.source "remote" }}
+  {{ $encodedPath := (printf "%s%s" $settings.prefix $file) | urlquery }}
+  {{ $url := printf "%s%s?alt=media" $settings.baseURL $encodedPath }}
+  {{ if and (isset $settings "token") (ne $settings.token "") }}
+    {{ $url = printf "%s&token=%s" $url $settings.token }}
+  {{ end }}
+
+  {{ $cacheKey := "" }}
+  {{ if and (ne $sha256 "") }}
+    {{ $cacheKey = printf "%s#%s" $file $sha256 }}
+  {{ else }}
+    {{ $cacheKey = printf "%s#%d" $file now.Unix }}
+  {{ end }}
+
+  {{ $opts := dict "key" $cacheKey }}
+  {{ $remoteTry := try (resources.GetRemote $url $opts) }}
+  {{ if $remoteTry.Err }}
+    {{ $fetchErr = printf "%v" $remoteTry.Err }}
+  {{ else if not $remoteTry.Value }}
+    {{ $fetchErr = printf "resource not found (%s)" $url }}
+  {{ else }}
+    {{ $resource = $remoteTry.Value }}
+  {{ end }}
+
+{{ else if eq $settings.source "sample" }}
+  {{ $samplePath := path.Join $settings.sampleDir $file }}
+  {{ $sampleTry := try (resources.Get $samplePath) }}
+  {{ if $sampleTry.Err }}
+    {{ $fetchErr = printf "%v" $sampleTry.Err }}
+  {{ else if not $sampleTry.Value }}
+    {{ $fetchErr = printf "resource not found (%s)" $samplePath }}
+  {{ else }}
+    {{ $resource = $sampleTry.Value }}
+  {{ end }}
+{{ else }}
+  {{ $fetchErr = printf "unknown source mode: %s" $settings.source }}
+{{ end }}
+
+{{/* Redact token helper logic */}}
+{{ $token := "" }}
+{{ with $settings }}
+  {{ with .token }}
+    {{ if ne . "" }}
+      {{ $token = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if or $fetchErr (not $resource) }}
+  {{ if not $fetchErr }}
+    {{ $fetchErr = "resource is nil" }}
+  {{ end }}
+  {{ if ne $token "" }}
+    {{ $fetchErr = replace $fetchErr (printf "token=%s" $token) "token=***" }}
+    {{ $fetchErr = replace $fetchErr $token "***" }}
+  {{ end }}
+  {{ errorf "data-pages: %s: fetch failed: %s" $file $fetchErr }}
+  {{ return dict }}
+{{ end }}
+
+{{ $content := $resource.Content }}
+{{ if or (eq $content "") (eq (strings.TrimSpace $content) "") }}
+  {{ errorf "data-pages: %s: file is empty" $file }}
+  {{ return dict }}
+{{ end }}
+
+{{/* Integrity verification */}}
+{{ if and (ne $sha256 "") }}
+  {{ $actualSha := crypto.SHA256 $content }}
+  {{ if ne (lower $actualSha) (lower $sha256) }}
+    {{ errorf "data-pages: %s: integrity check failed (expected %s, got %s)" $file $sha256 $actualSha }}
+    {{ return dict }}
+  {{ end }}
+{{ end }}
+
+{{/* JSON unmarshaling */}}
+{{ $unmarshalTry := try ($content | transform.Unmarshal) }}
+{{ if $unmarshalTry.Err }}
+  {{ $unmarshalErr := printf "%v" $unmarshalTry.Err }}
+  {{ if ne $token "" }}
+    {{ $unmarshalErr = replace $unmarshalErr (printf "token=%s" $token) "token=***" }}
+    {{ $unmarshalErr = replace $unmarshalErr $token "***" }}
+  {{ end }}
+  {{ errorf "data-pages: %s: invalid JSON: %s" $file $unmarshalErr }}
+  {{ return dict }}
+{{ end }}
+
+{{ $data := $unmarshalTry.Value }}
+{{ if not (reflect.IsMap $data) }}
+  {{ errorf "data-pages: %s: invalid JSON: expected object" $file }}
+  {{ return dict }}
+{{ end }}
+
+{{ return $data }}

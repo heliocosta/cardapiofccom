@@ -46,7 +46,7 @@
   - Observable completed state: Hugo template call `partialCached "cfcdata/settings.html" . "settings"` returns a resolved settings dictionary honoring configuration and environment overrides
   - _Boundary: Settings_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.11, 11.4, 11.5_
-- [ ] 3.2 Implement secure remote and local resource fetcher
+- [x] 3.2 Implement secure remote and local resource fetcher
   - Implement `layouts/_partials/cfcdata/fetch.html` loading files via `resources.GetRemote` for remote mode or `resources.Get` for sample mode
   - Append `HUGO_CFC_DATA_TOKEN` to remote requests when configured while ensuring tokens are redacted from all diagnostic messages
   - Enforce SHA-256 checksum verification against `index.json` integrity values and parse JSON using `transform.Unmarshal`
