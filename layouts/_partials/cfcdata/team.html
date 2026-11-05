@@ -1,0 +1,166 @@
+{{/* layouts/_partials/cfcdata/team.html */}}
+{{/* Team view-model service: resolves team, localized names, crest, country, canonical URLs, and associated leagues. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/team.html" (dict "slug" $slug "dataset"? $dataset "edition"? $edition "lang"? $lang) */}}
+{{/* or: partial "cfcdata/team.html" $slug */}}
+
+{{ $slug := "" }}
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "slug" }}
+    {{ $slug = printf "%v" .slug }}
+  {{ end }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+  {{ if isset . "lang" }}
+    {{ $lang = printf "%v" .lang }}
+  {{ end }}
+{{ else if . }}
+  {{ $slug = printf "%v" . }}
+{{ end }}
+
+{{/* Normalize slug */}}
+{{ $slug = strings.Trim (trim $slug " ") "/" }}
+
+{{ if eq $slug "" }}
+  {{ return nil }}
+{{ end }}
+
+{{/* Auto-resolve dataset if omitted */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Look up raw team */}}
+{{ $rawTeam := index (dict) "nil" }}
+{{ if reflect.IsMap $dataset }}
+  {{ with $dataset.teams }}
+    {{ if reflect.IsMap . }}
+      {{ with index . $slug }}
+        {{ $rawTeam = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if not $rawTeam }}
+  {{ return nil }}
+{{ end }}
+
+{{/* Auto-resolve lang */}}
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ end }}
+
+{{/* Localized names */}}
+{{ $teamNames := dict }}
+{{ with index $rawTeam "names" }}
+  {{ if reflect.IsMap . }}
+    {{ $teamNames = . }}
+  {{ end }}
+{{ end }}
+
+{{ $teamShortNames := dict }}
+{{ with index $rawTeam "shortNames" }}
+  {{ if reflect.IsMap . }}
+    {{ $teamShortNames = . }}
+  {{ end }}
+{{ end }}
+
+{{ $name := partial "cfcdata/name.html" (dict "names" $teamNames "lang" $lang) }}
+{{ $shortName := partial "cfcdata/name.html" (dict "names" $teamShortNames "lang" $lang) }}
+{{ if eq $name "" }}
+  {{ $name = $slug }}
+{{ end }}
+
+{{/* Canonical URL and appPath */}}
+{{ $teamUrl := partial "cfcdata/url.html" (dict "kind" "team" "slug" $slug "edition" $edition) }}
+{{ $appPath := printf "/team/%s" $slug }}
+
+{{/* Country resolution */}}
+{{ $country := index (dict) "nil" }}
+{{ with index $rawTeam "country" }}
+  {{ if reflect.IsMap . }}
+    {{ $code := .code | default "" }}
+    {{ $cName := "" }}
+    {{ with .names }}
+      {{ $cName = partial "cfcdata/name.html" (dict "names" . "lang" $lang) }}
+    {{ end }}
+    {{ if and (eq $cName "") (ne $code "") }}
+      {{ $cName = $code }}
+    {{ end }}
+    {{ $country = dict "code" $code "name" $cName }}
+  {{ else if . }}
+    {{ $code := printf "%v" . }}
+    {{ $country = dict "code" $code "name" $code }}
+  {{ end }}
+{{ end }}
+
+{{/* Leagues resolution */}}
+{{ $leagues := slice }}
+{{ with index $rawTeam "leagueSlugs" }}
+  {{ if reflect.IsSlice . }}
+    {{ range . }}
+      {{ $lslug := printf "%v" . }}
+      {{ $lname := "" }}
+      {{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.leagues) }}
+        {{ with index $dataset.leagues $lslug }}
+          {{ if reflect.IsMap . }}
+            {{ with .names }}
+              {{ $lname = partial "cfcdata/name.html" (dict "names" . "lang" $lang) }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+      {{ if eq $lname "" }}
+        {{ $lname = $lslug }}
+      {{ end }}
+      {{ $lurl := partial "cfcdata/url.html" (dict "kind" "league" "slug" $lslug "edition" $edition) }}
+      {{ $leagues = $leagues | append (dict "slug" $lslug "name" $lname "url" $lurl) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Match slugs */}}
+{{ $matchSlugs := slice }}
+{{ with index $rawTeam "matchSlugs" }}
+  {{ if reflect.IsSlice . }}
+    {{ $matchSlugs = . }}
+  {{ end }}
+{{ end }}
+
+{{/* Crest and UUID */}}
+{{ $uuid := index $rawTeam "uuid" | default "" }}
+{{ $crest := index $rawTeam "crest" | default "" }}
+
+{{ return (dict
+  "kind" "team"
+  "slug" $slug
+  "uuid" $uuid
+  "name" $name
+  "shortName" $shortName
+  "names" $teamNames
+  "crest" $crest
+  "country" $country
+  "url" $teamUrl
+  "appPath" $appPath
+  "leagues" $leagues
+  "matchSlugs" $matchSlugs
+) }}

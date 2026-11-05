@@ -88,7 +88,7 @@
   - _Boundary: MatchViewModel_
   - _Depends: 4.1_
   - _Requirements: 4.3, 4.4, 4.5, 12.1_
-- [ ] 4.3 (P) Implement team, league, and league directory view-model services
+- [x] 4.3 (P) Implement team, league, and league directory view-model services
   - Implement `layouts/_partials/cfcdata/team.html` constructing `TeamVM` with localized names, crests, associated leagues, and match slugs
   - Implement `layouts/_partials/cfcdata/league.html` constructing `LeagueVM` with logos, country info, popular competition status, and match slugs
   - Implement `layouts/_partials/cfcdata/league-list.html` returning all `LeagueVM` instances sorted with popular competitions first followed by alphabetical localized name

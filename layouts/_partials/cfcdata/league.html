@@ -1,0 +1,151 @@
+{{/* layouts/_partials/cfcdata/league.html */}}
+{{/* League view-model service: resolves league, localized names, logo, country, popular flag, canonical URLs, and match slugs. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/league.html" (dict "slug" $slug "dataset"? $dataset "edition"? $edition "lang"? $lang) */}}
+{{/* or: partial "cfcdata/league.html" $slug */}}
+
+{{ $slug := "" }}
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "slug" }}
+    {{ $slug = printf "%v" .slug }}
+  {{ end }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+  {{ if isset . "lang" }}
+    {{ $lang = printf "%v" .lang }}
+  {{ end }}
+{{ else if . }}
+  {{ $slug = printf "%v" . }}
+{{ end }}
+
+{{/* Normalize slug */}}
+{{ $slug = strings.Trim (trim $slug " ") "/" }}
+
+{{ if eq $slug "" }}
+  {{ return nil }}
+{{ end }}
+
+{{/* Auto-resolve dataset if omitted */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Look up raw league */}}
+{{ $rawLeague := index (dict) "nil" }}
+{{ if reflect.IsMap $dataset }}
+  {{ with $dataset.leagues }}
+    {{ if reflect.IsMap . }}
+      {{ with index . $slug }}
+        {{ $rawLeague = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if not $rawLeague }}
+  {{ return nil }}
+{{ end }}
+
+{{/* Auto-resolve lang */}}
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ end }}
+
+{{/* Localized names */}}
+{{ $leagueNames := dict }}
+{{ with index $rawLeague "names" }}
+  {{ if reflect.IsMap . }}
+    {{ $leagueNames = . }}
+  {{ end }}
+{{ end }}
+
+{{ $leagueShortNames := dict }}
+{{ with index $rawLeague "shortNames" }}
+  {{ if reflect.IsMap . }}
+    {{ $leagueShortNames = . }}
+  {{ end }}
+{{ end }}
+
+{{ $name := partial "cfcdata/name.html" (dict "names" $leagueNames "lang" $lang) }}
+{{ $shortName := partial "cfcdata/name.html" (dict "names" $leagueShortNames "lang" $lang) }}
+{{ if eq $name "" }}
+  {{ $name = $slug }}
+{{ end }}
+
+{{/* Canonical URL and appPath */}}
+{{ $leagueUrl := partial "cfcdata/url.html" (dict "kind" "league" "slug" $slug "edition" $edition) }}
+{{ $appPath := printf "/league/%s" $slug }}
+
+{{/* Country resolution: { "code": $league.country.code, "name": (localized country name or code) } */}}
+{{ $country := index (dict) "nil" }}
+{{ with index $rawLeague "country" }}
+  {{ if reflect.IsMap . }}
+    {{ $code := .code | default "" }}
+    {{ $cName := "" }}
+    {{ with .names }}
+      {{ $cName = partial "cfcdata/name.html" (dict "names" . "lang" $lang) }}
+    {{ end }}
+    {{ if and (eq $cName "") (ne $code "") }}
+      {{ $cName = $code }}
+    {{ end }}
+    {{ $country = dict "code" $code "name" $cName }}
+  {{ else if . }}
+    {{ $code := printf "%v" . }}
+    {{ $country = dict "code" $code "name" $code }}
+  {{ end }}
+{{ end }}
+
+{{/* Popular boolean flag */}}
+{{ $popular := false }}
+{{ with index $rawLeague "popular" }}
+  {{ if . }}
+    {{ $popular = true }}
+  {{ end }}
+{{ end }}
+
+{{/* Match slugs */}}
+{{ $matchSlugs := slice }}
+{{ with index $rawLeague "matchSlugs" }}
+  {{ if reflect.IsSlice . }}
+    {{ $matchSlugs = . }}
+  {{ end }}
+{{ end }}
+
+{{/* Other fields */}}
+{{ $uuid := index $rawLeague "uuid" | default "" }}
+{{ $logo := index $rawLeague "logo" | default "" }}
+{{ $season := index $rawLeague "season" | default "" }}
+
+{{ return (dict
+  "kind" "league"
+  "slug" $slug
+  "uuid" $uuid
+  "name" $name
+  "shortName" $shortName
+  "names" $leagueNames
+  "logo" $logo
+  "country" $country
+  "popular" $popular
+  "season" $season
+  "url" $leagueUrl
+  "appPath" $appPath
+  "matchSlugs" $matchSlugs
+) }}

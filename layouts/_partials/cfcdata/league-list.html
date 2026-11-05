@@ -1,0 +1,70 @@
+{{/* layouts/_partials/cfcdata/league-list.html */}}
+{{/* League directory view-model service: returns all leagues partitioned into popular and regular, each sorted alphabetically by localized name. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/league-list.html" (dict "dataset"? $dataset "edition"? $edition "lang"? $lang) */}}
+{{/* or: partial "cfcdata/league-list.html" . */}}
+
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+  {{ if isset . "lang" }}
+    {{ $lang = printf "%v" .lang }}
+  {{ end }}
+{{ end }}
+
+{{/* Auto-resolve dataset if omitted */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Auto-resolve lang */}}
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ end }}
+
+{{ $popularList := slice }}
+{{ $regularList := slice }}
+
+{{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.leagues) }}
+  {{ range $slug, $league := $dataset.leagues }}
+    {{ $vm := partial "cfcdata/league.html" (dict "slug" $slug "dataset" $dataset "edition" $edition "lang" $lang) }}
+    {{ if $vm }}
+      {{ if $vm.popular }}
+        {{ $popularList = $popularList | append $vm }}
+      {{ else }}
+        {{ $regularList = $regularList | append $vm }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $sortedPopular := sort $popularList "name" "asc" }}
+{{ $sortedRegular := sort $regularList "name" "asc" }}
+
+{{ $result := slice }}
+{{ range $sortedPopular }}
+  {{ $result = $result | append . }}
+{{ end }}
+{{ range $sortedRegular }}
+  {{ $result = $result | append . }}
+{{ end }}
+
+{{ return $result }}
