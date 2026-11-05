@@ -1,14 +1,41 @@
-home: Home
-read_more: Read More
-send: Send
-related_posts: Related Posts
-categories: Categories
-tags: Tags
-toc: Table of Contents
-share: Share
-search_input_placeholder: Search Post...
-search_no_results: No results for
-search_initial_message: Type something to search..
-search_navigate: to navigate
-search_select: to select
-search_close: to close
+i18n_base: "en"
+skip_to_content: "Skip to content"
+menu_home: "Home"
+edition_switcher: "Edition switcher"
+current_edition: "Current edition"
+theme_switcher: "Toggle theme"
+home_heading: "Live Football on TV & Streaming"
+home_intro: "Never miss a match. Find kick-off times, TV channels, and live streams worldwide."
+home_empty: "No matches scheduled for today."
+not_found_title: "Page Not Found"
+not_found_text: "The page you are looking for does not exist or has been moved."
+back_home: "Back to Home"
+breadcrumb: "Breadcrumb"
+kickoff: "Kickoff"
+fixtures: "Matches"
+team: "Team"
+vs: "vs"
+live: "Live"
+status_scheduled: "Scheduled"
+status_live: "Live"
+status_halftime: "HT"
+status_finished: "FT"
+status_postponed: "Postponed"
+status_cancelled: "Cancelled"
+status_suspended: "Suspended"
+no_broadcaster: "No TV or streaming channel announced yet"
+channel_type_tv: "TV"
+channel_type_streaming: "Streaming"
+channel_type_free_tv: "Free TV"
+where_to_watch: "Where to watch"
+all_editions: "All editions"
+layout_time: "15:04"
+layout_date_short: "Mon 2 Jan"
+layout_day_heading: "Monday 2 January"
+layout_datetime: "Monday 2 January 2006, 15:04"
+theme-switcher: "Toggle theme"
+menu-open: "Open menu"
+menu-close: "Close menu"
+home: "Home"
+previous: "Previous"
+pagination: "Pagination"

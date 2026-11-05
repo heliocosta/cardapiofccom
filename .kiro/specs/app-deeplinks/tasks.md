@@ -1,0 +1,162 @@
+# Implementation Plan: app-deeplinks
+
+## Tasks
+
+- [ ] 1. Configuration and Mobile Association Files
+- [ ] 1.1 Register SearchIndex output format and search outputs in site configuration
+  - Append the `[outputFormats.SearchIndex]` definition to `hugo.toml` with `mediaType = "application/json"`, `baseName = "search-index"`, `isPlainText = true`, and `notAlternative = true`
+  - Ensure Hugo outputs configuration allows `section` or `page` to output `HTML` and `SearchIndex`
+  - Hugo build compiles with the registered custom output format without configuration syntax errors
+  - _Requirements: 2.1, 2.5_
+- [ ] 1.2 Author Apple App Site Association with modern components specification (P)
+  - Create `static/.well-known/apple-app-site-association` with modern `applinks.details` schema
+  - Register both production (`G3QW878YXD.br.com.cardapiofutebol`) and development (`G3QW878YXD.br.com.cardapiofutebol.dev`) application IDs
+  - Configure universal link path components for `/`, `/match/*`, `/team/*`, `/league/*`, `/favourites`, `/favorites`, `/my_agenda`, `/reminder`, `/settings`, and `/search` across unprefixed and edition-prefixed (`/*/match/*`) routes
+  - Configure explicit exclusions (`exclude: true`) for `/assets/*`, `/css/*`, `/js/*`, `/*.ico`, `/*.json`, `/*.txt`, `/*.xml`, and `/.well-known/*`
+  - Static AASA file exists in `static/.well-known/apple-app-site-association` and validates against Apple Universal Links schema
+  - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
+  - _Boundary: MobileAssociationFiles_
+- [ ] 1.3 Author Android Digital Asset Links configuration (P)
+  - Create `static/.well-known/assetlinks.json` declaring target package `br.com.cardapiofutebol` under namespace `android_app`
+  - Grant permission relation `delegate_permission/common.handle_all_urls`
+  - Declare official release SHA-256 certificate fingerprint(s) and development fingerprints
+  - Valid JSON file exists at `static/.well-known/assetlinks.json` ready for HTTP 200 delivery
+  - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - _Boundary: MobileAssociationFiles_
+- [ ] 1.4 Define canonical redirect manifest for legacy aliases (P)
+  - Create `data/cfc/redirects.yaml` defining permanent 301 rules from `/favorites` to `/favourites` and from `/reminder` to `/my_agenda`
+  - Ensure redirect rules mandate query parameter preservation and apply to unprefixed and edition-prefixed routes
+  - Machine-readable redirect manifest file exists at `data/cfc/redirects.yaml` documenting edge-delivery redirect contracts
+  - _Requirements: 6.1, 6.2, 6.3, 6.4_
+  - _Boundary: RedirectManifestContract_
+
+- [ ] 2. Search Index and Search Page Templates
+- [ ] 2.1 Implement per-edition search index serialization template
+  - Create `layouts/search/section.searchindex.json` invoking `partialCached "cfcdata/entity-list.html" . site.Language.Lang | jsonify`
+  - Ensure output format generates a compact JSON array of entities for each edition
+  - Running Hugo build creates `public/search/search-index.json` and `public/{edition}/search/search-index.json` strictly under 1 MB uncompressed
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - _Boundary: SearchIndexGenerator_
+  - _Depends: 1.1_
+- [ ] 2.2 Implement search page content and layout template
+  - Create `content/en/search/_index.md` with `sites.matrix.languages: ["**"]`, `outputs: ["HTML", "SearchIndex"]`, and menu definition `main: { identifier: "search", weight: 20 }`
+  - Create `layouts/search/section.html` wrapping site-foundation page chrome with search form, accessible input field, results container, and empty-state placeholders
+  - Web search pages render at `/search` and all regional edition prefixes (`/{edition}/search`) with search form markup and empty initial state
+  - _Requirements: 1.1, 1.5, 1.6_
+  - _Boundary: SearchPageLayout_
+- [ ] 2.3 Append localized search strings to i18n dictionaries (P)
+  - Add search localization keys (`search_title`, `search_placeholder`, `search_no_results`, `search_results_count`, `search_section_leagues`, `search_section_teams`, `search_section_matches`, `search_empty_hint`, `search_loading`, `search_load_error`) to base files `i18n/{en,pt,es}.yaml`
+  - Add regional overrides for search strings in `i18n/{en-gb,en-ie,pt-pt,es-ar}.yaml`
+  - All search UI text displays localized strings in the active edition language
+  - _Requirements: 11.1, 11.2, 11.4_
+  - _Boundary: AppI18nTables_
+
+- [ ] 3. Client Search Runtime
+- [ ] 3.1 Implement client search data loading and diacritic-insensitive query engine
+  - Create `assets/js/cfc-search.js` implementing lazy fetching of `search-index.json` triggered on input focus or initial `?q=` parameter presence
+  - Implement diacritic-folding normalization using Unicode NFD and lowercase trimming
+  - Implement token-based filtering matching query tokens against entity names, slugs, and alternate names
+  - Entering a query such as "São Paulo" reliably matches index records containing "sao paulo" without case or accent sensitivity
+  - _Requirements: 3.1, 3.2, 3.4_
+  - _Boundary: SearchClientScript_
+- [ ] 3.2 Implement search results rendering, keyboard navigation, and URL query synchronization
+  - Implement debounced execution (200ms) on user input events
+  - Render categorized results (Leagues, Teams, Matches) displaying entity crests, names, relative links, and kickoff times using safe DOM insertion methods
+  - Implement keyboard navigation handling (Arrow Up, Arrow Down, Enter, Escape) across the results list
+  - Synchronize URL search parameters via `history.replaceState` as the user types without triggering page reload
+  - Auto-populate input and execute immediate search when arriving at `/search?q={term}`
+  - Results render cleanly with keyboard focus management and URL updating in real time
+  - _Requirements: 1.2, 1.3, 1.4, 3.3, 3.5, 3.6, 3.7, 3.8_
+  - _Boundary: SearchClientScript_
+- [ ] 3.3 Integrate search analytics dispatch with event queue (P)
+  - Implement debounced analytics dispatch pushing `['search', { search_term: query, results_count: count }]` into `window.cfcq`
+  - Ensure search tracking fires at most once per distinct query per page session
+  - Search queries trigger corresponding analytics queue events verifiable in the browser console
+  - _Requirements: 12.3, 12.4_
+  - _Boundary: SearchClientScript_
+
+- [ ] 4. App Landing Pages and Scheme Resolution
+- [ ] 4.1 Implement custom scheme and store URL resolver partials (P)
+  - Create `layouts/_partials/cfcapp/scheme-url.html` mapping entity kinds and routes to `cardapiofc://` or `cfc://` custom schemes per the confirmed app specification
+  - Create `layouts/_partials/cfcapp/store-url.html` building App Store and Google Play URLs with pre-attached UTM parameters (`utm_source=cardapiofc_web`, `utm_medium=deeplink`, `utm_campaign={feature}`)
+  - Create `layouts/_partials/cfcapp/app-argument.html` generating route-specific deep-link arguments for iOS smart app banners
+  - Partial calls return valid custom scheme URIs and platform store URLs for all supported routes
+  - _Requirements: 5.1, 5.4, 9.2_
+  - _Boundary: AppSchemeResolver_
+- [ ] 4.2 Implement reusable store badge buttons and tracking markup (P)
+  - Create `layouts/_partials/cfcapp/store-badges.html` rendering localized Apple App Store and Google Play Store badge graphics
+  - Attach `data-cfc-event="store_click"`, `data-cfc-store="app_store|play_store"`, and `data-cfc-placement="app_landing"` tracking attributes
+  - Reusable store badges render responsive SVG badges linking to store URLs with tracking attributes
+  - _Requirements: 4.4, 4.5, 11.3, 12.2, 12.4_
+  - _Boundary: StoreBadges_
+- [ ] 4.3 Implement content and layout for localized app landing pages
+  - Create content files `content/en/{favourites,my_agenda,settings}/_index.md` with `sites.matrix.languages: ["**"]` and `layout: "app-landing"`
+  - Create `layouts/app-landing/section.html` presenting feature hero illustration, value proposition, "Open in App" action button, and store download badges
+  - Attach `data-cfc-event="app_open"` and `data-cfc-app-target="scheme"` to the primary app launch action
+  - Landing pages exist at `/favourites`, `/my_agenda`, `/settings` and all regional prefixes with feature descriptions and actionable app launch/download buttons
+  - _Requirements: 4.1, 4.2, 4.3, 12.1, 12.4_
+  - _Boundary: AppLandingPages_
+  - _Depends: 4.1, 4.2_
+- [ ] 4.4 Append landing page strings and regional overrides to i18n dictionaries (P)
+  - Add landing page titles, descriptions, and CTA labels (`app_landing_favourites_*`, `app_landing_my_agenda_*`, `app_landing_settings_*`, `store_download_*`) to base `i18n/{en,pt,es}.yaml`
+  - Add regional overrides to `i18n/{en-gb,en-ie,pt-pt,es-ar}.yaml`
+  - App landing pages display culturally appropriate localized copy across all six editions
+  - _Requirements: 11.1, 11.2_
+  - _Boundary: AppI18nTables_
+
+- [ ] 5. App Runtime, Smart Banners, and Hook Slots
+- [ ] 5.1 Implement client store fallback and Android smart banner controller
+  - Create `assets/js/cfc-app-runtime.js` intercepting clicks on `[data-cfc-app-target="scheme"]`
+  - Implement navigation to custom scheme URL with a 1500ms fallback timer redirecting to the platform store if the document remains visible
+  - Implement Android smart banner detection (`navigator.userAgent`) and display controller checking `localStorage` dismissal state
+  - Implement dismiss handler persisting banner dismissal for 14 days
+  - Scheme invocation triggers fallback on desktop/uninstalled mobile, and Android banner displays and dismisses cleanly
+  - _Requirements: 5.2, 5.3, 5.5, 9.3, 9.4, 9.5_
+  - _Boundary: StoreFallbackClient_
+- [ ] 5.2 Implement iOS smart banner and preconnect tags in head-app hook (P)
+  - Create `layouts/_partials/hooks/head-app.html` calling `cfcapp/app-argument.html` to generate the active route argument
+  - Emit `<meta name="apple-itunes-app" content="app-id=6745226833, app-argument={{ $appArgument }}">`
+  - Add preconnect tags for `apps.apple.com` and `play.google.com` to optimize store transitions
+  - iOS smart banner meta tag renders in `<head>` on home, entity, search, and landing pages with route-specific deep link arguments
+  - _Requirements: 9.1, 9.2, 10.1_
+  - _Boundary: SmartAppBanner, HookSlotImplementations_
+  - _Depends: 4.1_
+- [ ] 5.3 Implement Android smart banner markup in body-start-app hook (P)
+  - Create `layouts/_partials/hooks/body-start-app.html` defining the lightweight Android smart banner HTML container with `id="cfc-android-banner"`
+  - Include app icon, localized title, rating, "Open" CTA with deep-link attributes, and close button
+  - Banner markup exists in page body directly below skip link, initially hidden to prevent layout shift
+  - _Requirements: 9.3, 9.4, 9.6, 10.2, 11.1_
+  - _Boundary: SmartAppBanner, HookSlotImplementations_
+- [ ] 5.4 Implement footer app download promo in footer-app hook (P)
+  - Create `layouts/_partials/hooks/footer-app.html` rendering a localized "Get CardápioFC for mobile" promotion above the bottom copyright bar
+  - Call `cfcapp/store-badges.html` with placement `footer`
+  - Footer chrome displays localized app download promo and store badges across all pages
+  - _Requirements: 10.3, 11.3, 12.2_
+  - _Boundary: HookSlotImplementations_
+  - _Depends: 4.2_
+- [ ] 5.5 Implement script bundling and loading in body-end-app hook
+  - Create `layouts/_partials/hooks/body-end-app.html` processing `cfc-app-runtime.js` via `js.Build` (minified, fingerprinted) and injecting the script tag before `</body>`
+  - Conditionally bundle and inject `cfc-search.js` when rendering the search page
+  - Client runtime scripts load deferred without blocking page rendering
+  - _Requirements: 3.7, 10.4_
+  - _Boundary: HookSlotImplementations_
+  - _Depends: 3.1, 5.1_
+
+- [ ] 6. Verification, Testing, and Compliance
+- [ ] 6.1 Implement automated post-build verification script
+  - Create `scripts/check-app-deeplinks.mjs` verifying production build output in `public/`
+  - Assert that `search-index.json` exists in `public/search/` and in all edition subdirectories with file size < 1 MB uncompressed
+  - Assert that `apple-app-site-association` and `assetlinks.json` exist in `public/.well-known/` with valid JSON syntax and correct appIDs/fingerprints
+  - Assert that HTML files exist for `/search`, `/favourites`, `/my_agenda`, and `/settings` across all six editions
+  - Assert that `<meta name="apple-itunes-app">` is present in HTML files
+  - Assert that `data/cfc/redirects.yaml` defines rules for `/favorites` and `/reminder`
+  - Running `node scripts/check-app-deeplinks.mjs` exits with code 0 upon valid build output
+  - _Requirements: 1.1, 2.4, 4.1, 6.4, 7.1, 8.1, 9.1_
+  - _Boundary: TestingStrategy_
+- [ ]* 6.2 Optional end-to-end browser and deep link integration tests
+  - Add test routines to verify query pre-fill `/search?q=flamengo` in headless browser
+  - Verify diacritic matching and keyboard navigation events
+  - Verify custom scheme trigger and store fallback timer behavior
+  - Integration test suite passes without assertions errors
+  - _Requirements: 1.2, 3.4, 3.6, 5.2_
+  - _Boundary: TestingStrategy_

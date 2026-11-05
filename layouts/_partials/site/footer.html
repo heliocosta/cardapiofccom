@@ -1,0 +1,35 @@
+{{/* site/footer.html - Footer component */}}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $all := partialCached "edition/all.html" . }}
+
+<footer class="cfc-footer">
+  <div class="cfc-container py-8">
+    {{ partial "site/hook.html" (dict "name" "footer-app" "page" .) }}
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 py-4 border-b border-border">
+      <nav aria-label="Footer Navigation">
+        {{ partial "cfc/menu.html" (dict "page" . "menu" "footer") }}
+      </nav>
+
+      <div class="flex flex-wrap gap-3 text-xs text-muted" aria-label="Editions">
+        {{ range $all }}
+          {{ $targetUrl := .prefix }}
+          {{ if .isGlobal }}
+            {{ $targetUrl = "/?edition=en" }}
+          {{ end }}
+          <a href="{{ $targetUrl }}"
+             hreflang="{{ .hreflang }}"
+             lang="{{ .locale }}"
+             class="hover:text-primary transition-colors">
+            {{ .label }}
+          </a>
+        {{ end }}
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-muted">
+      <p>{{ site.Params.copyright | default (printf "© %d CardápioFC. All rights reserved." now.Year) }}</p>
+      {{ partial "site/hook.html" (dict "name" "footer-consent" "page" .) }}
+    </div>
+  </div>
+</footer>

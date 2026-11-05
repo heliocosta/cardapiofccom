@@ -1,6 +1,131 @@
-################ English language ##################
+################ Global (English) ##################
 [en]
-label = "En"
-locale = "en-us"
-contentDir = "content/english"
+label = "Global (English)"
+locale = "en"
+direction = "ltr"
+contentDir = "content/en"
 weight = 1
+title = "CardápioFC"
+timeZone = "UTC"
+
+[en.params]
+description = "Live football on TV and streaming worldwide. Fixtures, kick-off times and channels."
+copyright = "© 2026 CardápioFC. All rights reserved."
+
+[en.params.edition]
+country = ""
+hreflang = "en"
+i18nBase = "en"
+timeZone = "UTC"
+zoneLabel = "UTC"
+isGlobal = true
+
+################ UK (English) ##################
+[en-gb]
+label = "UK (English)"
+locale = "en-GB"
+direction = "ltr"
+contentDir = "content/en-gb"
+weight = 2
+title = "CardápioFC UK"
+timeZone = "Europe/London"
+
+[en-gb.params]
+description = "Live football on TV and streaming in the UK. Match schedules, kick-off times and UK broadcast channels."
+copyright = "© 2026 CardápioFC UK. All rights reserved."
+
+[en-gb.params.edition]
+country = "GB"
+hreflang = "en-GB"
+i18nBase = "en"
+timeZone = "Europe/London"
+zoneLabel = "UK time"
+isGlobal = false
+
+################ Ireland (English) ##################
+[en-ie]
+label = "Ireland (English)"
+locale = "en-IE"
+direction = "ltr"
+contentDir = "content/en-ie"
+weight = 3
+title = "CardápioFC Ireland"
+timeZone = "Europe/Dublin"
+
+[en-ie.params]
+description = "Live football on TV and streaming in Ireland. Match schedules, kick-off times and Irish broadcast channels."
+copyright = "© 2026 CardápioFC Ireland. All rights reserved."
+
+[en-ie.params.edition]
+country = "IE"
+hreflang = "en-IE"
+i18nBase = "en"
+timeZone = "Europe/Dublin"
+zoneLabel = "Irish time"
+isGlobal = false
+
+################ Brazil (Portuguese) ##################
+[pt-br]
+label = "Brasil (Português)"
+locale = "pt-BR"
+direction = "ltr"
+contentDir = "content/pt-br"
+weight = 4
+title = "CardápioFC Brasil"
+timeZone = "America/Sao_Paulo"
+
+[pt-br.params]
+description = "Jogos de futebol ao vivo na TV e streaming no Brasil. Horários, canais de transmissão e onde assistir."
+copyright = "© 2026 CardápioFC Brasil. Todos os direitos reservados."
+
+[pt-br.params.edition]
+country = "BR"
+hreflang = "pt-BR"
+i18nBase = "pt"
+timeZone = "America/Sao_Paulo"
+zoneLabel = "horário de Brasília"
+isGlobal = false
+
+################ Portugal (Portuguese) ##################
+[pt-pt]
+label = "Portugal (Português)"
+locale = "pt-PT"
+direction = "ltr"
+contentDir = "content/pt-pt"
+weight = 5
+title = "CardápioFC Portugal"
+timeZone = "Europe/Lisbon"
+
+[pt-pt.params]
+description = "Jogos de futebol em direto na TV e streaming em Portugal. Horários, canais de transmissão e onde ver."
+copyright = "© 2026 CardápioFC Portugal. Todos os direitos reservados."
+
+[pt-pt.params.edition]
+country = "PT"
+hreflang = "pt-PT"
+i18nBase = "pt"
+timeZone = "Europe/Lisbon"
+zoneLabel = "hora de Portugal"
+isGlobal = false
+
+################ Argentina (Spanish) ##################
+[es-ar]
+label = "Argentina (Español)"
+locale = "es-AR"
+direction = "ltr"
+contentDir = "content/es-ar"
+weight = 6
+title = "CardápioFC Argentina"
+timeZone = "America/Argentina/Buenos_Aires"
+
+[es-ar.params]
+description = "Partidos de fútbol en vivo por TV y streaming en Argentina. Horarios, canales de transmisión y dónde ver."
+copyright = "© 2026 CardápioFC Argentina. Todos los derechos reservados."
+
+[es-ar.params.edition]
+country = "AR"
+hreflang = "es-AR"
+i18nBase = "es"
+timeZone = "America/Argentina/Buenos_Aires"
+zoneLabel = "hora de Argentina"
+isGlobal = false

@@ -1,0 +1,9 @@
+{{/* site/seo-fallback.html - Basic title and meta description fallback */}}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $title := $ed.title }}
+{{ if and .Title (not .IsHome) }}
+  {{ $title = printf "%s · %s" .Title $ed.title }}
+{{ end }}
+{{ $desc := .Description | default .Params.description | default $ed.description }}
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $desc }}" />

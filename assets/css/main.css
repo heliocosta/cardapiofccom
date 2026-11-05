@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@plugin 'tailwind-bootstrap-grid';
+@source "hugo_stats.json";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Auto-generated theme from "data/theme.json"*/
+@import "./generated-theme.css";
+
+@import "./safe.css";
+@import "./utilities.css";
+
+@layer base {
+  @import "./base.css";
+}
+
+@layer components {
+  @import "./components.css";
+  @import "./navigation.css";
+  @import "./buttons.css";
+}
+
+@import "images.css";
+@import "module-overrides.css";
+@import "custom.css";

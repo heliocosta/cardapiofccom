@@ -1,0 +1,168 @@
+matches:
+  scheduled:
+    slug: "arsenal-vs-chelsea-2026-11-08"
+    url: "/match/arsenal-vs-chelsea-2026-11-08"
+    kickoff: "2026-11-08T16:30:00Z"
+    status: "scheduled"
+    league:
+      name: "Premier League"
+      url: "/league/premier-league"
+    home:
+      name: "Arsenal"
+      shortName: "ARS"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t3.png"
+    away:
+      name: "Chelsea"
+      shortName: "CHE"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t8.png"
+    channels:
+      - name: "Sky Sports Main Event"
+        id: "sky-sports"
+        type: "tv"
+        url: "https://www.skysports.com"
+      - name: "NOW"
+        id: "now"
+        type: "streaming"
+        url: "https://www.nowtv.com"
+
+  live:
+    slug: "real-madrid-vs-barcelona-2026-11-08"
+    url: "/match/real-madrid-vs-barcelona-2026-11-08"
+    kickoff: "2026-11-08T20:00:00Z"
+    status: "live"
+    score:
+      home: 2
+      away: 1
+    league:
+      name: "La Liga"
+      url: "/league/la-liga"
+    home:
+      name: "Real Madrid"
+      shortName: "RMA"
+      crest: "https://crests.football-data.org/86.png"
+    away:
+      name: "Barcelona"
+      shortName: "BAR"
+      crest: "https://crests.football-data.org/81.png"
+    channels:
+      - name: "Premier Sports 1"
+        id: "premier-sports"
+        type: "tv"
+
+  finished:
+    slug: "liverpool-vs-man-city-2026-11-07"
+    url: "/match/liverpool-vs-man-city-2026-11-07"
+    kickoff: "2026-11-07T12:30:00Z"
+    status: "finished"
+    score:
+      home: 3
+      away: 1
+    league:
+      name: "Premier League"
+      url: "/league/premier-league"
+    home:
+      name: "Liverpool"
+      shortName: "LIV"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t14.png"
+    away:
+      name: "Manchester City"
+      shortName: "MCI"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t43.png"
+    channels:
+      - name: "TNT Sports 1"
+        id: "tnt-sports"
+        type: "tv"
+
+  postponed:
+    slug: "everton-vs-tottenham-2026-11-08"
+    url: "/match/everton-vs-tottenham-2026-11-08"
+    kickoff: "2026-11-08T15:00:00Z"
+    status: "postponed"
+    league:
+      name: "Premier League"
+      url: "/league/premier-league"
+    home:
+      name: "Everton"
+      shortName: "EVE"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t11.png"
+    away:
+      name: "Tottenham Hotspur"
+      shortName: "TOT"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t6.png"
+
+  empty_channels:
+    slug: "celtic-vs-rangers-2026-11-08"
+    url: "/match/celtic-vs-rangers-2026-11-08"
+    kickoff: "2026-11-08T12:00:00Z"
+    status: "scheduled"
+    league:
+      name: "Scottish Premiership"
+      url: "/league/scottish-premiership"
+    home:
+      name: "Celtic"
+      shortName: "CEL"
+      crest: "https://crests.football-data.org/99.png"
+    away:
+      name: "Rangers"
+      shortName: "RAN"
+      crest: "https://crests.football-data.org/100.png"
+    channels: []
+
+  broken_crest:
+    slug: "flamengo-vs-vasco-2026-11-08"
+    url: "/match/flamengo-vs-vasco-2026-11-08"
+    kickoff: "2026-11-08T19:00:00Z"
+    status: "scheduled"
+    league:
+      name: "Brasileirão"
+      url: "/league/brasileirao"
+    home:
+      name: "Flamengo"
+      shortName: "FLA"
+      crest: "https://example.invalid/broken-crest-url.png"
+    away:
+      name: "Vasco da Gama"
+      shortName: "VAS"
+      crest: "https://example.invalid/broken-crest-url2.png"
+    channels:
+      - name: "Premiere"
+        type: "tv"
+
+  dst_transition:
+    slug: "aston-villa-vs-bournemouth-2026-10-25"
+    url: "/match/aston-villa-vs-bournemouth-2026-10-25"
+    kickoff: "2026-10-25T14:00:00Z"
+    status: "scheduled"
+    league:
+      name: "Premier League"
+      url: "/league/premier-league"
+    home:
+      name: "Aston Villa"
+      shortName: "AVL"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t7.png"
+    away:
+      name: "Bournemouth"
+      shortName: "BOU"
+      crest: "https://resources.premierleague.com/premierleague/badges/50/t91.png"
+
+  late_night:
+    slug: "palmeiras-vs-santos-2026-11-06"
+    url: "/match/palmeiras-vs-santos-2026-11-06"
+    kickoff: "2026-11-06T01:30:00Z"
+    status: "scheduled"
+    league:
+      name: "Brasileirão"
+      url: "/league/brasileirao"
+    home:
+      name: "Palmeiras"
+      shortName: "PAL"
+      crest: "https://crests.football-data.org/1769.png"
+    away:
+      name: "Santos"
+      shortName: "SAN"
+      crest: "https://crests.football-data.org/6684.png"
+    channels:
+      - name: "Globo"
+        type: "free_tv"
+      - name: "Premiere"
+        type: "tv"

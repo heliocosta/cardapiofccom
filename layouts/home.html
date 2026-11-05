@@ -1,0 +1,10 @@
+{{ define "main" }}
+  {{- $heading := .Params.heading | default (i18n "home_heading") -}}
+  {{- $intro := .Params.intro | default (i18n "home_intro") -}}
+
+  {{ partial "cfc/page-header.html" (dict "heading" $heading "intro" $intro) }}
+
+  <div class="cfc-container py-6">
+    {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty"))) }}
+  </div>
+{{ end }}

@@ -1,0 +1,21 @@
+{{/* site/header.html - Header component */}}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $sticky := site.Params.navbar_fixed | default true }}
+
+<header class="cfc-header{{ if $sticky }} is-sticky{{ end }}">
+  <div class="cfc-container flex items-center justify-between py-3">
+    <a href="{{ $ed.prefix }}" class="navbar-brand inline-flex items-center text-xl font-bold font-secondary text-primary" aria-label="CardápioFC Home">
+      {{ partial "logo" }}
+    </a>
+
+    <div class="flex items-center gap-4">
+      <nav aria-label="Main Navigation">
+        {{ partial "cfc/menu.html" (dict "page" . "menu" "main") }}
+      </nav>
+
+      {{ partial "cfc/edition-switcher.html" . }}
+
+      {{ partial "components/theme-switcher.html" (dict "Class" "") }}
+    </div>
+  </div>
+</header>

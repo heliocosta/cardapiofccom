@@ -1,0 +1,52 @@
+{{- $p := . -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "page" -}}
+    {{- $p = .page -}}
+  {{- end -}}
+{{- end -}}
+{{- $curr := partialCached "edition/current.html" $p site.Language.Lang -}}
+{{- $all := partialCached "edition/all.html" $p -}}
+
+<details class="cfc-switcher">
+  <summary class="cfc-switcher__summary" aria-label="{{ i18n "edition_switcher" | default "Edition switcher" }}">
+    {{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-switcher__globe") }}
+    <span class="cfc-switcher__label">{{ $curr.label }}</span>
+    {{ partial "cfc/icon.html" (dict "name" "chevron-down" "class" "cfc-switcher__arrow") }}
+  </summary>
+  <ul class="cfc-switcher__dropdown" role="list">
+    {{- range $all -}}
+      {{- $ed := . -}}
+      {{- $isCurrent := eq $ed.code $curr.code -}}
+      {{- $targetUrl := $ed.prefix -}}
+
+      {{- with $p.AllTranslations -}}
+        {{- range . -}}
+          {{- if eq .Language.Lang $ed.code -}}
+            {{- $targetUrl = .RelPermalink -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+
+      {{- if $ed.isGlobal -}}
+        {{- if findRE `\?` $targetUrl -}}
+          {{- $targetUrl = printf "%s&edition=en" $targetUrl -}}
+        {{- else -}}
+          {{- $targetUrl = printf "%s?edition=en" $targetUrl -}}
+        {{- end -}}
+      {{- end -}}
+
+      <li class="cfc-switcher__item">
+        <a href="{{ $targetUrl }}"
+           class="cfc-switcher__link{{ if $isCurrent }} is-current{{ end }}"
+           hreflang="{{ $ed.hreflang }}"
+           lang="{{ $ed.locale }}"
+           {{ if $isCurrent }}aria-current="true"{{ end }}
+           data-cfc-event="edition_switch"
+           data-cfc-target-edition="{{ $ed.code }}"
+           data-cfc-edition="{{ $curr.code }}">
+          {{ $ed.label }}
+        </a>
+      </li>
+    {{- end -}}
+  </ul>
+</details>

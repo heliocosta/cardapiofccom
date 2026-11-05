@@ -1,0 +1,11 @@
+{{- $message := .message | default "" -}}
+{{- $action := .action | default nil -}}
+
+<div class="cfc-empty-state">
+  <p class="cfc-empty-state__message">{{ $message }}</p>
+  {{- with $action -}}
+    <div class="cfc-empty-state__action-wrapper">
+      <a href="{{ .url }}" class="cfc-empty-state__action btn btn-primary">{{ .label }}</a>
+    </div>
+  {{- end -}}
+</div>

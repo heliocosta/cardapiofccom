@@ -1,0 +1,31 @@
+{{/* site/hook.html - Whitelisted extension slot dispatcher */}}
+{{ $name := .name }}
+{{ $page := .page | default . }}
+{{ $fallback := .fallback | default "" }}
+{{ $fallbackArgs := .fallbackArgs | default $page }}
+
+{{ $validSlots := slice
+  "head-analytics"
+  "head-seo"
+  "head-app"
+  "body-start-analytics"
+  "body-start-app"
+  "home-main"
+  "footer-app"
+  "footer-consent"
+  "body-end-app"
+  "body-end-analytics"
+}}
+
+{{ if not (in $validSlots $name) }}
+  {{ errorf "site-foundation: unknown hook slot %q" $name }}
+{{ end }}
+
+{{ $hookPath := printf "hooks/%s.html" $name }}
+{{ $partialCheck := printf "_partials/hooks/%s.html" $name }}
+
+{{ if templates.Exists $partialCheck }}
+  {{ partial $hookPath $page }}
+{{ else if $fallback }}
+  {{ partial $fallback $fallbackArgs }}
+{{ end }}

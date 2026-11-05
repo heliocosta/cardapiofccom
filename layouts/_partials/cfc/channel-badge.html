@@ -1,0 +1,12 @@
+{{- $c := .channel -}}
+{{- $matchSlug := .match | default "" -}}
+{{- $size := .size | default "sm" -}}
+{{- $edCode := site.Language.Lang -}}
+{{- $channelId := $c.id | default ($c.name | urlize) -}}
+{{- $channelType := $c.type | default "tv" -}}
+{{- $typeLabel := i18n (printf "channel_type_%s" $channelType) | default $channelType -}}
+{{- if $c.url -}}
+<a href="{{ $c.url }}" target="_blank" rel="noopener nofollow" class="cfc-channel-badge cfc-channel-badge--{{ $size }}" data-cfc-event="channel_click" data-cfc-channel="{{ $channelId }}" data-cfc-channel-type="{{ $channelType }}" {{ with $matchSlug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ $edCode }}">{{ with $c.logo }}<img src="{{ . }}" alt="{{ $c.name }}" width="20" height="20" loading="lazy" decoding="async" class="cfc-channel-badge__logo" /><span class="sr-only">{{ $c.name }} ({{ $typeLabel }})</span>{{ else }}<span class="cfc-channel-badge__name">{{ $c.name }}</span><span class="cfc-channel-badge__type">{{ $typeLabel }}</span>{{ end }}</a>
+{{- else -}}
+<span class="cfc-channel-badge cfc-channel-badge--{{ $size }}">{{ with $c.logo }}<img src="{{ . }}" alt="{{ $c.name }}" width="20" height="20" loading="lazy" decoding="async" class="cfc-channel-badge__logo" /><span class="sr-only">{{ $c.name }} ({{ $typeLabel }})</span>{{ else }}<span class="cfc-channel-badge__name">{{ $c.name }}</span><span class="cfc-channel-badge__type">{{ $typeLabel }}</span>{{ end }}</span>
+{{- end -}}

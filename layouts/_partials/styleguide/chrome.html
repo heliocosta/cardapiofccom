@@ -1,0 +1,23 @@
+<section id="sg-chrome" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Site Chrome & Hook Dispatcher</h2>
+
+  <div class="space-y-6">
+    <div>
+      <h3 class="font-semibold mb-2">Hook Dispatcher Demonstration</h3>
+      <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded text-sm space-y-2">
+        <p><strong>Testing body-start-app slot:</strong></p>
+        <div class="p-2 border border-dashed border-border rounded">
+          {{ partial "site/hook.html" (dict "name" "body-start-app" "page" .) }}
+          <span class="text-xs text-muted">(If hooks/body-start-app.html exists, it renders above)</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">SEO Fallback Output</h3>
+      <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded text-xs font-mono">
+        {{ partial "site/seo-fallback.html" . }}
+      </div>
+    </div>
+  </div>
+</section>

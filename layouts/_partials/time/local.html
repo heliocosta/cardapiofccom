@@ -1,0 +1,14 @@
+{{/* time/local.html - TimeInput -> GoTime in current edition zone */}}
+{{ $input := . }}
+{{ if (reflect.IsMap .) }}
+  {{ if isset . "t" }}
+    {{ $input = .t }}
+  {{ end }}
+{{ end }}
+
+{{ $utc := partial "time/parse.html" $input }}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $tz := $ed.timeZone }}
+
+{{ $local := time.In $tz $utc }}
+{{ return $local }}

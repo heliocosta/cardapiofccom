@@ -1,0 +1,13 @@
+{{- $title := .title | default .heading | default "" -}}
+{{- $intro := .intro | default "" -}}
+{{- $breadcrumbs := .breadcrumbs | default .breadcrumb | default slice -}}
+
+<header class="cfc-page-header">
+  {{- with $breadcrumbs -}}
+    {{ partial "cfc/breadcrumb.html" (dict "items" .) }}
+  {{- end -}}
+  <h1 class="cfc-page-header__title">{{ $title }}</h1>
+  {{- with $intro -}}
+    <p class="cfc-page-header__intro">{{ . }}</p>
+  {{- end -}}
+</header>

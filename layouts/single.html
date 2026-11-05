@@ -1,0 +1,16 @@
+{{ define "main" }}
+  {{- $heading := .Title -}}
+  {{- $intro := .Description | default .Params.intro -}}
+  {{- $crumbs := slice -}}
+  {{- if .Parent -}}
+    {{- $crumbs = slice (dict "label" (i18n "menu_home" | default "Home") "url" ("/" | relLangURL)) (dict "label" .Title) -}}
+  {{- end -}}
+
+  {{ partial "cfc/page-header.html" (dict "heading" $heading "intro" $intro "breadcrumb" $crumbs) }}
+
+  <div class="cfc-container py-6">
+    <div class="prose dark:prose-invert max-w-none">
+      {{ .Content }}
+    </div>
+  </div>
+{{ end }}

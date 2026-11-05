@@ -1,0 +1,27 @@
+<section id="sg-switcher-menu" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Edition Switcher & Menu</h2>
+
+  <div class="space-y-6">
+    <div>
+      <h3 class="font-semibold mb-2">Edition Switcher (Native Disclosure)</h3>
+      <div class="flex items-center gap-4">
+        {{ partial "cfc/edition-switcher.html" . }}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">Main Menu</h3>
+      <nav aria-label="Main Navigation">
+        {{ partial "cfc/menu.html" (dict "page" . "menu" "main") }}
+      </nav>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">Empty Menu Test (Should render nothing, no empty ul)</h3>
+      <div class="p-2 border border-dashed border-border rounded">
+        {{ partial "cfc/menu.html" (dict "page" . "menu" "nonexistent_menu") }}
+        <span class="text-xs text-muted">Empty menu correctly emits 0 bytes</span>
+      </div>
+    </div>
+  </div>
+</section>

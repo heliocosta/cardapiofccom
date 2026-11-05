@@ -1,0 +1,10 @@
+{{- $t := .t -}}
+{{- $style := .style | default "time" -}}
+{{- $showZone := true -}}
+{{- if isset . "showZone" -}}
+  {{- $showZone = .showZone -}}
+{{- end -}}
+{{- $iso := partial "time/format.html" (dict "t" $t "style" "iso") -}}
+{{- $formatted := partial "time/format.html" (dict "t" $t "style" $style) -}}
+{{- $zone := partial "time/zone.html" (dict "t" $t) -}}
+<time datetime="{{ $iso }}" class="cfc-kickoff-time"><span class="cfc-kickoff-time__time">{{ $formatted }}</span>{{ if $showZone }}<span class="cfc-kickoff-time__zone"> {{ $zone.label }}{{ with $zone.offset }} <span class="cfc-kickoff-time__offset">({{ . }})</span>{{ end }}</span>{{ end }}</time>

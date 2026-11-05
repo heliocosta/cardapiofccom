@@ -1,22 +1,23 @@
 ######################## default configuration ####################
 # The base URL of your site (required). This will be prepended to all relative URLs.
-baseURL = "/"
+baseURL = "https://cardapiofc.com/"
 # Title of your website (required).
-title = "Hugoplate"
+title = "CardápioFC"
 # Your theme name
 theme = "hugoplate"
 # Default time zone for time stamps; use any valid tz database name: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
-timeZone = "America/New_York"
+timeZone = "UTC"
 # post excerpt
 summaryLength = 10 # see https://gohugo.io/content-management/summaries/#automatic-summary
 # disable language
-disableLanguages = [
-] # example: ["fr"] for disable french language. see https://gohugo.io/content-management/multilingual/
-hasCJKLanguage = false #  If hasCJKLanguage true, auto-detect Chinese/Japanese/Korean Languages in the content. see: https://gohugo.io/getting-started/configuration/#hascjklanguage
+disableLanguages = []
+hasCJKLanguage = false
 # default language
-defaultContentLanguage = 'en'
+defaultContentLanguage = "en"
 # defaultContentLanguageInSubdir need to be true if you want to use the language code as a subdirectory and language specific 404 page
 defaultContentLanguageInSubdir = false
+disableDefaultLanguageRedirect = true
+disableKinds = ["taxonomy", "term", "RSS"]
 
 ########################### Services #############################
 [services]
@@ -52,15 +53,31 @@ target = 'assets'
 disableWatch = true
 source = 'hugo_stats.json'
 target = 'assets/notwatching/hugo_stats.json'
+[[module.mounts]]
+source = "i18n/en.yaml"
+target = "i18n/en-gb.yaml"
+[[module.mounts]]
+source = "i18n/en.yaml"
+target = "i18n/en-ie.yaml"
+[[module.mounts]]
+source = "i18n/pt.yaml"
+target = "i18n/pt-br.yaml"
+[[module.mounts]]
+source = "i18n/pt.yaml"
+target = "i18n/pt-pt.yaml"
+[[module.mounts]]
+source = "i18n/es.yaml"
+target = "i18n/es-ar.yaml"
+[[module.mounts]]
+source = "i18n"
+target = "i18n"
 
 
 ############################# Outputs ############################
 [outputs]
-home     = ["HTML", "RSS", "WebAppManifest", "SearchIndex", "llms", "llmsfull", "md"]
-page     = ["HTML", "RSS", "md"]
-section  = ["HTML", "RSS", "md"]
-taxonomy = ["HTML", "RSS", "md"]
-term     = ["HTML", "RSS", "md"]
+home     = ["HTML", "WebAppManifest", "llms", "llmsfull"]
+page     = ["HTML"]
+section  = ["HTML"]
 
 ############################# Imaging ############################
 [imaging]
@@ -109,60 +126,15 @@ suffixes = ["webmanifest"]
 mediaType = "application/manifest+json"
 rel = "manifest"
 
-[outputFormats.SearchIndex]
-mediaType = "application/json"
-baseName = "searchindex"
-isPlainText = true
-notAlternative = true
-
 
 ############################# Plugins ##############################
 
 # CSS Plugins
 [[params.plugins.css]]
-link = "plugins/swiper/swiper-bundle.css" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.css]]
-link = "plugins/glightbox/glightbox.css" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/brands.css" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/icons/font-awesome
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/solid.css"
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/icons.css"
+link = "css/cfc/lazy.css"
 lazy = true
 
 # JS Plugins
 [[params.plugins.js]]
-link = "js/search.js" # https://github.com/gethugothemes/hugo-modules/tree/master/search
-lazy = false
-[[params.plugins.js]]
-link = "plugins/swiper/swiper-bundle.js" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = false
-[[params.plugins.js]]
-link = "plugins/glightbox/glightbox.js" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.js]]
-link = "js/gallery-slider.js" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.js]]
-link = "plugins/cookie.js" # https://github.com/gethugothemes/hugo-modules/tree/master/components/cookie-consent
-lazy = false
-[[params.plugins.js]]
-link = "js/accordion.js" # https://github.com/gethugothemes/hugo-modules/tree/master/accordion
-lazy = true
-[[params.plugins.js]] 
-link = "js/tab.js" # https://github.com/gethugothemes/hugo-modules/tree/master/accordion
-lazy = true
-[[params.plugins.js]]
-link = "js/modal.js" # https://github.com/gethugothemes/hugo-modules/tree/master/modal
-lazy = true
-[[params.plugins.js]]
-link = "plugins/youtube-lite.js" # https://github.com/gethugothemes/hugo-modules/tree/master/videos
+link = "js/cfc-lazy.js"
 lazy = true

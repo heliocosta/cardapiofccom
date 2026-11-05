@@ -1,0 +1,26 @@
+{{/* time/format.html - localised string by style */}}
+{{ $input := .t }}
+{{ $style := .style | default "time" }}
+
+{{ $local := partial "time/local.html" $input }}
+{{ $result := "" }}
+
+{{ if eq $style "iso" }}
+  {{ $result = $local.Format "2006-01-02T15:04:05-07:00" }}
+{{ else if eq $style "isoDate" }}
+  {{ $result = $local.Format "2006-01-02" }}
+{{ else }}
+  {{ $layoutKey := printf "layout_%s" $style }}
+  {{ $defaultLayout := "15:04" }}
+  {{ if eq $style "dateShort" }}
+    {{ $defaultLayout = "Mon 2 Jan" }}
+  {{ else if eq $style "dayHeading" }}
+    {{ $defaultLayout = "Monday 2 January" }}
+  {{ else if eq $style "datetime" }}
+    {{ $defaultLayout = "Monday 2 January 2006, 15:04" }}
+  {{ end }}
+  {{ $layout := i18n $layoutKey | default $defaultLayout }}
+  {{ $result = time.Format $layout $local }}
+{{ end }}
+
+{{ return $result }}

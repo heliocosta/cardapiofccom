@@ -1,0 +1,27 @@
+{{- $matches := .matches | default slice -}}
+{{- if gt (len $matches) 0 -}}
+  {{- $day := .day -}}
+  {{- $hl := .headingLevel | default 2 -}}
+  {{- $cardOpts := .card | default dict -}}
+  {{- $dateInput := $day -}}
+  {{- if eq (printf "%T" $day) "string" -}}
+    {{- if not (findRE `T` $day) -}}
+      {{- $dateInput = printf "%sT00:00:00Z" $day -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $isoDate := partial "time/format.html" (dict "t" $dateInput "style" "isoDate") -}}
+  {{- $dayHeading := partial "time/format.html" (dict "t" $dateInput "style" "dayHeading") -}}
+  {{- $sectionId := printf "date-group-%s" ($isoDate | urlize) -}}
+  {{- $sorted := sort $matches "kickoff" "asc" -}}
+  <section class="cfc-date-group" aria-labelledby="{{ $sectionId }}">
+    <h{{ $hl }} id="{{ $sectionId }}" class="cfc-date-group__heading">
+      <time datetime="{{ $isoDate }}">{{ $dayHeading }}</time>
+    </h{{ $hl }}>
+    <div class="cfc-date-group__matches">
+      {{- range $sorted -}}
+        {{- $opts := merge (dict "match" . "headingLevel" (add $hl 1)) $cardOpts -}}
+        {{- partial "cfc/match-card.html" $opts -}}
+      {{- end -}}
+    </div>
+  </section>
+{{- end -}}

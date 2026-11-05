@@ -1,0 +1,26 @@
+<!doctype html>
+{{- partialCached "edition/validate.html" . site.Language.Lang -}}
+<html
+  lang="{{ site.Language.Locale | default site.Language.Lang }}"
+  dir="{{ site.Language.Direction | default "ltr" }}">
+  <head>
+    {{ partial "site/head.html" . }}
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <a href="#main" class="cfc-skip-link">{{ i18n "skip_to_content" }}</a>
+    {{ partial "site/hook.html" (dict "name" "body-start-analytics" "page" .) }}
+    {{ partial "site/hook.html" (dict "name" "body-start-app" "page" .) }}
+
+    {{ partial "site/header.html" . }}
+
+    <main id="main" tabindex="-1" class="grow">
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    {{ partial "site/footer.html" . }}
+
+    {{ partialCached "essentials/script.html" . }}
+    {{ partial "site/hook.html" (dict "name" "body-end-app" "page" .) }}
+    {{ partial "site/hook.html" (dict "name" "body-end-analytics" "page" .) }}
+  </body>
+</html>

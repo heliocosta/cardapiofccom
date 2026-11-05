@@ -1,0 +1,37 @@
+{{/* time/zone.html - returns ZoneInfo {label, offset, iana} */}}
+{{ $input := . }}
+{{ if (reflect.IsMap .) }}
+  {{ if isset . "t" }}
+    {{ $input = .t }}
+  {{ end }}
+{{ end }}
+
+{{ $local := partial "time/local.html" $input }}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+
+{{ $label := $ed.zoneLabel }}
+{{ $iana := $ed.timeZone }}
+{{ $offset := "" }}
+
+{{ if $ed.isGlobal }}
+  {{ $label = "UTC" }}
+  {{ $iana = "UTC" }}
+  {{ $offset = "" }}
+{{ else }}
+  {{ $raw := $local.Format "-07:00" }}
+  {{ $signChar := substr $raw 0 1 }}
+  {{ $hoursStr := substr $raw 1 2 }}
+  {{ $minsStr := substr $raw 4 2 }}
+  {{ $hours := cast.ToInt $hoursStr }}
+  {{ $sign := "+" }}
+  {{ if eq $signChar "-" }}
+    {{ $sign = "−" }}
+  {{ end }}
+  {{ if eq $minsStr "00" }}
+    {{ $offset = printf "UTC%s%d" $sign $hours }}
+  {{ else }}
+    {{ $offset = printf "UTC%s%d:%s" $sign $hours $minsStr }}
+  {{ end }}
+{{ end }}
+
+{{ return (dict "label" $label "offset" $offset "iana" $iana) }}

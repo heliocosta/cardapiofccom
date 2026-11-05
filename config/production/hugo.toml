@@ -1,0 +1,3 @@
+# Production configuration
+# Exclude dev-only styleguide pages from production output
+ignoreFiles = ['styleguide\.md$']

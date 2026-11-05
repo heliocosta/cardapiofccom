@@ -1,0 +1,48 @@
+<section id="sg-time" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Time Contract</h2>
+
+  {{ $novFixture := "2026-11-08T19:45:00Z" }}
+  {{ $octFixture := "2026-10-24T18:00:00Z" }}
+  {{ $lateNightFixture := "2026-11-06T01:30:00Z" }}
+
+  {{ $novTime := partial "time/format.html" (dict "t" $novFixture "style" "time") }}
+  {{ $novZone := partial "time/zone.html" (dict "t" $novFixture) }}
+
+  {{ $octTime := partial "time/format.html" (dict "t" $octFixture "style" "time") }}
+  {{ $octZone := partial "time/zone.html" (dict "t" $octFixture) }}
+
+  <div class="space-y-4 text-sm">
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <h3 class="font-semibold mb-1">November Fixture ({{ $novFixture }})</h3>
+      <p>Formatted time: <span class="font-mono font-bold">{{ $novTime }}</span></p>
+      <p>Zone: <span class="font-mono font-bold">{{ $novZone.label }}{{ with $novZone.offset }} ({{ . }}){{ end }}</span></p>
+      <p>Combined display: <span class="font-bold text-primary">{{ $novTime }} {{ $novZone.label }}{{ with $novZone.offset }} ({{ . }}){{ end }}</span></p>
+    </div>
+
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <h3 class="font-semibold mb-1">October BST/DST Fixture ({{ $octFixture }})</h3>
+      <p>Formatted time: <span class="font-mono font-bold">{{ $octTime }}</span></p>
+      <p>Zone offset: <span class="font-mono font-bold">{{ $octZone.offset }}</span></p>
+      <p>Combined display: <span class="font-bold text-primary">{{ $octTime }} {{ $octZone.label }}{{ with $octZone.offset }} ({{ . }}){{ end }}</span></p>
+    </div>
+
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <h3 class="font-semibold mb-1">Late-Night Fixture Day Grouping</h3>
+      {{ $testItems := slice
+        (dict "id" "match-1" "kickoff" "2026-11-05T20:00:00Z" "title" "Evening Match")
+        (dict "id" "match-2" "kickoff" $lateNightFixture "title" "Late-Night Match")
+      }}
+      {{ $groups := partial "time/group-by-day.html" (dict "items" $testItems "key" "kickoff") }}
+      {{ range $groups }}
+        <div class="mt-2 border-l-2 border-primary pl-2">
+          <p class="font-bold">Day: {{ .day }}</p>
+          <ul class="list-disc pl-4 text-xs">
+            {{ range .items }}
+              <li>{{ .title }} (kickoff: {{ .kickoff }})</li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>

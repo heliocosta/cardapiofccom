@@ -1,0 +1,31 @@
+.cfc-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cfc-menu__item {
+  margin: 0;
+}
+
+.cfc-menu__link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text, #1F2937);
+  text-decoration: none;
+  transition: color 0.1s ease;
+}
+
+.cfc-menu__link:hover,
+.cfc-menu__link.is-active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.cfc-menu--footer {
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}

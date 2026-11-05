@@ -1,0 +1,10 @@
+{{/* time/day-key.html - returns "YYYY-MM-DD" string in current edition zone */}}
+{{ $input := . }}
+{{ if (reflect.IsMap .) }}
+  {{ if isset . "t" }}
+    {{ $input = .t }}
+  {{ end }}
+{{ end }}
+
+{{ $local := partial "time/local.html" $input }}
+{{ return ($local.Format "2006-01-02") }}

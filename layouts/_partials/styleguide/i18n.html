@@ -1,0 +1,41 @@
+<section id="sg-i18n" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Interface Strings (i18n)</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">Edition Lang:</p>
+      <p class="font-mono">{{ site.Language.Lang }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">i18n_base marker:</p>
+      <p class="font-mono">{{ i18n "i18n_base" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">team (time vs equipa):</p>
+      <p class="font-bold text-primary">{{ i18n "team" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">fixtures (Matches vs Fixtures vs Jogos):</p>
+      <p class="font-bold text-primary">{{ i18n "fixtures" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">kickoff (Kickoff vs Kick-off vs Horário):</p>
+      <p class="font-bold text-primary">{{ i18n "kickoff" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">where_to_watch:</p>
+      <p>{{ i18n "where_to_watch" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">no_broadcaster:</p>
+      <p>{{ i18n "no_broadcaster" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">status_halftime / status_finished:</p>
+      <p>{{ i18n "status_halftime" }} / {{ i18n "status_finished" }}</p>
+    </div>
+    <div class="p-3 bg-theme-light dark:bg-darkmode-theme-light rounded">
+      <p class="font-semibold">date layouts:</p>
+      <p>{{ i18n "layout_time" }} | {{ i18n "layout_date_short" }} | {{ i18n "layout_day_heading" }}</p>
+    </div>
+  </div>
+</section>

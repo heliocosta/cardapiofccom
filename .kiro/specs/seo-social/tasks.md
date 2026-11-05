@@ -1,0 +1,184 @@
+# Implementation Tasks: seo-social
+
+## Task List
+
+- [ ] 1. Foundation: SEO Hook Skeleton and Neutralize Vendored Basic-SEO
+  - Establish base templates and root overrides ensuring clean separation from vendored modules and providing central serialization helpers.
+- [ ] 1.1 Override vendored basic-seo module
+  - Create root-level partial `layouts/_partials/basic-seo.html` as a safe no-op partial that delegates to the head-seo hook.
+  - Ensure theme's stock head inclusion of basic-seo does not emit duplicate or conflicting metadata.
+  - Observable completion: Building the site with the theme's head partial produces no basic-seo tags and emits no template errors.
+  - _Boundary: BasicSeoOverride_
+  - _Requirements: 7.3_
+- [ ] 1.2 Implement head-seo hook dispatcher
+  - Create `layouts/_partials/hooks/head-seo.html` to fulfill the `site-foundation` hook contract for slot `head-seo`.
+  - Dispatch calls to modular sub-partials (`seo/meta.html`, `seo/canonical.html`, `seo/hreflang.html`, `seo/opengraph.html`, `seo/twitter.html`, and `seo/jsonld.html`) passing the current Page context.
+  - Provide fallback handling for non-data pages such as styleguide and generic content pages.
+  - Observable completion: Inspecting rendered HTML of any page confirms `layouts/_partials/hooks/head-seo.html` executes in `<head>` after analytics and before app slots without errors.
+  - _Boundary: HeadSeoHook_
+  - _Requirements: 7.1, 7.2, 7.4, 7.5_
+- [ ] 1.3 Create JSON-LD serialization helper
+  - Create `layouts/_partials/seo/jsonld-render.html` accepting a structured Go dictionary or array and rendering it inside `<script type="application/ld+json">`.
+  - Utilize Hugo's `jsonify (dict "indent" "  ") | safeJS` to prevent double-encoding and entity escaping.
+  - Observable completion: Calling the partial with a test dictionary produces an indented, valid JSON object in HTML parseable by `JSON.parse` without quote-escaping artifacts.
+  - _Boundary: JsonLdRender_
+  - _Requirements: 1.1_
+- [ ] 1.4 Add internationalized SEO and FAQ strings
+  - Append required string keys for match titles, meta descriptions, FAQ questions, and answer templates across `i18n/en.yaml`, `i18n/pt.yaml`, and `i18n/es.yaml`.
+  - Add regional overrides in `i18n/en-gb.yaml`, `i18n/en-ie.yaml`, `i18n/pt-pt.yaml`, and `i18n/es-ar.yaml`.
+  - Observable completion: Template calls to `T "seo_match_title"` and `T "faq_where_to_watch"` return localized strings for every active edition.
+  - _Boundary: I18nTables_
+  - _Requirements: 3.1, 3.2, 6.5_
+
+- [ ] 2. Core Head Metadata & International Alternate Targeting
+  - Deliver automated page titles, meta descriptions, canonical URLs, and bidirectional BCP 47 hreflang tags across all six editions.
+- [ ] 2.1 (P) Implement self-referencing canonical links
+  - Create `layouts/_partials/seo/canonical.html` resolving the page's absolute permalink.
+  - Emit `<link rel="canonical" href="{{ .Permalink }}" />` for all indexable pages.
+  - Suppress canonical link generation on error and 404 pages.
+  - Observable completion: Every rendered page in `public/` contains exactly one `<link rel="canonical">` matching its own absolute URL.
+  - _Boundary: CanonicalRenderer_
+  - _Requirements: 2.1_
+- [ ] 2.2 (P) Implement multilingual hreflang alternates and Global x-default
+  - Create `layouts/_partials/seo/hreflang.html` querying `.AllTranslations` and `site-foundation`'s `edition/all.html`.
+  - Map each translation's language code to its standard BCP 47 locale (`en`, `en-GB`, `en-IE`, `pt-BR`, `pt-PT`, `es-AR`).
+  - Emit reciprocal `<link rel="alternate" hreflang="...">` tags for each available translation.
+  - Emit `<link rel="alternate" hreflang="x-default">` pointing to the corresponding URL of the unprefixed Global edition.
+  - Suppress hreflang tags on pages with `noindex` or 404 status.
+  - Observable completion: Inspecting a translated match page across all 6 editions confirms identical, reciprocal hreflang sets and an identical x-default pointing to the Global URL.
+  - _Boundary: HreflangRenderer_
+  - _Requirements: 2.2, 2.3, 2.4, 2.5_
+- [ ] 2.3 (P) Implement data-driven localized titles and descriptions
+  - Create `layouts/_partials/seo/meta.html` generating dynamic `<title>` and `<meta name="description">` tags.
+  - For match pages: construct title and description combining teams, league, kickoff time formatted in edition timezone via `time/*` partials, and country broadcasters.
+  - For lineup pages: emit title and description highlighting confirmed starting XIs and formations.
+  - For team and league pages: generate schedule, upcoming fixtures, and broadcast availability text.
+  - For home and generic pages: use edition registry title and description defaults.
+  - Emit `<meta name="robots" content="noindex, follow">` on 404 and draft/debug pages.
+  - Observable completion: Rendered match pages display rich, unique titles with local kickoff times (e.g. UK time in `en-gb`, BRT in `pt-br`), and 404 pages carry `noindex`.
+  - _Boundary: MetaRenderer_
+  - _Requirements: 2.6, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 7.5_
+
+- [ ] 3. Social Previews & WhatsApp Optimization
+  - Deliver lightweight, WhatsApp-compliant social preview cards (1200×630, ≤ 300 KB) and Open Graph / Twitter Card tags.
+- [ ] 3.1 (P) Provide pre-optimized static social preview cards
+  - Author and add static 1200×630 card templates for each edition in `assets/images/og/` (`og-global.png`, `og-en-gb.png`, `og-en-ie.png`, `og-pt-br.png`, `og-pt-pt.png`, `og-es-ar.png`).
+  - Compress assets to ensure every card file size is strictly under 80 KB (well within WhatsApp's 300 KB limit).
+  - Observable completion: All 6 static PNG assets exist in `assets/images/og/` and each file size is confirmed ≤ 80,000 bytes.
+  - _Boundary: OgImageResolver_
+  - _Requirements: 4.5, 4.6, 4.7_
+- [ ] 3.2 (P) Implement social preview image resolver
+  - Create `layouts/_partials/seo/og-image.html` establishing the preview image selection cascade.
+  - Check `.Params.cfc.og_image`, then edition-specific cards, and fall back to the Global template.
+  - Return the absolute image URL, width (1200), height (630), and localized descriptive alt text.
+  - Observable completion: Calling `seo/og-image.html` on any page returns a valid absolute URL pointing to an existing image asset.
+  - _Boundary: OgImageResolver_
+  - _Requirements: 4.4, 4.5, 4.6, 4.7_
+- [ ] 3.3 (P) Implement Open Graph and Twitter Card tags
+  - Create `layouts/_partials/seo/opengraph.html` and `layouts/_partials/seo/twitter.html`.
+  - Emit `og:site_name`, `og:title`, `og:description`, `og:url`, `og:type`, `og:image`, `og:image:width`, `og:image:height`, and `og:image:alt`.
+  - Emit `og:locale` matching POSIX format for the current edition (e.g. `en_GB`, `pt_BR`) and `og:locale:alternate` for all other available translations.
+  - Emit `twitter:card` set to `summary_large_image`, `twitter:title`, `twitter:description`, and `twitter:image`.
+  - Observable completion: Social debugger simulation against generated pages shows complete Open Graph and Twitter Card tags with matching image dimensions and locales.
+  - _Boundary: OpenGraphRenderer, TwitterCardRenderer_
+  - _Requirements: 4.1, 4.2, 4.3, 4.4_
+
+- [ ] 4. Schema.org Structured Data (JSON-LD)
+  - Construct typed, single-encoded Schema.org JSON-LD graphs for matches, teams, leagues, breadcrumbs, websites, and organizations.
+- [ ] 4.1 (P) Implement match and broadcast structured data
+  - Create `layouts/_partials/seo/jsonld-match.html` consuming `PageEntity.match` and `cfcdata/channels.html`.
+  - Construct `SportsEvent` schema with `startDate` (ISO 8601 with timezone offset), `homeTeam` (`SportsTeam`), `awayTeam` (`SportsTeam`), `location` (`Place`), `eventStatus`, and `sport: "Soccer"`.
+  - Construct `BroadcastEvent` list inside `publication` representing confirmed broadcaster services for the current edition.
+  - Observable completion: Match page JSON-LD output parses cleanly in Google Rich Results Test without syntax errors and displays valid SportsEvent with live broadcast details.
+  - _Boundary: MatchSchemaBuilder_
+  - _Requirements: 1.2, 1.3, 1.4, 1.5, 7.4_
+- [ ] 4.2 (P) Implement team and league structured data
+  - Create `layouts/_partials/seo/jsonld-team.html` and `layouts/_partials/seo/jsonld-league.html`.
+  - Construct `SportsTeam` schema with name, alternate names, crest URL, and sport.
+  - Construct `SportsLeague` schema with league name, logo, and participating competition details.
+  - Observable completion: Team and league pages contain valid `SportsTeam` and `SportsLeague` JSON-LD schemas verified by schema validator.
+  - _Boundary: TeamSchemaBuilder, LeagueSchemaBuilder_
+  - _Requirements: 1.6, 1.7, 7.4_
+- [ ] 4.3 (P) Implement breadcrumb structured data
+  - Create `layouts/_partials/seo/jsonld-breadcrumb.html` building `BreadcrumbList` schema.
+  - Construct ordered `itemListElement` array representing the breadcrumb hierarchy (Home › League › Match › Lineup).
+  - Observable completion: Google Rich Results Test confirms valid `BreadcrumbList` with correct positional ordering on match and lineup pages.
+  - _Boundary: BreadcrumbBuilder_
+  - _Requirements: 1.8_
+- [ ] 4.4 (P) Implement website, search action, and organization structured data
+  - Create `layouts/_partials/seo/jsonld-website.html` and `layouts/_partials/seo/jsonld-organization.html`.
+  - Construct `WebSite` schema on home pages featuring `potentialAction` of type `SearchAction` targeting `https://cardapiofc.com/search?q={search_term_string}`.
+  - Construct `Organization` schema representing CardápioFC with logo, URL, and `MobileApplication` references for iOS and Android apps.
+  - Observable completion: Home page JSON-LD includes valid `WebSite` with working `SearchAction` target and `Organization` with linked mobile applications.
+  - _Boundary: SiteOrgSchemaBuilder_
+  - _Requirements: 1.9_
+- [ ] 4.5 Coordinate unified JSON-LD graph
+  - Create `layouts/_partials/seo/jsonld.html` to inspect `.Params.cfc.kind` and assemble relevant schema components into a `@graph` dictionary array.
+  - Pass the assembled graph to `seo/jsonld-render.html`.
+  - Handle fallbacks for non-entity pages.
+  - Observable completion: Every page renders a single `<script type="application/ld+json">` tag containing a unified, valid `@graph` JSON object.
+  - _Boundary: JsonLdCoordinator_
+  - _Depends: 4.1, 4.2, 4.3, 4.4_
+  - _Requirements: 1.1, 7.5_
+
+- [ ] 5. Generative Engine Optimization (GEO) & FAQ Content
+  - Provide concise, answer-first FAQ copy on match pages and match it with Schema.org `FAQPage` structured data.
+- [ ] 5.1 (P) Implement visible match FAQ section
+  - Create `layouts/_partials/cfcpage/faq-section.html` displaying answer-first questions and answers on match pages.
+  - Answer primary questions: kickoff time in local timezone, confirmed TV/streaming broadcasters, free-to-air availability, and venue details.
+  - State clearly when broadcast information is pending and direct users to check the mobile app.
+  - Observable completion: Match pages render a styled, accessible FAQ section providing direct answers to where to watch the match.
+  - _Boundary: FaqSectionComponent_
+  - _Requirements: 6.1, 6.2, 6.3, 6.5_
+- [ ] 5.2 (P) Implement FAQPage structured data
+  - Create `layouts/_partials/seo/jsonld-faq.html` generating `FAQPage` schema matching the questions and answers from `cfcpage/faq-section.html`.
+  - Integrate `FAQPage` into the JSON-LD coordinator graph on match pages.
+  - Observable completion: Google Rich Results Test validates `FAQPage` schema on match pages with question and answer text identical to the rendered page copy.
+  - _Boundary: FaqSchemaBuilder_
+  - _Requirements: 1.10, 6.4_
+
+- [ ] 6. Search Engine & AI Crawler Directives
+  - Implement multilingual sitemaps, robots.txt crawler rules, and structured llms.txt context.
+- [ ] 6.1 (P) Implement multilingual XML sitemaps
+  - Create custom `layouts/_default/sitemap.xml` filtering for indexable entity pages (`match`, `team`, `league`, `lineup`) and home pages.
+  - Exclude section listings (`/match/`, `/team/`) where `build.render = "never"` or `.Params.noindex = true`.
+  - Emit `<loc>`, `<lastmod>`, `<changefreq>`, `<priority>`, and `<xhtml:link rel="alternate" hreflang="..." href="...">` for each translation.
+  - Create `layouts/sitemapindex.xml` referencing individual edition sitemaps.
+  - Observable completion: Visiting `/sitemap.xml` returns a valid XML sitemap index, and edition sitemaps contain only indexable pages with full alternate links.
+  - _Boundary: SitemapGenerator_
+  - _Requirements: 5.1, 5.2, 5.3_
+- [ ] 6.2 (P) Implement robots.txt directives
+  - Create `layouts/robots.txt` allowing crawlers and AI bots access to public edition content.
+  - Reference the absolute URL of the sitemap index (`https://cardapiofc.com/sitemap.xml`).
+  - Disallow indexing of internal search queries and debug paths.
+  - Observable completion: Generated `/robots.txt` accurately references `/sitemap.xml` and specifies crawler access directives.
+  - _Boundary: RobotsGenerator_
+  - _Requirements: 5.4_
+- [ ] 6.3 (P) Implement llms.txt and llms-full.txt discovery files
+  - Create `layouts/home.llms.txt` and `layouts/home.llmsfull.txt` providing structured Markdown summaries for AI agents and LLM crawlers.
+  - Document site purpose, coverage, edition breakdown, timezones, and data freshness expectations.
+  - Observable completion: Visiting `/llms.txt` and `/llms-full.txt` returns structured markdown documenting CardápioFC's capabilities for LLMs.
+  - _Boundary: LlmsGenerator_
+  - _Requirements: 5.5_
+
+- [ ] 7. Verification & Automated Quality Gates
+  - Build and verify the automated CI check script ensuring complete SEO, schema, hreflang, and image compliance.
+- [ ] 7.1 Implement automated check-seo-social script
+  - Create `scripts/check-seo-social.mjs` using Node.js built-ins to inspect the `public/` directory after build.
+  - Validate JSON-LD syntax on sampled pages using `JSON.parse` and check required schema types (`SportsEvent`, `BroadcastEvent`, `BreadcrumbList`, `WebSite`, `Organization`).
+  - Verify that every page has a self-referencing canonical tag and all hreflang tags use BCP 47 codes with reciprocal counterparts.
+  - Assert that `x-default` points to the Global edition URL.
+  - Verify that all `og:image` references exist and are ≤ 300,000 bytes.
+  - Verify `sitemap.xml`, `robots.txt`, and `llms.txt` exist and are valid.
+  - Exit with code 1 and actionable error messages upon any failure.
+  - Observable completion: Running `node scripts/check-seo-social.mjs` on build output passes when all criteria are met and reports specific errors when corrupted.
+  - _Boundary: CheckSeoScript_
+  - _Depends: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 6.1, 6.2, 6.3_
+  - _Requirements: 8.1, 8.2, 8.3_
+- [ ] 7.2 Run end-to-end verification against build output
+  - Execute `pnpm build` followed by `node scripts/check-seo-social.mjs` to confirm end-to-end correctness across all six editions.
+  - Confirm build duration remains within budget (< 10 seconds) and total file count remains within limits.
+  - Observable completion: Console output displays clean passing check from `check-seo-social.mjs` with 0 failures and build time under 10 seconds.
+  - _Boundary: CheckSeoScript_
+  - _Depends: 7.1_
+  - _Requirements: 8.1, 8.2, 8.3_

@@ -1,0 +1,10 @@
+{{ define "main" }}
+  {{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+  <section class="cfc-container py-16 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold font-secondary mb-4">{{ i18n "not_found_title" }}</h1>
+    <p class="text-muted mb-8 max-w-md mx-auto">{{ i18n "not_found_text" }}</p>
+    <a href="{{ $ed.prefix }}" class="btn btn-primary inline-flex items-center">
+      {{ i18n "back_home" }}
+    </a>
+  </section>
+{{ end }}

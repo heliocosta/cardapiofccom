@@ -1,0 +1,46 @@
+<section id="sg-channel-icon" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Channel Badge & Icons</h2>
+
+  <div class="space-y-6">
+    <div>
+      <h3 class="font-semibold mb-2">Channel Badges (Linked, Unlinked, With & Without Logo)</h3>
+      <div class="flex flex-wrap items-center gap-3">
+        {{/* Linked badge with url */}}
+        {{ partial "cfc/channel-badge.html" (dict "channel" (dict "name" "Sky Sports Main Event" "type" "tv" "url" "https://www.skysports.com") "match" "arsenal-vs-chelsea-2026-11-08") }}
+
+        {{/* Unlinked badge without url */}}
+        {{ partial "cfc/channel-badge.html" (dict "channel" (dict "name" "BBC One" "type" "free_tv")) }}
+
+        {{/* Badge with logo */}}
+        {{ partial "cfc/channel-badge.html" (dict "channel" (dict "name" "Premiere" "type" "tv" "logo" "https://example.invalid/premiere.png" "url" "https://premiere.globo.com") "match" "flamengo-vs-vasco") }}
+
+        {{/* Medium size badge */}}
+        {{ partial "cfc/channel-badge.html" (dict "channel" (dict "name" "DAZN" "type" "streaming" "url" "https://www.dazn.com") "size" "md") }}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">Fixed Inline Icon Set</h3>
+      <div class="flex items-center gap-6 text-primary">
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "tv") }} <span>tv</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "stream") }} <span>stream</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "globe") }} <span>globe</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "clock") }} <span>clock</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "calendar") }} <span>calendar</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          {{ partial "cfc/icon.html" (dict "name" "chevron-down") }} <span>chevron-down</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

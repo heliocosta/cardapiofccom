@@ -1,0 +1,19 @@
+{{/* site/head.html - Clean document head with whitelisted hooks */}}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
+{{/* Head slots */}}
+{{ partial "site/hook.html" (dict "name" "head-analytics" "page" .) }}
+{{ partial "site/hook.html" (dict "name" "head-seo" "page" . "fallback" "site/seo-fallback.html") }}
+
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FCF8F8" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F2000" />
+
+{{/* Favicon and Manifest */}}
+{{ partialCached "favicon" . }}
+{{ partialCached "manifest" . }}
+
+{{ partial "site/hook.html" (dict "name" "head-app" "page" .) }}
+
+{{/* Theme stylesheet */}}
+{{ partialCached "essentials/style.html" . }}

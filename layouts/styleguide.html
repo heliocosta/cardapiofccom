@@ -1,0 +1,18 @@
+{{ define "main" }}
+<div class="container py-8">
+  <h1 class="text-3xl font-bold mb-8">{{ .Title }} ({{ site.Language.Lang }})</h1>
+  <div class="space-y-12">
+    {{ partial "styleguide/base.html" . }}
+    {{ partial "styleguide/edition.html" . }}
+    {{ partial "styleguide/i18n.html" . }}
+    {{ partial "styleguide/time.html" . }}
+    {{ partial "styleguide/crest-kickoff.html" . }}
+    {{ partial "styleguide/channel-icon.html" . }}
+    {{ partial "styleguide/match-card.html" . }}
+    {{ partial "styleguide/date-group.html" . }}
+    {{ partial "styleguide/switcher-menu.html" . }}
+    {{ partial "styleguide/page-header.html" . }}
+    {{ partial "styleguide/chrome.html" . }}
+  </div>
+</div>
+{{ end }}

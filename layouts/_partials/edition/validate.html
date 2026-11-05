@@ -1,0 +1,98 @@
+{{/* edition/validate.html - build-time registry/i18n/time-zone assertions */}}
+{{ $s := site }}
+{{ $code := $s.Language.Lang }}
+{{ $p := $s.Params.edition | default dict }}
+{{ $locale := $s.Language.Locale | default "" }}
+{{ $label := $s.Language.Label | default "" }}
+{{ $dir := $s.Language.Direction | default "ltr" }}
+{{ $title := $s.Title | default "" }}
+{{ $desc := $s.Params.description | default "" }}
+{{ $copyright := $s.Params.copyright | default "" }}
+{{ $tz := $p.timezone | default $p.timeZone | default "" }}
+{{ $zl := $p.zonelabel | default $p.zoneLabel | default "" }}
+{{ $href := $p.hreflang | default "" }}
+{{ $base := $p.i18nbase | default $p.i18nBase | default "" }}
+{{ $country := $p.country | default "" }}
+{{ $isGlobal := false }}
+{{ if or $p.isGlobal $p.isglobal }}
+  {{ $isGlobal = true }}
+{{ end }}
+
+{{/* 1. Required keys presence */}}
+{{ if eq $code "" }}
+  {{ errorf "site-foundation: edition %q: code is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $locale "" }}
+  {{ errorf "site-foundation: edition %q: locale is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $label "" }}
+  {{ errorf "site-foundation: edition %q: label is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $title "" }}
+  {{ errorf "site-foundation: edition %q: title is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $desc "" }}
+  {{ errorf "site-foundation: edition %q: params.description is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $copyright "" }}
+  {{ errorf "site-foundation: edition %q: params.copyright is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $tz "" }}
+  {{ errorf "site-foundation: edition %q: params.edition.timeZone is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $zl "" }}
+  {{ errorf "site-foundation: edition %q: params.edition.zoneLabel is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $href "" }}
+  {{ errorf "site-foundation: edition %q: params.edition.hreflang is required and cannot be empty" $code }}
+{{ end }}
+{{ if eq $base "" }}
+  {{ errorf "site-foundation: edition %q: params.edition.i18nBase is required and cannot be empty" $code }}
+{{ end }}
+
+{{/* 2. Locale case-insensitively equals code */}}
+{{ if ne (lower $locale) (lower $code) }}
+  {{ errorf "site-foundation: edition %q: locale %q does not match edition code (case-insensitive)" $code $locale }}
+{{ end }}
+
+{{/* 3. params.edition.timeZone equals language timeZone */}}
+{{ $cfgZone := (time.AsTime "2000-01-01T00:00:00").Location.String }}
+{{ if ne $tz $cfgZone }}
+  {{ errorf "site-foundation: edition %q: params.edition.timeZone %q does not match language timeZone %q" $code $tz $cfgZone }}
+{{ end }}
+
+{{/* 4. Validate timeZone loads successfully */}}
+{{ $testT := time.AsTime "2026-01-01T00:00:00Z" }}
+{{ $converted := time.In $tz $testT }}
+{{ if not $converted }}
+  {{ errorf "site-foundation: edition %q: time.In failed for timeZone %q" $code $tz }}
+{{ end }}
+
+{{/* 5. Country validation */}}
+{{ if $isGlobal }}
+  {{ if ne $country "" }}
+    {{ errorf "site-foundation: edition %q: country must be empty for Global edition, got %q" $code $country }}
+  {{ end }}
+{{ else }}
+  {{ if eq (len (findRE `^[A-Z]{2}$` $country)) 0 }}
+    {{ errorf "site-foundation: edition %q: country must be ISO 3166-1 alpha-2 (two uppercase letters), got %q" $code $country }}
+  {{ end }}
+{{ end }}
+
+{{/* 6. Exactly one isGlobal across hugo.Sites */}}
+{{ $globalCount := 0 }}
+{{ range hugo.Sites }}
+  {{ $ep := .Params.edition | default dict }}
+  {{ if or $ep.isGlobal $ep.isglobal }}
+    {{ $globalCount = add $globalCount 1 }}
+  {{ end }}
+{{ end }}
+{{ if ne $globalCount 1 }}
+  {{ errorf "site-foundation: edition %q: count of isGlobal across hugo.Sites must be 1, found %d" $code $globalCount }}
+{{ end }}
+
+{{/* 7. i18n_base marker matches params.edition.i18nBase */}}
+{{ $i18nBaseMarker := i18n "i18n_base" }}
+{{ if ne $i18nBaseMarker $base }}
+  {{ errorf "site-foundation: edition %q: i18n_base marker %q does not match params.edition.i18nBase %q (missing or misordered mount)" $code $i18nBaseMarker $base }}
+{{ end }}

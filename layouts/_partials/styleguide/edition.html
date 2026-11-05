@@ -1,0 +1,61 @@
+{{ $current := partial "edition/current.html" . }}
+{{ $all := partial "edition/all.html" . }}
+
+<section id="sg-edition" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Edition Contract</h2>
+  <div class="mb-4 p-4 bg-theme-light dark:bg-darkmode-theme-light rounded">
+    <h3 class="text-xl font-semibold mb-2">Current Edition: {{ $current.code }}</h3>
+    <ul class="list-disc pl-5 text-sm space-y-1">
+      <li><strong>Code:</strong> {{ $current.code }}</li>
+      <li><strong>Locale:</strong> {{ $current.locale }}</li>
+      <li><strong>Label:</strong> {{ $current.label }}</li>
+      <li><strong>Direction:</strong> {{ $current.direction }}</li>
+      <li><strong>Country:</strong> {{ $current.country | default "(empty - Global)" }}</li>
+      <li><strong>Time Zone:</strong> {{ $current.timeZone }} ({{ $current.zoneLabel }})</li>
+      <li><strong>hreflang:</strong> {{ $current.hreflang }}</li>
+      <li><strong>i18n Base:</strong> {{ $current.i18nBase }}</li>
+      <li><strong>isGlobal:</strong> {{ $current.isGlobal }}</li>
+      <li><strong>Prefix:</strong> {{ $current.prefix }}</li>
+      <li><strong>Home URL:</strong> {{ $current.homeURL }}</li>
+      <li><strong>Title:</strong> {{ $current.title }}</li>
+      <li><strong>Description:</strong> {{ $current.description }}</li>
+      <li><strong>Weight:</strong> {{ $current.weight }}</li>
+    </ul>
+  </div>
+
+  <h3 class="text-xl font-semibold mb-2">All Editions (ordered by weight)</h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-sm border-collapse border border-border">
+      <thead>
+        <tr class="bg-theme-light dark:bg-darkmode-theme-light">
+          <th class="p-2 border border-border">Weight</th>
+          <th class="p-2 border border-border">Code</th>
+          <th class="p-2 border border-border">Locale</th>
+          <th class="p-2 border border-border">Label</th>
+          <th class="p-2 border border-border">Country</th>
+          <th class="p-2 border border-border">Time Zone</th>
+          <th class="p-2 border border-border">Zone Label</th>
+          <th class="p-2 border border-border">i18n Base</th>
+          <th class="p-2 border border-border">Prefix</th>
+          <th class="p-2 border border-border">isGlobal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $all }}
+        <tr>
+          <td class="p-2 border border-border">{{ .weight }}</td>
+          <td class="p-2 border border-border font-mono">{{ .code }}</td>
+          <td class="p-2 border border-border">{{ .locale }}</td>
+          <td class="p-2 border border-border">{{ .label }}</td>
+          <td class="p-2 border border-border">{{ .country }}</td>
+          <td class="p-2 border border-border font-mono">{{ .timeZone }}</td>
+          <td class="p-2 border border-border">{{ .zoneLabel }}</td>
+          <td class="p-2 border border-border">{{ .i18nBase }}</td>
+          <td class="p-2 border border-border font-mono">{{ .prefix }}</td>
+          <td class="p-2 border border-border">{{ .isGlobal }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</section>

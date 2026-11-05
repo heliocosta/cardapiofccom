@@ -1,0 +1,37 @@
+<section id="sg-match-card" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Match Card</h2>
+
+  {{ $fixtures := hugo.Data.styleguide.matches }}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {{/* Scheduled fixture */}}
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-1">Scheduled</h3>
+      {{ partial "cfc/match-card.html" (dict "match" $fixtures.scheduled "showChannels" true) }}
+    </div>
+
+    {{/* Live fixture */}}
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-1">Live with score</h3>
+      {{ partial "cfc/match-card.html" (dict "match" $fixtures.live "showChannels" true) }}
+    </div>
+
+    {{/* Finished fixture */}}
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-1">Finished with score</h3>
+      {{ partial "cfc/match-card.html" (dict "match" $fixtures.finished "showChannels" true) }}
+    </div>
+
+    {{/* Postponed fixture */}}
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-1">Postponed</h3>
+      {{ partial "cfc/match-card.html" (dict "match" $fixtures.postponed "showChannels" false) }}
+    </div>
+
+    {{/* Empty channels fixture */}}
+    <div class="md:col-span-2">
+      <h3 class="text-sm font-semibold text-muted mb-1">Empty channels (no broadcaster message)</h3>
+      {{ partial "cfc/match-card.html" (dict "match" $fixtures.empty_channels "showChannels" true) }}
+    </div>
+  </div>
+</section>

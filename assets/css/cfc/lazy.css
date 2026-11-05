@@ -1,0 +1,6 @@
+/* cfc lazy stylesheet placeholder - print styles */
+@media print {
+  header, footer, nav, .cfc-edition-switcher {
+    display: none !important;
+  }
+}

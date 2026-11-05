@@ -1,0 +1,19 @@
+{{- $items := .items | default slice -}}
+{{- if gt (len $items) 0 -}}
+  <nav class="cfc-breadcrumb" aria-label="{{ i18n "breadcrumb" | default "Breadcrumb" }}">
+    <ol class="cfc-breadcrumb__list">
+      {{- $lastIdx := sub (len $items) 1 -}}
+      {{- range $i, $item := $items -}}
+        {{- $label := $item.name | default $item.label -}}
+        <li class="cfc-breadcrumb__item">
+          {{- if and $item.url (lt $i $lastIdx) -}}
+            <a href="{{ $item.url }}" class="cfc-breadcrumb__link">{{ $label }}</a>
+            <span class="cfc-breadcrumb__separator" aria-hidden="true">/</span>
+          {{- else -}}
+            <span class="cfc-breadcrumb__current" aria-current="page">{{ $label }}</span>
+          {{- end -}}
+        </li>
+      {{- end -}}
+    </ol>
+  </nav>
+{{- end -}}

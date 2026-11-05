@@ -1,0 +1,61 @@
+.cfc-page-header {
+  margin-bottom: 2rem;
+}
+
+.cfc-page-header__title {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: var(--color-text-dark, #000000);
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .cfc-page-header__title {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+.cfc-page-header__intro {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: var(--color-muted, #6B7280);
+  max-width: 48rem;
+}
+
+.cfc-breadcrumb {
+  margin-bottom: 0.75rem;
+}
+
+.cfc-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--color-muted, #6B7280);
+}
+
+.cfc-breadcrumb__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cfc-breadcrumb__link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.cfc-breadcrumb__separator {
+  margin-left: 0.375rem;
+  color: var(--color-border, #D1D5DB);
+}
+
+.cfc-breadcrumb__current {
+  color: var(--color-text, #1F2937);
+  font-weight: 500;
+}

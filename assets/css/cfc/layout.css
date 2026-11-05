@@ -1,0 +1,43 @@
+/* Responsive layout shells: container, header, footer */
+
+.cfc-container {
+  width: 100%;
+  max-width: var(--container-max, 1200px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .cfc-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.cfc-header {
+  position: relative;
+  width: 100%;
+  background-color: var(--color-surface, #ffffff);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 40;
+}
+
+.cfc-header.is-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.cfc-footer {
+  width: 100%;
+  background-color: var(--color-surface, #ffffff);
+  border-top: 1px solid var(--color-border);
+  margin-top: auto;
+}
+
+/* Prevent horizontal overflow at 320px viewport */
+html, body {
+  overflow-x: hidden;
+  min-width: 320px;
+}

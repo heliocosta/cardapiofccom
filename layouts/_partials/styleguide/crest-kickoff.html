@@ -1,0 +1,49 @@
+<section id="sg-crest-kickoff" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Team Crest & Kickoff Time</h2>
+
+  <div class="space-y-6">
+    <div>
+      <h3 class="font-semibold mb-2">Team Crests (Loaded, Sizes & Initials Fallback)</h3>
+      <div class="flex items-center gap-6">
+        <div class="text-center">
+          <p class="text-xs mb-1">sm (24px)</p>
+          {{ partial "cfc/team-crest.html" (dict "name" "Arsenal" "shortName" "ARS" "src" "https://resources.premierleague.com/premierleague/badges/50/t3.png" "size" "sm") }}
+        </div>
+        <div class="text-center">
+          <p class="text-xs mb-1">md (40px)</p>
+          {{ partial "cfc/team-crest.html" (dict "name" "Arsenal" "shortName" "ARS" "src" "https://resources.premierleague.com/premierleague/badges/50/t3.png" "size" "md") }}
+        </div>
+        <div class="text-center">
+          <p class="text-xs mb-1">lg (64px)</p>
+          {{ partial "cfc/team-crest.html" (dict "name" "Arsenal" "shortName" "ARS" "src" "https://resources.premierleague.com/premierleague/badges/50/t3.png" "size" "lg") }}
+        </div>
+        <div class="text-center">
+          <p class="text-xs mb-1">Broken URL (fallback to initials)</p>
+          {{ partial "cfc/team-crest.html" (dict "name" "Flamengo" "shortName" "FLA" "src" "https://example.invalid/broken.png" "size" "md") }}
+        </div>
+        <div class="text-center">
+          <p class="text-xs mb-1">No src (initials)</p>
+          {{ partial "cfc/team-crest.html" (dict "name" "Real Madrid" "shortName" "RMA" "size" "md") }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">Kickoff Time Component</h3>
+      <div class="flex flex-col gap-2 text-sm">
+        <div>
+          <span class="text-muted mr-2">With zone:</span>
+          {{ partial "cfc/kickoff-time.html" (dict "t" "2026-11-08T19:45:00Z") }}
+        </div>
+        <div>
+          <span class="text-muted mr-2">Time only:</span>
+          {{ partial "cfc/kickoff-time.html" (dict "t" "2026-11-08T19:45:00Z" "showZone" false) }}
+        </div>
+        <div>
+          <span class="text-muted mr-2">Date short style:</span>
+          {{ partial "cfc/kickoff-time.html" (dict "t" "2026-11-08T19:45:00Z" "style" "dateShort" "showZone" false) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

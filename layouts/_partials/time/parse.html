@@ -1,0 +1,34 @@
+{{/* time/parse.html - RFC 3339 string or time.Time -> GoTime (UTC); errorf on offset-less string */}}
+{{ $input := . }}
+{{ $parsed := false }}
+
+{{ if (reflect.IsMap .) }}
+  {{ if isset . "t" }}
+    {{ $input = .t }}
+  {{ end }}
+{{ end }}
+
+{{/* Check type */}}
+{{ if (cast.ToString $input | eq "") }}
+  {{ errorf "site-foundation: time value is empty" }}
+{{ end }}
+
+{{/* If string, validate explicit UTC designator 'Z' or offset '+/-hh:mm' or '+/-hhmm' */}}
+{{ $isTime := false }}
+{{/* Go time.Time string representation check or type check */}}
+{{ $s := printf "%v" $input }}
+{{/* If input is a string, test against regex */}}
+{{ if eq (printf "%T" $input) "string" }}
+  {{ $hasOffset := findRE `(Z|[+-]\d{2}:?\d{2})$` $input }}
+  {{ if eq (len $hasOffset) 0 }}
+    {{ errorf "site-foundation: time value %q is missing an explicit UTC designator ('Z') or offset (e.g. '+00:00')" $input }}
+  {{ end }}
+  {{ $parsed = time.AsTime $input }}
+{{ else }}
+  {{/* Already time.Time or similar */}}
+  {{ $parsed = $input }}
+{{ end }}
+
+{{/* Always convert to UTC */}}
+{{ $utc := time.In "UTC" $parsed }}
+{{ return $utc }}

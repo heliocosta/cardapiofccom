@@ -1,0 +1,14 @@
+<section id="sg-date-group" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Date Group</h2>
+
+  {{ $fixtures := hugo.Data.styleguide.matches }}
+  {{ $matchList := slice $fixtures.scheduled $fixtures.live $fixtures.finished $fixtures.late_night }}
+
+  {{ $groups := partial "time/group-by-day.html" (dict "items" $matchList "key" "kickoff") }}
+
+  <div class="space-y-6">
+    {{ range $groups }}
+      {{ partial "cfc/date-group.html" (dict "day" .day "matches" .items "card" (dict "showChannels" true "showLeague" true)) }}
+    {{ end }}
+  </div>
+</section>

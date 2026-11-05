@@ -1,0 +1,22 @@
+{
+  "feature_name": "analytics-consent",
+  "created_at": "2026-11-05T08:55:00Z",
+  "updated_at": "2026-11-05T09:28:00Z",
+  "language": "en",
+  "phase": "tasks-generated",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": false
+}

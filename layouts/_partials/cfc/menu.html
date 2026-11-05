@@ -1,0 +1,34 @@
+{{- $p := . -}}
+{{- $menuName := "main" -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "page" -}}
+    {{- $p = .page -}}
+  {{- end -}}
+  {{- if isset . "menu" -}}
+    {{- $menuName = .menu -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $menu := index site.Menus $menuName -}}
+
+{{- if and $menu (gt (len $menu) 0) -}}
+  <ul class="cfc-menu cfc-menu--{{ $menuName }}">
+    {{- range $menu -}}
+      {{- $entry := . -}}
+      {{- $labelKey := printf "menu_%s" .Identifier -}}
+      {{- $label := i18n $labelKey | default .Name -}}
+      {{- $url := .URL | relLangURL -}}
+      {{- $isCurrent := false -}}
+      {{- with $p -}}
+        {{- if or (.IsMenuCurrent $menuName $entry) (.HasMenuCurrent $menuName $entry) (eq .RelPermalink $url) -}}
+          {{- $isCurrent = true -}}
+        {{- end -}}
+      {{- end -}}
+      <li class="cfc-menu__item">
+        <a href="{{ $url }}" class="cfc-menu__link{{ if $isCurrent }} is-active{{ end }}"{{ if $isCurrent }} aria-current="page"{{ end }}>
+          {{ $label }}
+        </a>
+      </li>
+    {{- end -}}
+  </ul>
+{{- end -}}

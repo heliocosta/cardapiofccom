@@ -1,0 +1,39 @@
+{{/* time/group-by-day.html - groups items by edition-local day in kickoff order */}}
+{{ $items := .items | default slice }}
+{{ $key := .key | default "kickoff" }}
+
+{{ $groupsMap := dict }}
+{{ $daysOrder := slice }}
+
+{{ $sortedItems := sort $items $key "asc" }}
+
+{{ range $sortedItems }}
+  {{ $item := . }}
+  {{ $val := index $item $key }}
+  {{ $day := partial "time/day-key.html" (dict "t" $val) }}
+
+  {{ $existing := index $groupsMap $day | default slice }}
+  {{ $existing = $existing | append $item }}
+  {{ $groupsMap = merge $groupsMap (dict $day $existing) }}
+
+  {{ if not (in $daysOrder $day) }}
+    {{ $daysOrder = $daysOrder | append $day }}
+  {{ end }}
+{{ end }}
+
+{{ $sortedDays := sort $daysOrder }}
+
+{{ $result := slice }}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $tz := $ed.timeZone }}
+
+{{ range $sortedDays }}
+  {{ $day := . }}
+  {{ $dayItems := index $groupsMap $day }}
+  {{ $utcMidnight := time.AsTime (printf "%sT00:00:00Z" $day) }}
+  {{ $localMidnight := time.In $tz $utcMidnight }}
+  {{ $group := dict "day" $day "date" $localMidnight "items" $dayItems }}
+  {{ $result = $result | append $group }}
+{{ end }}
+
+{{ return $result }}

@@ -1,0 +1,15 @@
+.cfc-kickoff-time {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-feature-settings: "tnum";
+}
+
+.cfc-kickoff-time__time {
+  font-weight: 700;
+}
+
+.cfc-kickoff-time__zone {
+  font-size: 0.75rem;
+  color: var(--color-muted, #6B7280);
+}

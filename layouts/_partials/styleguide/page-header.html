@@ -1,0 +1,38 @@
+<section id="sg-page-header" class="py-4 border-b border-border">
+  <h2 class="text-2xl font-bold mb-4">Page Header, Breadcrumb & Empty State</h2>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-2">Page Header with Breadcrumbs & Intro</h3>
+      <div class="p-4 border border-border rounded bg-theme-light dark:bg-darkmode-theme-light">
+        {{ partial "cfc/page-header.html" (dict
+          "title" "Premier League 2026/27"
+          "intro" "Live TV listings and broadcast schedules for the English Premier League."
+          "breadcrumbs" (slice (dict "name" "Home" "url" "/") (dict "name" "Leagues" "url" "/leagues") (dict "name" "Premier League"))
+        ) }}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-2">Page Header without Breadcrumbs & Intro</h3>
+      <div class="p-4 border border-border rounded bg-theme-light dark:bg-darkmode-theme-light">
+        {{ partial "cfc/page-header.html" (dict "title" "Live Football") }}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-2">Empty State with Action</h3>
+      {{ partial "cfc/empty-state.html" (dict
+        "message" "No matches found matching your filters."
+        "action" (dict "label" "View All Matches" "url" "/")
+      ) }}
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold text-muted mb-2">Empty State without Action</h3>
+      {{ partial "cfc/empty-state.html" (dict
+        "message" "No matches scheduled for today in this edition."
+      ) }}
+    </div>
+  </div>
+</section>

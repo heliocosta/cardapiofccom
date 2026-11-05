@@ -1,0 +1,31 @@
+{{/* edition/all.html - returns Edition[] for all sites in hugo.Sites, ordered by weight ascending */}}
+{{ $all := slice }}
+{{ range hugo.Sites }}
+  {{ $s := . }}
+  {{ $p := $s.Params.edition | default dict }}
+  {{ $home := $s.Home }}
+  {{ $isGlobal := false }}
+  {{ if or $p.isGlobal $p.isglobal }}
+    {{ $isGlobal = true }}
+  {{ end }}
+  {{ $ed := dict
+    "code" $s.Language.Lang
+    "locale" ($s.Language.Locale | default $s.Language.Lang)
+    "label" $s.Language.Label
+    "direction" ($s.Language.Direction | default "ltr")
+    "country" ($p.country | default "")
+    "timeZone" ($p.timezone | default $p.timeZone | default "UTC")
+    "zoneLabel" ($p.zonelabel | default $p.zoneLabel | default "UTC")
+    "hreflang" ($p.hreflang | default $s.Language.Lang)
+    "i18nBase" ($p.i18nbase | default $p.i18nBase | default "en")
+    "isGlobal" $isGlobal
+    "prefix" $home.RelPermalink
+    "homeURL" $home.Permalink
+    "title" $s.Title
+    "description" ($s.Params.description | default "")
+    "weight" ($s.Language.Weight | default 1)
+  }}
+  {{ $all = $all | append $ed }}
+{{ end }}
+{{ $sorted := sort $all "weight" "asc" }}
+{{ return $sorted }}
