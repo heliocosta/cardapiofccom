@@ -138,7 +138,7 @@
   - Observable completed state: All base and regional translation files contain feature i18n keys without syntax errors or missing keys
   - _Boundary: Localization_
   - _Requirements: 10.2_
-- [ ] 6.2 (P) Build match hero, channel listings, and edition cross-link partials
+- [x] 6.2 (P) Build match hero, channel listings, and edition cross-link partials
   - Implement `layouts/_partials/cfcpage/match-hero.html` displaying crests, localized names, edition time zone kick-off, live/finished status, scores, venue, and round
   - Implement `layouts/_partials/cfcpage/channels.html` displaying badges with `rel="noopener nofollow"` external links, Global country groupings, or empty broadcaster prompt
   - Implement `layouts/_partials/cfcpage/edition-links.html` displaying cross-edition links for regional editions where other countries have match broadcasts

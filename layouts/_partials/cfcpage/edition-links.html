@@ -1,0 +1,47 @@
+{{/* layouts/_partials/cfcpage/edition-links.html */}}
+{{/* Cross-links to other regional editions broadcasting this match (Regional editions only). */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Accepts MatchVM, dict with "match" / "slug", or match slug string. */}}
+
+{{- $slug := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "slug" -}}
+    {{- $slug = printf "%v" .slug -}}
+  {{- else if isset . "match" -}}
+    {{- if reflect.IsMap .match -}}
+      {{- $slug = printf "%v" (.match.slug | default "") -}}
+    {{- else -}}
+      {{- $slug = printf "%v" .match -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if . -}}
+  {{- $slug = printf "%v" . -}}
+{{- end -}}
+{{- $slug = strings.Trim (trim $slug " ") "/" -}}
+
+{{- $edition := partialCached "edition/current.html" . -}}
+
+{{- if and (not $edition.isGlobal) (ne $slug "") -}}
+  {{- $crossLinks := slice -}}
+  {{- range partialCached "edition/all.html" . -}}
+    {{- if and (not .isGlobal) (ne .code $edition.code) -}}
+      {{- $otherGroups := partial "cfcdata/channels.html" (dict "slug" $slug "edition" .) -}}
+      {{- if and (gt (len $otherGroups) 0) (gt (len (index $otherGroups 0).channels) 0) -}}
+        {{- $otherGrp := index $otherGroups 0 -}}
+        {{- $crossLinks = $crossLinks | append (dict "edition" . "url" $otherGrp.url "country" .country) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if gt (len $crossLinks) 0 -}}
+    <aside class="cfc-edition-links my-6 p-4 rounded-lg bg-theme-light dark:bg-darkmode-theme-light border border-border">
+      <h3 class="cfc-edition-links__heading text-sm font-semibold text-muted mb-3">{{ i18n "watch_in_other_countries" }}</h3>
+      <div class="cfc-edition-links__list flex flex-wrap gap-2">
+        {{- range $crossLinks -}}
+          {{- $cName := i18n (printf "country_%s" (lower .country)) | default .edition.label -}}
+          <a href="{{ .url }}" hreflang="{{ .edition.code }}" lang="{{ .edition.code }}" class="btn btn-outline-primary btn-sm text-xs">{{ $cName }}</a>
+        {{- end -}}
+      </div>
+    </aside>
+  {{- end -}}
+{{- end -}}

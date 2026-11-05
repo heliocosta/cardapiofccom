@@ -1,0 +1,66 @@
+{{/* layouts/_partials/cfcpage/channels.html */}}
+{{/* Renders broadcasters for a match, grouped by country (Global) or single local group (Regional). */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Accepts MatchVM, dict with "match" / "slug", or match slug string. */}}
+
+{{- $slug := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "slug" -}}
+    {{- $slug = printf "%v" .slug -}}
+  {{- else if isset . "match" -}}
+    {{- if reflect.IsMap .match -}}
+      {{- $slug = printf "%v" (.match.slug | default "") -}}
+    {{- else -}}
+      {{- $slug = printf "%v" .match -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if . -}}
+  {{- $slug = printf "%v" . -}}
+{{- end -}}
+{{- $slug = strings.Trim (trim $slug " ") "/" -}}
+
+{{- $groups := partial "cfcdata/channels.html" (dict "slug" $slug) -}}
+{{- $edition := partialCached "edition/current.html" . -}}
+
+{{- if $edition.isGlobal -}}
+  {{- if eq (len $groups) 0 -}}
+    <div class="cfc-channels my-6">
+      {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
+    </div>
+  {{- else -}}
+    <div class="cfc-channels my-6 space-y-6">
+      {{- range $groups -}}
+        {{- $cName := i18n (printf "country_%s" (lower .country)) | default .countryName -}}
+        <section class="cfc-channels__group">
+          <h2 class="cfc-channels__heading text-lg font-bold mb-3">{{ i18n "where_to_watch_in" (dict "Country" $cName) }}</h2>
+          <div class="cfc-channels__list flex flex-wrap gap-2">
+            {{- range .channels -}}
+              {{ partial "cfc/channel-badge.html" (dict "channel" . "match" $slug "size" "md") }}
+            {{- end -}}
+          </div>
+        </section>
+      {{- end -}}
+    </div>
+  {{- end -}}
+{{- else -}}
+  {{- $hasChannels := false -}}
+  {{- if and (gt (len $groups) 0) (gt (len (index $groups 0).channels) 0) -}}
+    {{- $hasChannels = true -}}
+  {{- end -}}
+  {{- if not $hasChannels -}}
+    <div class="cfc-channels my-6">
+      {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
+    </div>
+  {{- else -}}
+    {{- $grp := index $groups 0 -}}
+    {{- $cName := i18n (printf "country_%s" (lower $edition.country)) | default $edition.label -}}
+    <div class="cfc-channels my-6">
+      <h2 class="cfc-channels__heading text-lg font-bold mb-3">{{ i18n "where_to_watch_in" (dict "Country" $cName) }}</h2>
+      <div class="cfc-channels__list flex flex-wrap gap-2">
+        {{- range $grp.channels -}}
+          {{ partial "cfc/channel-badge.html" (dict "channel" . "match" $slug "size" "md") }}
+        {{- end -}}
+      </div>
+    </div>
+  {{- end -}}
+{{- end -}}
