@@ -189,7 +189,7 @@
   - _Requirements: 4.6, 9.1, 9.2, 9.3, 9.4, 9.5, 11.1, 11.2_
 
 ## 8. Automated Verification and Failure Testing Suite
-- [ ] 8. Automated verification and failure testing suite
+- [x] 8. Automated verification and failure testing suite
 - [x] 8.1 Build automated build output verification script
   - Implement Node.js script `scripts/check-data-pages.mjs` inspecting `public/` directory after sample dataset build
   - Assert existence of all match, team, and league pages and absence of `/match/index.html`, `/team/index.html`, lineup pages, and legacy URL families
@@ -207,7 +207,7 @@
   - _Boundary: FailureTests_
   - _Depends: 7.1, 7.2, 7.3, 7.4_
   - _Requirements: 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 3.6, 11.4_
-- [ ] 8.3 Execute full integration build and scale benchmark
+- [x] 8.3 Execute full integration build and scale benchmark
   - Run full production build against sample dataset and verify all pages and downstream contracts (`cfcdata/page-entity.html`, `cfcdata/entity-list.html`)
   - Synthesize 1,260-match dataset using `scripts/cfc-data-index.mjs --synthesize 1260` and execute benchmark build
   - Verify CI build time finishes in under 30 seconds and total output files stay under 18,000 budget
