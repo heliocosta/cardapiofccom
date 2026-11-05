@@ -108,7 +108,7 @@
 
 ## 5. Content Generation and Section Adapters
 - [ ] 5. Content generation and section adapters
-- [ ] 5.1 Scaffolding content sections with cross-edition language matrix
+- [x] 5.1 Scaffolding content sections with cross-edition language matrix
   - Create `content/en/match/_index.md`, `content/en/team/_index.md`, and `content/en/league/_index.md` with `sites.matrix.languages: ["**"]`
   - Configure `build.render: "never"` and `build.list: "always"` for match and team sections to suppress unwanted `/match/` and `/team/` listing pages
   - Configure `content/en/league/_index.md` to render the league directory with `params.cfc.kind = "leagues"`

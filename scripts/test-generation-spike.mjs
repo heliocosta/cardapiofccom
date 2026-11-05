@@ -82,9 +82,10 @@ build:
   );
 
   // 3. League section index (directory page rendered)
-  fs.writeFileSync(
-    SPIKE_FILES.leagueIndex,
-    `---
+  if (!fs.existsSync(SPIKE_FILES.leagueIndex)) {
+    fs.writeFileSync(
+      SPIKE_FILES.leagueIndex,
+      `---
 title: "Leagues"
 sites:
   matrix:
@@ -92,9 +93,11 @@ sites:
 params:
   cfc:
     kind: "leagues"
+    titleKey: "leagues"
 ---
 `
-  );
+    );
+  }
 
   // Cached partial to test partialCached inside adapter
   fs.writeFileSync(
@@ -198,13 +201,20 @@ params:
 function cleanupSpikeArtifacts() {
   console.log('Cleaning up spike prototype artifacts...');
   try {
-    for (const dir of SPIKE_DIRS) {
-      if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true });
+    const spikeFilesToRemove = [
+      SPIKE_FILES.matchGotmpl,
+      SPIKE_FILES.teamGotmpl,
+      SPIKE_FILES.leagueGotmpl,
+      SPIKE_FILES.spikeData,
+    ];
+    for (const f of spikeFilesToRemove) {
+      if (fs.existsSync(f)) {
+        fs.rmSync(f, { force: true });
       }
     }
-    if (fs.existsSync(SPIKE_FILES.spikeData)) {
-      fs.rmSync(SPIKE_FILES.spikeData, { force: true });
+    const spikePartialDir = path.join(ROOT_DIR, 'layouts/_partials/spike');
+    if (fs.existsSync(spikePartialDir)) {
+      fs.rmSync(spikePartialDir, { recursive: true, force: true });
     }
     if (fs.existsSync(TEMP_BUILD_DIR)) {
       fs.rmSync(TEMP_BUILD_DIR, { recursive: true, force: true });
