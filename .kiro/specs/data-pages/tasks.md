@@ -157,7 +157,7 @@
   - Lineups are out of scope per user direction.
 
 ## 7. Entity Page Templates and Layout Integration
-- [ ] 7. Entity page templates and layout integration
+- [x] 7. Entity page templates and layout integration
 - [x] 7.1 Build match entity page template
   - Implement `layouts/match/section.html` composing page header breadcrumbs, match hero, channel section, edition links, downstream FAQ hook (`cfcpage/faq-section.html` if exists), and freshness footer (lineups out of scope)
   - Observable completed state: Full match pages render under `/match/{slug}/` across all editions
@@ -179,7 +179,7 @@
   - _Boundary: LeaguePage, LeagueDirectory_
   - _Depends: 5.3, 6.3_
   - _Requirements: 3.1, 3.2, 4.6, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 10.3, 10.4, 10.5, 11.1, 11.2_
-- [ ] 7.4 Implement home page match listing hook
+- [x] 7.4 Implement home page match listing hook
   - Implement `layouts/_partials/hooks/home-main.html` slot owner selecting matches from start of current day to end of seventh future day
   - Cap home listing at 120 matches, prioritizing popular leagues while preserving chronological kick-off order
   - Render empty state with link to league directory when no matches are scheduled, followed by freshness footer

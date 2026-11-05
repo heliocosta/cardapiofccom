@@ -87,6 +87,14 @@
   {{ if isset . "days" }}{{ $homeDays = int .days }}{{ end }}
   {{ if isset . "max" }}{{ $homeMax = int .max }}{{ end }}
 {{ end }}
+{{ $envHomeDays := os.Getenv "HUGO_CFC_HOME_DAYS" }}
+{{ if ne $envHomeDays "" }}
+  {{ $homeDays = int $envHomeDays }}
+{{ end }}
+{{ $envHomeMax := os.Getenv "HUGO_CFC_HOME_MAX" }}
+{{ if ne $envHomeMax "" }}
+  {{ $homeMax = int $envHomeMax }}
+{{ end }}
 {{ $home := dict "days" $homeDays "max" $homeMax }}
 
 {{/* 13. league window settings */}}

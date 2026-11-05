@@ -12,7 +12,11 @@
   {{- $isoDate := partial "time/format.html" (dict "t" $dateInput "style" "isoDate") -}}
   {{- $dayHeading := partial "time/format.html" (dict "t" $dateInput "style" "dayHeading") -}}
   {{- $sectionId := printf "date-group-%s" ($isoDate | urlize) -}}
-  {{- $sorted := sort $matches "kickoff" "asc" -}}
+  {{- $disableSort := .disableSort | default false -}}
+  {{- $sorted := $matches -}}
+  {{- if not $disableSort -}}
+    {{- $sorted = sort $matches "kickoff" "asc" -}}
+  {{- end -}}
   <section class="cfc-date-group" aria-labelledby="{{ $sectionId }}">
     <h{{ $hl }} id="{{ $sectionId }}" class="cfc-date-group__heading">
       <time datetime="{{ $isoDate }}">{{ $dayHeading }}</time>

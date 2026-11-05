@@ -6,6 +6,7 @@
 {{- $emptyAction := index (dict) "nil" -}}
 {{- $hl := 2 -}}
 {{- $showLeague := true -}}
+{{- $popularFirst := false -}}
 {{- if reflect.IsSlice . -}}
   {{- $rawItems = . -}}
 {{- else if reflect.IsMap . -}}
@@ -25,6 +26,9 @@
   {{- end -}}
   {{- if isset . "showLeague" -}}
     {{- $showLeague = .showLeague -}}
+  {{- end -}}
+  {{- if isset . "popularFirst" -}}
+    {{- $popularFirst = .popularFirst -}}
   {{- end -}}
 {{- end -}}
 {{- $matches := slice -}}
@@ -55,7 +59,27 @@
   {{- $groups := partial "time/group-by-day.html" (dict "items" $matches "key" "kickoff") -}}
   <div class="cfc-match-days space-y-6 my-6">
     {{- range $groups -}}
-      {{ partial "cfc/date-group.html" (dict "matches" .items "day" .date "headingLevel" $hl "card" (dict "showChannels" false "showLeague" $showLeague)) }}
+      {{- $dayItems := .items -}}
+      {{- if $popularFirst -}}
+        {{- $popularItems := slice -}}
+        {{- $regularItems := slice -}}
+        {{- range .items -}}
+          {{- if .popular -}}
+            {{- $popularItems = $popularItems | append . -}}
+          {{- else -}}
+            {{- $regularItems = $regularItems | append . -}}
+          {{- end -}}
+        {{- end -}}
+        {{- $orderedItems := slice -}}
+        {{- range $popularItems -}}
+          {{- $orderedItems = $orderedItems | append . -}}
+        {{- end -}}
+        {{- range $regularItems -}}
+          {{- $orderedItems = $orderedItems | append . -}}
+        {{- end -}}
+        {{- $dayItems = $orderedItems -}}
+      {{- end -}}
+      {{ partial "cfc/date-group.html" (dict "matches" $dayItems "day" .date "headingLevel" $hl "card" (dict "showChannels" false "showLeague" $showLeague) "disableSort" $popularFirst) }}
     {{- end -}}
   </div>
 {{- end -}}
