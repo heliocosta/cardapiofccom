@@ -7,7 +7,7 @@
   "author": "zeon.studio",
   "scripts": {
     "dev": "concurrently \"node scripts/themeGenerator.js --watch\" \"hugo server\"",
-    "build": "node scripts/themeGenerator.js && hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic",
+    "build": "node scripts/themeGenerator.js && hugo --gc --minify --cleanDestinationDir --templateMetrics --templateMetricsHints --forceSyncStatic",
     "check": "node scripts/check-site.mjs",
     "check:components": "node scripts/check-site.mjs --components",
     "preview": "node scripts/themeGenerator.js && hugo server --disableFastRender --navigateToChanged --templateMetrics --templateMetricsHints --watch --forceSyncStatic -e production --minify",
