@@ -38,7 +38,7 @@
   - _Requirements: 1.10, 2.2_
 
 ## 3. Data Configuration, Fetching, Validation, and Budgeting Layer
-- [ ] 3. Data configuration, fetching, validation, and budgeting layer
+- [x] 3. Data configuration, fetching, validation, and budgeting layer
 - [x] 3.1 Configure data settings and persistent HTTP resource cache
   - Create `data/cfc/settings.yaml` with defaults for source (`auto`), Firebase Storage endpoint, sample path, timeout (`20s`), budget limits (18,000 files), and time windows
   - Append `[caches.getresource]` with `dir = ":cacheDir/:project"` and `maxAge = "720h"` to `hugo.toml`
@@ -63,7 +63,7 @@
   - Observable completed state: `partial "cfcdata/validate.html"` returns true for valid datasets and halts the build with `data-pages: <file>: <slug>: <field> <problem>` on first invalid record
   - _Boundary: Validator_
   - _Requirements: 2.5, 2.6, 2.8, 2.9, 3.6, 10.1_
-- [ ] 3.4 Implement dataset loader and file budget estimator
+- [x] 3.4 Implement dataset loader and file budget estimator
   - Implement `layouts/_partials/cfcdata/dataset.html` aggregating `index.json`, entity collections, and regional channel files with `partialCached` deduplication
   - Implement `layouts/_partials/cfcdata/budget.html` computing total estimated output files based on edition count, entities (matches, teams, leagues), and static files (lineups out of scope, Λ = 0)
   - Log estimated file count summary during build; halt build with `errorf` naming contributors if estimate exceeds file budget

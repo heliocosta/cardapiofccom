@@ -1,0 +1,123 @@
+{{/* layouts/_partials/cfcdata/budget.html */}}
+{{/* Estimates generated file count and enforces build file budget. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction (\Lambda = 0). */}}
+{{/* Signature: partialCached "cfcdata/budget.html" (dict "dataset" $dataset "settings" $settings) "budget" */}}
+
+{{ $dataset := index (dict) "nil" }}
+{{ $settings := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ else if and (isset . "matches") (isset . "teams") }}
+    {{ $dataset = . }}
+  {{ end }}
+  {{ if isset . "settings" }}
+    {{ $settings = .settings }}
+  {{ end }}
+{{ end }}
+
+{{ if not $settings }}
+  {{ $settings = partialCached "cfcdata/settings.html" . "settings" }}
+{{ end }}
+
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Calculate E (number of editions / sites) */}}
+{{ $E := 0 }}
+{{ with hugo.Sites }}
+  {{ $E = len . }}
+{{ end }}
+{{ if eq $E 0 }}
+  {{ with site.Languages }}
+    {{ $E = len . }}
+  {{ end }}
+{{ end }}
+{{ if eq $E 0 }}
+  {{ $E = 6 }}
+{{ end }}
+
+{{/* M, T, L counts */}}
+{{ $matches := dict }}
+{{ with $dataset }}
+  {{ with .matches }}
+    {{ if reflect.IsMap . }}
+      {{ if isset . "matches" }}
+        {{ $matches = .matches }}
+      {{ else }}
+        {{ $matches = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ $M := len $matches }}
+
+{{ $teams := dict }}
+{{ with $dataset }}
+  {{ with .teams }}
+    {{ if reflect.IsMap . }}
+      {{ if isset . "teams" }}
+        {{ $teams = .teams }}
+      {{ else }}
+        {{ $teams = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ $T := len $teams }}
+
+{{ $leagues := dict }}
+{{ with $dataset }}
+  {{ with .leagues }}
+    {{ if reflect.IsMap . }}
+      {{ if isset . "leagues" }}
+        {{ $leagues = .leagues }}
+      {{ else }}
+        {{ $leagues = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ $L := len $leagues }}
+
+{{/* Settings parameters with defaults */}}
+{{ $c := 5 }}
+{{ if and (reflect.IsMap $settings) (isset $settings "fixedPerEdition") }}
+  {{ $c = int $settings.fixedPerEdition }}
+{{ end }}
+
+{{ $S := 200 }}
+{{ if and (reflect.IsMap $settings) (isset $settings "staticFiles") }}
+  {{ $S = int $settings.staticFiles }}
+{{ end }}
+
+{{ $budget := 18000 }}
+{{ if and (reflect.IsMap $settings) (isset $settings "fileBudget") }}
+  {{ $budget = int $settings.fileBudget }}
+{{ end }}
+
+{{/* Formula: perEdition = M + T + L + 1 + c */}}
+{{/* Lineups are out of scope: \Lambda = 0 */}}
+{{ $perEdition := add $M (add $T (add $L (add 1 $c))) }}
+{{ $total := add (mul $E $perEdition) $S }}
+
+{{/* Summary log */}}
+{{ warnf "data-pages: estimated output files %d/%d (matches %d, teams %d, leagues %d, editions %d)" $total $budget $M $T $L $E }}
+
+{{/* Guard: halt build if budget exceeded */}}
+{{ if gt $total $budget }}
+  {{ errorf "data-pages: file budget exceeded: estimated %d files exceeds budget %d (matches: %d, teams: %d, leagues: %d, editions: %d)" $total $budget $M $T $L $E }}
+{{ end }}
+
+{{ return dict
+  "editions" $E
+  "matches" $M
+  "teams" $T
+  "leagues" $L
+  "perEdition" $perEdition
+  "staticFiles" $S
+  "total" $total
+  "budget" $budget
+}}

@@ -1,0 +1,158 @@
+{{/* layouts/_partials/cfcdata/dataset.html */}}
+{{/* Loads and validates the complete CFC dataset from local sample or remote storage. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partialCached "cfcdata/dataset.html" . "dataset" (or partial "cfcdata/dataset.html" .) */}}
+
+{{ $settings := index (dict) "nil" }}
+{{ if reflect.IsMap . }}
+  {{ if isset . "settings" }}
+    {{ $settings = .settings }}
+  {{ else if and (isset . "source") (isset . "baseURL") }}
+    {{ $settings = . }}
+  {{ end }}
+{{ end }}
+
+{{ if not $settings }}
+  {{ $settings = partialCached "cfcdata/settings.html" . "settings" }}
+{{ end }}
+
+{{/* 1. Fetch index.json */}}
+{{ $index := partial "cfcdata/fetch.html" (dict "file" "index.json" "settings" $settings) }}
+
+{{/* 2. Validate major version early */}}
+{{ $schemaVersion := "" }}
+{{ with $index }}
+  {{ with .schemaVersion }}
+    {{ $schemaVersion = printf "%v" . }}
+  {{ end }}
+{{ end }}
+
+{{ if not (strings.HasPrefix $schemaVersion "1.") }}
+  {{ errorf "data-pages: index.json: contract major version mismatch (declared \"%s\", supported 1)" $schemaVersion }}
+{{ end }}
+
+{{/* 3. Fetch entity files listed in index.files using declared sha256 */}}
+{{ $indexFiles := dict }}
+{{ with $index }}
+  {{ with .files }}
+    {{ if reflect.IsMap . }}
+      {{ $indexFiles = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* leagues.json -> extract .leagues */}}
+{{ $leaguesSha := "" }}
+{{ with index $indexFiles "leagues.json" }}
+  {{ if reflect.IsMap . }}
+    {{ $leaguesSha = .sha256 | default "" }}
+  {{ end }}
+{{ end }}
+{{ $leaguesData := partial "cfcdata/fetch.html" (dict "file" "leagues.json" "sha256" $leaguesSha "settings" $settings) }}
+{{ $leagues := dict }}
+{{ if reflect.IsMap $leaguesData }}
+  {{ if isset $leaguesData "leagues" }}
+    {{ $leagues = $leaguesData.leagues }}
+  {{ else }}
+    {{ $leagues = $leaguesData }}
+  {{ end }}
+{{ end }}
+
+{{/* teams.json -> extract .teams */}}
+{{ $teamsSha := "" }}
+{{ with index $indexFiles "teams.json" }}
+  {{ if reflect.IsMap . }}
+    {{ $teamsSha = .sha256 | default "" }}
+  {{ end }}
+{{ end }}
+{{ $teamsData := partial "cfcdata/fetch.html" (dict "file" "teams.json" "sha256" $teamsSha "settings" $settings) }}
+{{ $teams := dict }}
+{{ if reflect.IsMap $teamsData }}
+  {{ if isset $teamsData "teams" }}
+    {{ $teams = $teamsData.teams }}
+  {{ else }}
+    {{ $teams = $teamsData }}
+  {{ end }}
+{{ end }}
+
+{{/* matches.json -> extract .matches and .order */}}
+{{ $matchesSha := "" }}
+{{ with index $indexFiles "matches.json" }}
+  {{ if reflect.IsMap . }}
+    {{ $matchesSha = .sha256 | default "" }}
+  {{ end }}
+{{ end }}
+{{ $matchesData := partial "cfcdata/fetch.html" (dict "file" "matches.json" "sha256" $matchesSha "settings" $settings) }}
+{{ $matches := dict }}
+{{ $order := slice }}
+{{ if reflect.IsMap $matchesData }}
+  {{ if isset $matchesData "matches" }}
+    {{ $matches = $matchesData.matches }}
+  {{ else }}
+    {{ $matches = $matchesData }}
+  {{ end }}
+  {{ if isset $matchesData "order" }}
+    {{ $order = $matchesData.order }}
+  {{ end }}
+{{ end }}
+
+{{/* 4. Fetch regional channel files for each country listed in index.countries */}}
+{{ $channels := dict }}
+{{ with $index }}
+  {{ with .countries }}
+    {{ range $cc := . }}
+      {{ $ccStr := printf "%v" $cc }}
+      {{ $chanFile := printf "channels/%s.json" $ccStr }}
+      {{ $chanSha := "" }}
+      {{ $hasChanFile := false }}
+      {{ with index $indexFiles $chanFile }}
+        {{ $hasChanFile = true }}
+        {{ if reflect.IsMap . }}
+          {{ $chanSha = .sha256 | default "" }}
+        {{ end }}
+      {{ end }}
+      {{ if $hasChanFile }}
+        {{ $chanData := partial "cfcdata/fetch.html" (dict "file" $chanFile "sha256" $chanSha "settings" $settings) }}
+        {{ $channels = merge $channels (dict $ccStr $chanData) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 5. Compute asOf */}}
+{{ $asOf := now }}
+{{ if and (reflect.IsMap $settings) (isset $settings "asOfOverride") $settings.asOfOverride }}
+  {{ $asOf = time.AsTime $settings.asOfOverride }}
+{{ else if and (reflect.IsMap $settings) (eq $settings.source "sample") }}
+  {{ with $index }}
+    {{ with .generatedAt }}
+      {{ $asOf = time.AsTime . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 6. Construct Dataset dictionary */}}
+{{ $source := "sample" }}
+{{ with $settings }}
+  {{ with .source }}
+    {{ $source = . }}
+  {{ end }}
+{{ end }}
+
+{{ $dataset := dict
+  "index" $index
+  "leagues" $leagues
+  "teams" $teams
+  "matches" $matches
+  "order" $order
+  "channels" $channels
+  "generatedAt" (printf "%v" ($index.generatedAt | default ""))
+  "asOf" $asOf
+  "source" $source
+}}
+
+{{/* 7. Call validator */}}
+{{ $valid := partial "cfcdata/validate.html" (dict "dataset" $dataset) }}
+
+{{/* 8. Return dataset */}}
+{{ return $dataset }}
