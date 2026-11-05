@@ -19,7 +19,7 @@
   - Observable completed state: Validated `contract/cfc-data-v1.schema.json` is committed and conforms strictly to JSON Schema Draft 2020-12
   - _Boundary: DataContract_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 12.4_
-- [ ] 2.2 (P) Build dataset indexing, validation, and synthesis utility
+- [x] 2.2 (P) Build dataset indexing, validation, and synthesis utility
   - Implement Node.js CLI script `scripts/cfc-data-index.mjs` to calculate lowercase hexadecimal SHA-256 hashes for all dataset files
   - Compute accurate collection counts for leagues, teams, matches, and lineups, writing the updated index to `index.json`
   - Implement `--check` mode to validate dataset files against the contract schema subset
