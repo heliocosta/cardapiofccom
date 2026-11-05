@@ -131,7 +131,7 @@
   - _Requirements: 3.1, 3.4, 3.5, 3.7_
 
 ## 6. Interface Localization and Component Partials
-- [ ] 6. Interface localization and component partials
+- [x] 6. Interface localization and component partials
 - [x] 6.1 (P) Append feature localization strings and regional overrides
   - Add all data-pages translation keys (round, venue, leagues, channel headers, freshness) to `i18n/en.yaml`, `i18n/pt.yaml`, and `i18n/es.yaml`
   - Add regional wording overrides to `i18n/en-gb.yaml`, `i18n/en-ie.yaml`, `i18n/pt-pt.yaml`, and `i18n/es-ar.yaml`
@@ -145,7 +145,7 @@
   - Observable completed state: Partials render formatted match facts, channel badges, and edition cross-links matching site-foundation design system
   - _Boundary: MatchHero, ChannelsSection, EditionLinks_
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 5.4, 5.5_
-- [ ] 6.3 (P) Build match date grouping and data freshness partials
+- [x] 6.3 (P) Build match date grouping and data freshness partials
   - Implement `layouts/_partials/cfcpage/match-days.html` grouping matches by edition-local day using `time/group-by-day` and `cfc/date-group` without channel badges
   - Implement `layouts/_partials/cfcpage/freshness.html` displaying dataset generation timestamp converted to edition time zone using `time/format`
   - Observable completed state: Match lists display clean day-grouped cards and pages render localized dataset publication timestamps

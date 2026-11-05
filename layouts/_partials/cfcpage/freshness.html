@@ -1,0 +1,33 @@
+{{- /* layouts/_partials/cfcpage/freshness.html */ -}}
+{{- /* Displays dataset generation timestamp formatted with edition timezone. */ -}}
+{{- $generatedAt := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "generatedAt" -}}
+    {{- $generatedAt = printf "%v" .generatedAt -}}
+  {{- else if isset . "dataset" -}}
+    {{- with .dataset -}}
+      {{- if reflect.IsMap . -}}
+        {{- $generatedAt = printf "%v" (.generatedAt | default "") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if eq (printf "%T" .) "string" -}}
+  {{- $generatedAt = printf "%v" . -}}
+{{- end -}}
+{{- if eq $generatedAt "" -}}
+  {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+  {{- with $dataset -}}
+    {{- if reflect.IsMap . -}}
+      {{- $generatedAt = printf "%v" (.generatedAt | default "") -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if ne $generatedAt "" -}}
+  {{- $formatted := partial "time/format.html" (dict "t" $generatedAt "style" "datetime") -}}
+  {{- $zone := partial "time/zone.html" (dict "t" $generatedAt) -}}
+  {{- $when := trim (printf "%s %s" $formatted ($zone.label | default "")) " " -}}
+  {{- $text := i18n "data_updated" (dict "When" $when) | default (printf "Data updated %s" $when) -}}
+  <footer class="cfc-freshness text-xs text-muted text-center my-8">
+    <p>{{ $text }}</p>
+  </footer>
+{{- end -}}

@@ -1,0 +1,61 @@
+{{- /* layouts/_partials/cfcpage/match-days.html */ -}}
+{{- /* Groups matches by edition-local day and renders date headings with match cards. */ -}}
+{{- /* Channel badges are NEVER shown in match lists per Req 5.6. */ -}}
+{{- $rawItems := slice -}}
+{{- $emptyMessage := "" -}}
+{{- $emptyAction := index (dict) "nil" -}}
+{{- $hl := 2 -}}
+{{- $showLeague := true -}}
+{{- if reflect.IsSlice . -}}
+  {{- $rawItems = . -}}
+{{- else if reflect.IsMap . -}}
+  {{- if isset . "matches" -}}
+    {{- $rawItems = .matches -}}
+  {{- else if isset . "items" -}}
+    {{- $rawItems = .items -}}
+  {{- end -}}
+  {{- if isset . "emptyMessage" -}}
+    {{- $emptyMessage = .emptyMessage -}}
+  {{- end -}}
+  {{- if isset . "emptyAction" -}}
+    {{- $emptyAction = .emptyAction -}}
+  {{- end -}}
+  {{- if isset . "headingLevel" -}}
+    {{- $hl = .headingLevel | default 2 -}}
+  {{- end -}}
+  {{- if isset . "showLeague" -}}
+    {{- $showLeague = .showLeague -}}
+  {{- end -}}
+{{- end -}}
+{{- $matches := slice -}}
+{{- if reflect.IsSlice $rawItems -}}
+  {{- range $rawItems -}}
+    {{- $item := . -}}
+    {{- if not (reflect.IsMap $item) -}}
+      {{- $slug := printf "%v" $item -}}
+      {{- $item = partialCached "cfcdata/match.html" $slug $slug (site.Language.Lang | default "") -}}
+    {{- else if not (isset $item "kickoff") -}}
+      {{- if isset $item "slug" -}}
+        {{- $slug := printf "%v" $item.slug -}}
+        {{- $item = partialCached "cfcdata/match.html" $slug $slug (site.Language.Lang | default "") -}}
+      {{- end -}}
+    {{- end -}}
+    {{- with $item -}}
+      {{- $matches = $matches | append . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if eq (len $matches) 0 -}}
+  {{- if $emptyMessage -}}
+    <div class="cfc-match-days cfc-match-days--empty my-6">
+      {{ partial "cfc/empty-state.html" (dict "message" $emptyMessage "action" $emptyAction) }}
+    </div>
+  {{- end -}}
+{{- else -}}
+  {{- $groups := partial "time/group-by-day.html" (dict "items" $matches "key" "kickoff") -}}
+  <div class="cfc-match-days space-y-6 my-6">
+    {{- range $groups -}}
+      {{ partial "cfc/date-group.html" (dict "matches" .items "day" .date "headingLevel" $hl "card" (dict "showChannels" false "showLeague" $showLeague)) }}
+    {{- end -}}
+  </div>
+{{- end -}}
