@@ -1,0 +1,298 @@
+{{/* layouts/_partials/cfcdata/validate.html */}}
+{{/* Comprehensive Dataset Validator for CardápioFC Data Contract v1 */}}
+{{/* Signature: partial "cfcdata/validate.html" (dict "dataset" $dataset) */}}
+{{/* Returns true if valid; calls errorf on any validation failure. */}}
+
+{{ $dataset := . }}
+{{ if and (reflect.IsMap .) (isset . "dataset") }}
+  {{ $dataset = .dataset }}
+{{ end }}
+
+{{ if not (reflect.IsMap $dataset) }}
+  {{ errorf "data-pages: validate: dataset is missing or not a map" }}
+  {{ return false }}
+{{ end }}
+
+{{ $index := $dataset.index | default dict }}
+{{ $leagues := $dataset.leagues | default dict }}
+{{ if and (reflect.IsMap $leagues) (isset $leagues "leagues") (reflect.IsMap $leagues.leagues) }}
+  {{ $leagues = $leagues.leagues }}
+{{ end }}
+
+{{ $teams := $dataset.teams | default dict }}
+{{ if and (reflect.IsMap $teams) (isset $teams "teams") (reflect.IsMap $teams.teams) }}
+  {{ $teams = $teams.teams }}
+{{ end }}
+
+{{ $matches := $dataset.matches | default dict }}
+{{ $order := $dataset.order | default slice }}
+{{ if and (reflect.IsMap $matches) (isset $matches "matches") (reflect.IsMap $matches.matches) }}
+  {{ if and (eq (len $order) 0) (isset $matches "order") }}
+    {{ $order = $matches.order }}
+  {{ end }}
+  {{ $matches = $matches.matches }}
+{{ end }}
+
+{{ $channels := $dataset.channels | default dict }}
+
+{{/* Regex definitions */}}
+{{ $instantRegex := `^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$` }}
+{{ $slugRegex := `^[a-z0-9]+(?:-[a-z0-9]+)*$` }}
+{{ $matchSlugRegex := `^[a-z0-9]+(?:-[a-z0-9]+)*-vs-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9]{4}-[0-9]{2}-[0-9]{2}$` }}
+
+{{/* Enums */}}
+{{ $allowedStatuses := slice "scheduled" "live" "halftime" "finished" "postponed" "cancelled" "suspended" }}
+{{ $allowedChannelTypes := slice "tv" "streaming" "free_tv" }}
+
+{{/* 1. Major version check */}}
+{{ $schemaVersion := "" }}
+{{ if and (reflect.IsMap $index) (isset $index "schemaVersion") }}
+  {{ $schemaVersion = printf "%v" $index.schemaVersion }}
+{{ end }}
+
+{{ if not (strings.HasPrefix $schemaVersion "1.") }}
+  {{ errorf "data-pages: index.json: contract major version mismatch (declared \"%s\", supported 1)" $schemaVersion }}
+{{ end }}
+
+{{/* 2. Collection counts vs index.counts */}}
+{{ if not (and (reflect.IsMap $index) (isset $index "counts") (reflect.IsMap $index.counts)) }}
+  {{ errorf "data-pages: index.json: counts object missing" }}
+{{ else }}
+  {{ $expLeagues := -1 }}
+  {{ if isset $index.counts "leagues" }}{{ $expLeagues = int $index.counts.leagues }}{{ end }}
+  {{ if ne (len $leagues) $expLeagues }}
+    {{ errorf "data-pages: leagues.json: count mismatch (expected %d, got %d)" $expLeagues (len $leagues) }}
+  {{ end }}
+
+  {{ $expTeams := -1 }}
+  {{ if isset $index.counts "teams" }}{{ $expTeams = int $index.counts.teams }}{{ end }}
+  {{ if ne (len $teams) $expTeams }}
+    {{ errorf "data-pages: teams.json: count mismatch (expected %d, got %d)" $expTeams (len $teams) }}
+  {{ end }}
+
+  {{ $expMatches := -1 }}
+  {{ if isset $index.counts "matches" }}{{ $expMatches = int $index.counts.matches }}{{ end }}
+  {{ if ne (len $matches) $expMatches }}
+    {{ errorf "data-pages: matches.json: count mismatch (expected %d, got %d)" $expMatches (len $matches) }}
+  {{ end }}
+{{ end }}
+
+{{/* 3. matches.order check */}}
+{{ if not (reflect.IsSlice $order) }}
+  {{ errorf "data-pages: matches.json: order missing or not an array" }}
+{{ else }}
+  {{ if ne (len $order) (len $matches) }}
+    {{ errorf "data-pages: matches.json: order count mismatch (expected %d, got %d)" (len $matches) (len $order) }}
+  {{ end }}
+
+  {{ $seenOrder := dict }}
+  {{ $prevKickoff := "" }}
+  {{ range $i, $mSlug := $order }}
+    {{ $mSlugStr := printf "%v" $mSlug }}
+    {{ if not (isset $matches $mSlugStr) }}
+      {{ errorf "data-pages: matches.json: %s: order refers to unknown match" $mSlugStr }}
+    {{ else }}
+      {{ if isset $seenOrder $mSlugStr }}
+        {{ errorf "data-pages: matches.json: %s: duplicate match in order" $mSlugStr }}
+      {{ end }}
+      {{ $seenOrder = merge $seenOrder (dict $mSlugStr true) }}
+      {{ $m := index $matches $mSlugStr }}
+      {{ $k := printf "%v" ($m.kickoff | default "") }}
+      {{ if and (ne $prevKickoff "") (gt $prevKickoff $k) }}
+        {{ errorf "data-pages: matches.json: %s: kickoff order violation (%s > %s)" $mSlugStr $prevKickoff $k }}
+      {{ end }}
+      {{ $prevKickoff = $k }}
+    {{ end }}
+  {{ end }}
+
+  {{ range $mSlug, $m := $matches }}
+    {{ if not (isset $seenOrder $mSlug) }}
+      {{ errorf "data-pages: matches.json: %s: match missing from order" $mSlug }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 5. RFC 3339 UTC timestamps on index */}}
+{{ $genAt := printf "%v" ($index.generatedAt | default "") }}
+{{ if eq (len (findRE $instantRegex $genAt)) 0 }}
+  {{ errorf "data-pages: index.json: generatedAt invalid timestamp \"%s\"" $genAt }}
+{{ end }}
+{{ if not (and (reflect.IsMap $index) (isset $index "window") (reflect.IsMap $index.window)) }}
+  {{ errorf "data-pages: index.json: window missing or incomplete" }}
+{{ else }}
+  {{ $winFrom := printf "%v" ($index.window.from | default "") }}
+  {{ if eq (len (findRE $instantRegex $winFrom)) 0 }}
+    {{ errorf "data-pages: index.json: window.from invalid timestamp \"%s\"" $winFrom }}
+  {{ end }}
+  {{ $winTo := printf "%v" ($index.window.to | default "") }}
+  {{ if eq (len (findRE $instantRegex $winTo)) 0 }}
+    {{ errorf "data-pages: index.json: window.to invalid timestamp \"%s\"" $winTo }}
+  {{ end }}
+{{ end }}
+
+{{/* 4 & 6. Leagues validation (slugs, map keys, names.en) */}}
+{{ if not (reflect.IsMap $leagues) }}
+  {{ errorf "data-pages: leagues.json: expected object map" }}
+{{ else }}
+  {{ range $key, $league := $leagues }}
+    {{ if not (reflect.IsMap $league) }}
+      {{ errorf "data-pages: leagues.json: %s: record is not an object" $key }}
+    {{ else }}
+      {{ $slug := printf "%v" ($league.slug | default "") }}
+      {{ if ne $key $slug }}
+        {{ errorf "data-pages: leagues.json: %s: slug does not match map key \"%s\"" $key $slug }}
+      {{ end }}
+      {{ if eq (len (findRE $slugRegex $slug)) 0 }}
+        {{ errorf "data-pages: leagues.json: %s: slug invalid format \"%s\"" $key $slug }}
+      {{ end }}
+      {{ $hasEn := false }}
+      {{ if and (isset $league "names") (reflect.IsMap $league.names) }}
+        {{ $enVal := index $league.names "en" }}
+        {{ if and $enVal (ne (strings.TrimSpace (printf "%v" $enVal)) "") }}
+          {{ $hasEn = true }}
+        {{ end }}
+      {{ end }}
+      {{ if not $hasEn }}
+        {{ errorf "data-pages: leagues.json: %s: names.en missing or empty" $key }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 4 & 6. Teams validation (slugs, map keys, names.en) */}}
+{{ if not (reflect.IsMap $teams) }}
+  {{ errorf "data-pages: teams.json: expected object map" }}
+{{ else }}
+  {{ range $key, $team := $teams }}
+    {{ if not (reflect.IsMap $team) }}
+      {{ errorf "data-pages: teams.json: %s: record is not an object" $key }}
+    {{ else }}
+      {{ $slug := printf "%v" ($team.slug | default "") }}
+      {{ if ne $key $slug }}
+        {{ errorf "data-pages: teams.json: %s: slug does not match map key \"%s\"" $key $slug }}
+      {{ end }}
+      {{ if eq (len (findRE $slugRegex $slug)) 0 }}
+        {{ errorf "data-pages: teams.json: %s: slug invalid format \"%s\"" $key $slug }}
+      {{ end }}
+      {{ $hasEn := false }}
+      {{ if and (isset $team "names") (reflect.IsMap $team.names) }}
+        {{ $enVal := index $team.names "en" }}
+        {{ if and $enVal (ne (strings.TrimSpace (printf "%v" $enVal)) "") }}
+          {{ $hasEn = true }}
+        {{ end }}
+      {{ end }}
+      {{ if not $hasEn }}
+        {{ errorf "data-pages: teams.json: %s: names.en missing or empty" $key }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 4, 5, 7, 8. Matches validation */}}
+{{ if not (reflect.IsMap $matches) }}
+  {{ errorf "data-pages: matches.json: expected object map" }}
+{{ else }}
+  {{ range $key, $match := $matches }}
+    {{ if not (reflect.IsMap $match) }}
+      {{ errorf "data-pages: matches.json: %s: record is not an object" $key }}
+    {{ else }}
+      {{ $slug := printf "%v" ($match.slug | default "") }}
+      {{ if ne $key $slug }}
+        {{ errorf "data-pages: matches.json: %s: slug does not match map key \"%s\"" $key $slug }}
+      {{ end }}
+      {{ if eq (len (findRE $matchSlugRegex $slug)) 0 }}
+        {{ errorf "data-pages: matches.json: %s: slug invalid format \"%s\"" $key $slug }}
+      {{ end }}
+
+      {{/* Kickoff timestamp RFC 3339 UTC */}}
+      {{ $kickoff := printf "%v" ($match.kickoff | default "") }}
+      {{ if eq (len (findRE $instantRegex $kickoff)) 0 }}
+        {{ errorf "data-pages: matches.json: %s: kickoff invalid timestamp \"%s\"" $key $kickoff }}
+      {{ end }}
+
+      {{/* Expected slug format: homeSlug-vs-awaySlug-YYYY-MM-DD */}}
+      {{ $homeSlug := printf "%v" ($match.homeSlug | default "") }}
+      {{ $awaySlug := printf "%v" ($match.awaySlug | default "") }}
+      {{ $kickoffDate := "" }}
+      {{ if ge (len $kickoff) 10 }}
+        {{ $kickoffDate = substr $kickoff 0 10 }}
+      {{ end }}
+      {{ $expectedSlug := printf "%s-vs-%s-%s" $homeSlug $awaySlug $kickoffDate }}
+      {{ if ne $slug $expectedSlug }}
+        {{ errorf "data-pages: matches.json: %s: slug mismatch (expected \"%s\", got \"%s\")" $key $expectedSlug $slug }}
+      {{ end }}
+
+      {{/* Match status enum */}}
+      {{ $status := printf "%v" ($match.status | default "") }}
+      {{ if not (in $allowedStatuses $status) }}
+        {{ errorf "data-pages: matches.json: %s: status unknown status \"%s\"" $key $status }}
+      {{ end }}
+
+      {{/* Referential integrity: league, home team, away team */}}
+      {{ $leagueSlug := printf "%v" ($match.leagueSlug | default "") }}
+      {{ if not (isset $leagues $leagueSlug) }}
+        {{ errorf "data-pages: matches.json: %s: leagueSlug refers to unknown league \"%s\"" $key $leagueSlug }}
+      {{ end }}
+
+      {{ if not (isset $teams $homeSlug) }}
+        {{ errorf "data-pages: matches.json: %s: homeSlug refers to unknown team \"%s\"" $key $homeSlug }}
+      {{ end }}
+
+      {{ if not (isset $teams $awaySlug) }}
+        {{ errorf "data-pages: matches.json: %s: awaySlug refers to unknown team \"%s\"" $key $awaySlug }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 7 & 8. Channels validation */}}
+{{ if not (reflect.IsMap $channels) }}
+  {{ errorf "data-pages: channels: expected map of country channels" }}
+{{ else }}
+  {{ range $ccKey, $chFile := $channels }}
+    {{ $cc := printf "%v" $ccKey | strings.TrimPrefix "channels/" | strings.TrimSuffix ".json" }}
+    {{ if and (reflect.IsMap $chFile) (isset $chFile "country") (ne (printf "%v" $chFile.country) "") }}
+      {{ $cc = printf "%v" $chFile.country }}
+    {{ end }}
+
+    {{ if not (reflect.IsMap $chFile) }}
+      {{ errorf "data-pages: channels/%s.json: record is not an object" $cc }}
+    {{ else }}
+      {{/* Channel types */}}
+      {{ if and (isset $chFile "channels") (reflect.IsMap $chFile.channels) }}
+        {{ range $channelId, $ch := $chFile.channels }}
+          {{ $chType := "" }}
+          {{ if reflect.IsMap $ch }}
+            {{ $chType = printf "%v" ($ch.type | default "") }}
+          {{ end }}
+          {{ if not (in $allowedChannelTypes $chType) }}
+            {{ errorf "data-pages: channels/%s.json: %s: type unknown channel type \"%s\"" $cc $channelId $chType }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{/* Referential integrity in matches */}}
+      {{ if and (isset $chFile "matches") (reflect.IsMap $chFile.matches) }}
+        {{ range $matchSlug, $chList := $chFile.matches }}
+          {{ if not (isset $matches $matchSlug) }}
+            {{ errorf "data-pages: channels/%s.json: %s: refers to unknown match" $cc $matchSlug }}
+          {{ end }}
+          {{ if not (reflect.IsSlice $chList) }}
+            {{ errorf "data-pages: channels/%s.json: %s: channel list is not an array" $cc $matchSlug }}
+          {{ else if eq (len $chList) 0 }}
+            {{ errorf "data-pages: channels/%s.json: %s: match has empty channel list (must be omitted)" $cc $matchSlug }}
+          {{ else }}
+            {{ range $chIdx, $channelId := $chList }}
+              {{ $chIdStr := printf "%v" $channelId }}
+              {{ if not (and (isset $chFile "channels") (reflect.IsMap $chFile.channels) (isset $chFile.channels $chIdStr)) }}
+                {{ errorf "data-pages: channels/%s.json: %s: refers to unknown channel \"%s\"" $cc $matchSlug $chIdStr }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return true }}

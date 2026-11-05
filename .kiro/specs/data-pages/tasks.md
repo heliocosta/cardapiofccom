@@ -55,17 +55,17 @@
   - _Boundary: Fetcher_
   - _Depends: 3.1_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.11_
-- [ ] 3.3 Implement comprehensive dataset validator
+- [x] 3.3 Implement comprehensive dataset validator
   - Implement `layouts/_partials/cfcdata/validate.html` enforcing contract schema version (major version 1), slug regex formatting, and RFC 3339 UTC timestamps
   - Validate match status enums and channel type enums against allowed definitions
-  - Validate referential integrity: match home and away team slugs, league slugs, lineup associations, and channel match mappings
+  - Validate referential integrity: match home and away team slugs, league slugs, and channel match mappings (lineups are out of scope)
   - Validate collection counts against `index.counts` to prevent silent duplicate key omissions
   - Observable completed state: `partial "cfcdata/validate.html"` returns true for valid datasets and halts the build with `data-pages: <file>: <slug>: <field> <problem>` on first invalid record
   - _Boundary: Validator_
   - _Requirements: 2.5, 2.6, 2.8, 2.9, 3.6, 10.1_
 - [ ] 3.4 Implement dataset loader and file budget estimator
   - Implement `layouts/_partials/cfcdata/dataset.html` aggregating `index.json`, entity collections, and regional channel files with `partialCached` deduplication
-  - Implement `layouts/_partials/cfcdata/budget.html` computing total estimated output files based on edition count, entities, lineup page mode, and static files
+  - Implement `layouts/_partials/cfcdata/budget.html` computing total estimated output files based on edition count, entities (matches, teams, leagues), and static files (lineups out of scope, Λ = 0)
   - Log estimated file count summary during build; halt build with `errorf` naming contributors if estimate exceeds file budget
   - Observable completed state: `partialCached "cfcdata/dataset.html" . "dataset"` returns validated dataset aggregate and logs output file estimate without redundant network fetches
   - _Boundary: DatasetLoader, BudgetEstimator_
@@ -76,19 +76,18 @@
 - [ ] 4. Core data helpers, view-models, and downstream contracts
 - [ ] 4.1 Implement localized name resolver, canonical URL builder, and time-window slug selector
   - Implement `layouts/_partials/cfcdata/name.html` resolving localized text through edition code, language subtag, and required English fallback
-  - Implement `layouts/_partials/cfcdata/url.html` building edition-prefixed canonical URLs for matches, lineups, teams, leagues, and league directory matching mobile app patterns
+  - Implement `layouts/_partials/cfcdata/url.html` building edition-prefixed canonical URLs for matches, teams, leagues, and league directory matching mobile app patterns (lineups out of scope)
   - Implement `layouts/_partials/cfcdata/window.html` filtering ordered match slugs by time range (`from`, `to`), match statuses, limits, and chronological vs reverse ordering
   - Observable completed state: Calling helper partials returns accurate fallback names, canonical URLs matching the URL Map, and filtered match slug lists
   - _Boundary: NameResolver, UrlBuilder, Window_
-  - _Requirements: 3.1, 5.4, 6.7, 7.2, 8.2, 8.5, 9.1, 9.2, 9.3, 10.1, 10.3, 10.5, 12.4_
-- [ ] 4.2 (P) Implement match and lineup view-model services
-  - Implement `layouts/_partials/cfcdata/match.html` constructing `MatchVM` with localized team names, league info, scores, venues, rounds, and foundation `Match` compatibility
-  - Implement `layouts/_partials/cfcdata/lineup.html` constructing `LineupVM` with starting eleven, substitutes, coach, and formation grids for both teams
+  - _Requirements: 3.1, 5.4, 7.2, 8.2, 8.5, 9.1, 9.2, 9.3, 10.1, 10.3, 10.5, 12.4_
+- [ ] 4.2 (P) Implement match view-model service
+  - Implement `layouts/_partials/cfcdata/match.html` constructing `MatchVM` with localized team names, league info, scores, venues, rounds, and foundation `Match` compatibility (lineup links/view-models out of scope)
   - Cache view-model instances using `partialCached` keyed by entity slug and language code
-  - Observable completed state: Partials return structured, localized view-models for matches and lineups or `nil` when data is absent
-  - _Boundary: MatchViewModel, LineupViewModel_
+  - Observable completed state: Partial returns structured, localized view-models for matches or `nil` when data is absent
+  - _Boundary: MatchViewModel_
   - _Depends: 4.1_
-  - _Requirements: 4.3, 4.4, 4.5, 6.1, 12.1_
+  - _Requirements: 4.3, 4.4, 4.5, 12.1_
 - [ ] 4.3 (P) Implement team, league, and league directory view-model services
   - Implement `layouts/_partials/cfcdata/team.html` constructing `TeamVM` with localized names, crests, associated leagues, and match slugs
   - Implement `layouts/_partials/cfcdata/league.html` constructing `LeagueVM` with logos, country info, popular competition status, and match slugs
@@ -116,14 +115,13 @@
   - Observable completed state: Section root files exist across all editions; `/league/` renders while `/match/` and `/team/` listings are suppressed
   - _Boundary: ContentScaffolding_
   - _Requirements: 3.1, 3.2, 3.3, 3.5_
-- [ ] 5.2 Build match and lineup content adapter
+- [ ] 5.2 Build match content adapter
   - Implement `content/en/match/_content.gotmpl` calling `cfcdata/budget.html` and generating pages via `.AddPage` for every match
-  - Generate match section pages (`kind: "section"`) at `/match/{slug}/` with match metadata and application deep link parameters
-  - Generate lineup child pages (`kind: "page"`) at `/match/{slug}/lineup/` when `lineupPages = "all"` or official lineup exists
-  - Observable completed state: Hugo build registers section pages for all matches and child pages for lineups across all active editions
+  - Generate match section pages (`kind: "section"`) at `/match/{slug}/` with match metadata and application deep link parameters (lineup pages out of scope)
+  - Observable completed state: Hugo build registers section pages for all matches across all active editions
   - _Boundary: MatchAdapter_
   - _Depends: 3.4, 4.1, 5.1_
-  - _Requirements: 3.1, 3.4, 3.5, 3.7, 11.3, 11.5_
+  - _Requirements: 3.1, 3.4, 3.5, 3.7, 11.3_
 - [ ] 5.3 Build team and league content adapters
   - Implement `content/en/team/_content.gotmpl` generating pages via `.AddPage` for every team at `/team/{slug}/` with entity parameters
   - Implement `content/en/league/_content.gotmpl` generating pages via `.AddPage` for every league at `/league/{slug}/` with entity parameters and weights
@@ -135,7 +133,7 @@
 ## 6. Interface Localization and Component Partials
 - [ ] 6. Interface localization and component partials
 - [ ] 6.1 (P) Append feature localization strings and regional overrides
-  - Add all data-pages translation keys (lineups, formations, round, venue, leagues, channel headers, freshness) to `i18n/en.yaml`, `i18n/pt.yaml`, and `i18n/es.yaml`
+  - Add all data-pages translation keys (round, venue, leagues, channel headers, freshness) to `i18n/en.yaml`, `i18n/pt.yaml`, and `i18n/es.yaml`
   - Add regional wording overrides to `i18n/en-gb.yaml`, `i18n/en-ie.yaml`, `i18n/pt-pt.yaml`, and `i18n/es-ar.yaml`
   - Observable completed state: All base and regional translation files contain feature i18n keys without syntax errors or missing keys
   - _Boundary: Localization_
@@ -153,32 +151,19 @@
   - Observable completed state: Match lists display clean day-grouped cards and pages render localized dataset publication timestamps
   - _Boundary: MatchDays, Freshness_
   - _Requirements: 4.1, 4.6, 5.6_
-- [ ] 6.4 (P) Build official lineup, unannounced state, and custom formation markup
-  - Implement `layouts/_partials/cfcpage/lineup-official.html` rendering starting eleven, substitutes, coach, and formation grids for both teams
-  - Implement `layouts/_partials/cfcpage/lineup-tba.html` rendering unannounced lineup state with kick-off time and mobile app prompt
-  - Implement `layouts/_partials/cfcpage/lineup-custom.html` providing hidden container and template markup for client-rendered custom lineups
-  - Observable completed state: Lineup partials render official team lists, unannounced placeholders, and custom formation template containers
-  - _Boundary: LineupDisplay_
-  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.6_
-- [ ] 6.5 (P) Build client-side custom formation parser and renderer
-  - Create vanilla ES2020 module `assets/js/cfc-lineup.js` parsing `?l=` query parameter with 2 KB size limit
-  - Decode base64/base64url payload, parse JSON, validate formation structure, and render players into custom container using strict `textContent`
-  - Toggle visibility between static lineup container and custom formation container upon valid decode without page reload
-  - Bundle, minify, and fingerprint script using `js.Build`
-  - Observable completed state: Client script successfully decodes valid formation links, safely injects plain text players, and leaves static markup intact on invalid payloads
-  - _Boundary: LineupScript_
-  - _Requirements: 6.3, 6.4, 6.5, 6.6, 11.7_
+- [-] 6.4 (P) [OUT OF SCOPE] Official lineup, unannounced state, and custom formation markup
+  - Lineups are out of scope per user direction.
+- [-] 6.5 (P) [OUT OF SCOPE] Client-side custom formation parser and renderer
+  - Lineups are out of scope per user direction.
 
 ## 7. Entity Page Templates and Layout Integration
 - [ ] 7. Entity page templates and layout integration
-- [ ] 7.1 Build match and lineup entity page templates
-  - Implement `layouts/match/section.html` composing page header breadcrumbs, match hero, lineup link, channel section, edition links, downstream FAQ hook (`cfcpage/faq-section.html` if exists), and freshness footer
-  - Implement `layouts/match/page.html` composing breadcrumbs, default lineup block (official or TBA), custom lineup container, back-to-match link, freshness footer, and lineup module script
-  - Ensure lineup script is loaded exclusively on lineup pages and excluded from all other templates
-  - Observable completed state: Full match and lineup pages render under `/match/{slug}/` and `/match/{slug}/lineup/` across all editions
-  - _Boundary: MatchPage, LineupPage_
-  - _Depends: 5.2, 6.2, 6.3, 6.4, 6.5_
-  - _Requirements: 3.1, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 5.1, 5.2, 5.3, 5.4, 5.5, 6.1, 6.2, 6.6, 6.7, 10.3, 10.4, 10.5, 11.1, 11.7_
+- [ ] 7.1 Build match entity page template
+  - Implement `layouts/match/section.html` composing page header breadcrumbs, match hero, channel section, edition links, downstream FAQ hook (`cfcpage/faq-section.html` if exists), and freshness footer (lineups out of scope)
+  - Observable completed state: Full match pages render under `/match/{slug}/` across all editions
+  - _Boundary: MatchPage_
+  - _Depends: 5.2, 6.2, 6.3_
+  - _Requirements: 3.1, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 5.1, 5.2, 5.3, 5.4, 5.5, 10.3, 10.4, 10.5, 11.1_
 - [ ] 7.2 Build team entity page template
   - Implement `layouts/team/page.html` with team crest header, upcoming matches list (capped at 10), recent results list (capped at 5), participating league links, empty states, and freshness footer
   - Connect breadcrumb navigation from edition home to team page
@@ -207,13 +192,12 @@
 - [ ] 8. Automated verification and failure testing suite
 - [ ] 8.1 Build automated build output verification script
   - Implement Node.js script `scripts/check-data-pages.mjs` inspecting `public/` directory after sample dataset build
-  - Assert existence of all match, lineup, team, and league pages and absence of `/match/index.html`, `/team/index.html`, and legacy URL families
-  - Assert channel filtering between regional and Global editions, time zone and day grouping differences across editions, and lineup player content without JS
-  - Assert lineup script presence strictly on lineup pages and verify compressed page weight budgets
+  - Assert existence of all match, team, and league pages and absence of `/match/index.html`, `/team/index.html`, lineup pages, and legacy URL families
+  - Assert channel filtering between regional and Global editions, time zone and day grouping differences across editions, and compressed page weight budgets
   - Observable completed state: Executing `node scripts/check-data-pages.mjs` passes with zero errors on standard production builds
   - _Boundary: OutputCheck_
   - _Depends: 7.1, 7.2, 7.3, 7.4_
-  - _Requirements: 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.6, 11.1, 11.2, 11.7_
+  - _Requirements: 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 5.1, 5.2, 5.3, 5.4, 11.1, 11.2_
 - [ ] 8.2 Build automated data failure test suite
   - Implement Node.js test runner `scripts/test-data-pages.mjs` executing builds against mutated sample datasets in temporary directories
   - Assert build fails with exact error messages on major version mismatch, SHA-256 hash mismatch, unzoned kick-off times, invalid match status, missing foreign keys, and file budget overflow
@@ -227,8 +211,7 @@
   - Run full production build against sample dataset and verify all pages and downstream contracts (`cfcdata/page-entity.html`, `cfcdata/entity-list.html`)
   - Synthesize 1,260-match dataset using `scripts/cfc-data-index.mjs --synthesize 1260` and execute benchmark build
   - Verify CI build time finishes in under 30 seconds and total output files stay under 18,000 budget
-  - Test client-side custom formation parameter parsing in browser environment including XSS prevention with script/HTML injection strings
-  - Observable completed state: Documented benchmark confirms build duration under 30 seconds, budget under 18,000 files, and safe custom lineup rendering
+  - Observable completed state: Documented benchmark confirms build duration under 30 seconds and budget under 18,000 files
   - _Boundary: PerformanceVerification_
   - _Depends: 8.1, 8.2_
-  - _Requirements: 6.3, 6.4, 6.5, 11.3, 11.4, 11.6, 12.1, 12.2, 12.3, 12.5_
+  - _Requirements: 11.3, 11.4, 11.6, 12.1, 12.2, 12.3, 12.5_

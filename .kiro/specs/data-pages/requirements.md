@@ -16,7 +16,7 @@ Terms: the **Dataset** is one published set of Data Contract files; the **Sample
 
 ## Boundary Context
 - **In scope**: the Data Contract document and machine-readable schema; the Sample Dataset; loading the Dataset once per build with explicit validation; generating match, lineup, team and league pages and a league directory for every edition; the home page match listing; kick-off time, status, score, venue and round display; TV/streaming channel display per edition; official lineup display and client-side custom formations; internal links between pages; page size limits and the build-time file-count estimate; the page data, entity list and address map offered to downstream features.
-- **Out of scope**: the export job that queries the database and uploads the Dataset (the operator builds it against the Data Contract); postponed or rescheduled matches changing address (no previous-address handling); structured data, Open Graph, canonical, hreflang, sitemaps (seo-social); search page, search index output, app banners and well-known files (app-deeplinks); hosting, deploy triggers, redirects including trailing-slash and geo/legacy redirects, and the final output file-count check on the deployed artefact (edge-delivery); analytics events beyond the tracking attributes already defined by site-foundation components (analytics-consent); live score updates after the build.
+- **Out of scope**: lineup pages, lineup data models, client formation scripts, and custom lineup query parameters (all lineup functionality is out of scope per user direction); the export job that queries the database and uploads the Dataset (the operator builds it against the Data Contract); postponed or rescheduled matches changing address (no previous-address handling); structured data, Open Graph, canonical, hreflang, sitemaps (seo-social); search page, search index output, app banners and well-known files (app-deeplinks); hosting, deploy triggers, redirects including trailing-slash and geo/legacy redirects, and the final output file-count check on the deployed artefact (edge-delivery); analytics events beyond the tracking attributes already defined by site-foundation components (analytics-consent); live score updates after the build.
 - **Adjacent expectations**: site-foundation provides the six-edition registry, the time display rules (which reject times without a zone offset), the shared UI components and their match status values, page shells, the home page extension slot and the base interface-string files to which this feature appends its own keys. The operator's export publishes files that conform to the Data Contract and publishes the dataset index last. edge-delivery triggers builds after each publication and at least once per day, so that "today" on the home page and match statuses are refreshed.
 
 ## Requirements
@@ -56,13 +56,13 @@ Terms: the **Dataset** is one published set of Data Contract files; the **Sample
 **Objective:** As a visitor following a link shared from the app, I want every league, team, match and lineup to have a stable page at the same address the app uses, so that links open the right content in my edition.
 
 #### Acceptance Criteria
-1. The CardápioFC Site shall generate, in every edition, one page per match at `{edition prefix}match/{match slug}/`, one lineup page per match at `{edition prefix}match/{match slug}/lineup/`, one page per team at `{edition prefix}team/{team slug}/` and one page per league at `{edition prefix}league/{league slug}/`, where the edition prefix is `/` for Global and `/{edition code}/` for other editions.
+1. The CardápioFC Site shall generate, in every edition, one page per match at `{edition prefix}match/{match slug}/`, one page per team at `{edition prefix}team/{team slug}/` and one page per league at `{edition prefix}league/{league slug}/`, where the edition prefix is `/` for Global and `/{edition code}/` for other editions. Lineup pages are out of scope.
 2. The CardápioFC Site shall generate, in every edition, a league directory page at `{edition prefix}league/` listing every league in the Dataset.
 3. The CardápioFC Site shall not generate listing pages at `{edition prefix}match/` or `{edition prefix}team/`, nor any page under the legacy `/en/matches/` or `/pt/jogos/` address families.
 4. When an Entity is present in the Dataset, the CardápioFC Site shall generate its pages in every edition; when an Entity is absent from the Dataset, the CardápioFC Site shall not generate pages for it.
 5. The CardápioFC Site shall relate the pages of the same Entity across editions, so that the edition switcher leads to the same Entity's page in the target edition.
 6. If two Entities would produce the same page address, then the Site Build shall fail with a message naming the address.
-7. When an operator adds an edition through the edition registry, the CardápioFC Site shall generate that edition's league, team, match and lineup pages without changes to page templates.
+7. When an operator adds an edition through the edition registry, the CardápioFC Site shall generate that edition's league, team and match pages without changes to page templates.
 
 ### Requirement 4: Kick-off time, status and match facts
 **Objective:** As a visitor, I want to see when a match kicks off in my local time and what state it is in, so that I do not miss it or misread the time.
@@ -86,17 +86,18 @@ Terms: the **Dataset** is one published set of Data Contract files; the **Sample
 5. When a channel has a link, the CardápioFC Site shall open it as an external link without passing referrer context to the destination.
 6. The CardápioFC Site shall not display channels on team, league or home page match lists other than through a count or the match page link.
 
-### Requirement 6: Lineup page
-**Objective:** As a visitor, I want to see the official lineup or a custom formation shared from the app, so that lineup links from the app work on the web.
+### Requirement 6: Lineup page [OUT OF SCOPE]
+> [!NOTE]
+> Per user specification, all lineup pages, official lineups, custom formation builder (`?l=`) parameters, and client lineup scripts are OUT OF SCOPE. Lineup pages are not generated, and match pages do not link to lineups.
 
 #### Acceptance Criteria
-1. When the Dataset includes an official lineup for a match, the lineup page shall display, for each team, the formation, the starting players with shirt numbers and positions, the substitutes and the coach where provided.
-2. When the Dataset includes no official lineup for a match, the lineup page shall display a "lineup to be announced" state with the match kick-off time and a prompt to build a lineup in the app.
-3. When a visitor opens a lineup page with a valid custom-formation parameter `l`, the lineup page shall display the custom formation, labelled as a custom formation, on the same page without a further page load.
-4. If the `l` parameter is absent, cannot be decoded, is larger than 2 KB or does not describe a valid formation, then the lineup page shall display the official lineup when available, otherwise the "lineup to be announced" state.
-5. The lineup page shall display text from the `l` parameter only as plain text and shall never execute or render it as markup.
-6. While scripting is unavailable in the visitor's browser, the lineup page shall still display the official lineup or the "lineup to be announced" state.
-7. The lineup page shall link to its match page, and the match page shall link to its lineup page.
+1. [OUT OF SCOPE - Do not implement]
+2. [OUT OF SCOPE - Do not implement]
+3. [OUT OF SCOPE - Do not implement]
+4. [OUT OF SCOPE - Do not implement]
+5. [OUT OF SCOPE - Do not implement]
+6. [OUT OF SCOPE - Do not implement]
+7. [OUT OF SCOPE - Do not implement]
 
 ### Requirement 7: Team page
 **Objective:** As a visitor, I want a team page with its next and recent matches, so that I can follow my team.
