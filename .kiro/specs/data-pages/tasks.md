@@ -115,7 +115,7 @@
   - Observable completed state: Section root files exist across all editions; `/league/` renders while `/match/` and `/team/` listings are suppressed
   - _Boundary: ContentScaffolding_
   - _Requirements: 3.1, 3.2, 3.3, 3.5_
-- [ ] 5.2 Build match content adapter
+- [x] 5.2 Build match content adapter
   - Implement `content/en/match/_content.gotmpl` calling `cfcdata/budget.html` and generating pages via `.AddPage` for every match
   - Generate match section pages (`kind: "section"`) at `/match/{slug}/` with match metadata and application deep link parameters (lineup pages out of scope)
   - Observable completed state: Hugo build registers section pages for all matches across all active editions

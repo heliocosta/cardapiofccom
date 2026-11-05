@@ -127,7 +127,23 @@ const tempBuildDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cfc-settings-test-')
 const testContentPath = path.join(ROOT_DIR, 'content/en/_cfc_settings_harness.md');
 const testLayoutPath = path.join(ROOT_DIR, 'layouts/_cfc_settings_harness.html');
 
+const stashedAdapters = [];
+
 function setupHarness() {
+  // Stash content adapters so hugo -e production can run without triggering remote dataset fetch
+  const adapterCandidates = [
+    path.join(ROOT_DIR, 'content/en/match/_content.gotmpl'),
+    path.join(ROOT_DIR, 'content/en/team/_content.gotmpl'),
+    path.join(ROOT_DIR, 'content/en/league/_content.gotmpl'),
+  ];
+  for (const cand of adapterCandidates) {
+    if (fs.existsSync(cand)) {
+      const bak = `${cand}.settings_bak`;
+      fs.renameSync(cand, bak);
+      stashedAdapters.push({ original: cand, backup: bak });
+    }
+  }
+
   fs.writeFileSync(
     testContentPath,
     `---
@@ -149,6 +165,12 @@ url: "/cfc-test-resolved-settings.json"
 }
 
 function cleanupHarness() {
+  for (const item of stashedAdapters) {
+    if (fs.existsSync(item.backup)) {
+      fs.renameSync(item.backup, item.original);
+    }
+  }
+  stashedAdapters.length = 0;
   if (fs.existsSync(testContentPath)) fs.unlinkSync(testContentPath);
   if (fs.existsSync(testLayoutPath)) fs.unlinkSync(testLayoutPath);
   if (fs.existsSync(tempBuildDir)) fs.rmSync(tempBuildDir, { recursive: true, force: true });

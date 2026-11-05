@@ -1,0 +1,39 @@
+{{ .EnableAllLanguages }}
+{{ $dataset := partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ $settings := partialCached "cfcdata/settings.html" . "settings" }}
+{{ $budget := partialCached "cfcdata/budget.html" (dict "dataset" $dataset "settings" $settings) "budget" }}
+{{ range $slug, $m := $dataset.matches }}
+  {{ $home := index $dataset.teams $m.homeSlug }}
+  {{ $away := index $dataset.teams $m.awaySlug }}
+  {{ $homeNames := dict }}
+  {{ with $home }}
+    {{ if reflect.IsMap . }}
+      {{ $homeNames = .names }}
+    {{ end }}
+  {{ end }}
+  {{ $awayNames := dict }}
+  {{ with $away }}
+    {{ if reflect.IsMap . }}
+      {{ $awayNames = .names }}
+    {{ end }}
+  {{ end }}
+  {{ $homeName := partial "cfcdata/name.html" (dict "names" $homeNames "lang" site.Language.Lang) }}
+  {{ if not $homeName }}{{ $homeName = $m.homeSlug }}{{ end }}
+  {{ $awayName := partial "cfcdata/name.html" (dict "names" $awayNames "lang" site.Language.Lang) }}
+  {{ if not $awayName }}{{ $awayName = $m.awaySlug }}{{ end }}
+  {{ $title := printf "%s vs %s" $homeName $awayName }}
+
+  {{ $.AddPage (dict
+    "kind" "section"
+    "path" $slug
+    "title" $title
+    "dates" (dict "date" (time.AsTime $m.kickoff) "lastmod" (time.AsTime $dataset.generatedAt) "publishDate" (time.AsTime $dataset.generatedAt))
+    "params" (dict
+      "cfc" (dict
+        "kind" "match"
+        "slug" $slug
+        "appPath" (printf "/match/%s" $slug)
+      )
+    )
+  ) }}
+{{ end }}

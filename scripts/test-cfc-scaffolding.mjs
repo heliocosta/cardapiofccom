@@ -114,6 +114,10 @@ try {
     cwd: ROOT_DIR,
     encoding: 'utf8',
     stdio: 'pipe',
+    env: {
+      ...process.env,
+      HUGO_CFC_DATA_SOURCE: process.env.HUGO_CFC_DATA_SOURCE || 'sample',
+    },
   });
   assert(true, 'Hugo build succeeds with 0 exit code');
   assert(!buildOutput.includes('ERROR'), 'Build output contains 0 ERROR entries');
@@ -166,7 +170,7 @@ function findHtmlFiles(dir, matchSubstr) {
     const p = path.join(dir, ent.name);
     if (ent.isDirectory()) {
       matches = matches.concat(findHtmlFiles(p, matchSubstr));
-    } else if (ent.isFile() && p.includes(matchSubstr) && ent.name === 'index.html') {
+    } else if (ent.isFile() && p.endsWith(path.join(matchSubstr, 'index.html'))) {
       matches.push(p);
     }
   }

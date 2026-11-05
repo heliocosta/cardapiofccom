@@ -43,8 +43,16 @@ const SPIKE_FILES = {
   spikeData: path.join(ROOT_DIR, 'data/spike_test.json'),
 };
 
+const SPIKE_BACKUP = {};
+
 function setupSpikeArtifacts() {
   console.log('1. Setting up spike prototype artifacts...');
+
+  for (const f of [SPIKE_FILES.matchGotmpl, SPIKE_FILES.teamGotmpl, SPIKE_FILES.leagueGotmpl]) {
+    if (fs.existsSync(f)) {
+      SPIKE_BACKUP[f] = fs.readFileSync(f, 'utf8');
+    }
+  }
 
   for (const dir of SPIKE_DIRS) {
     fs.mkdirSync(dir, { recursive: true });
@@ -201,16 +209,15 @@ params:
 function cleanupSpikeArtifacts() {
   console.log('Cleaning up spike prototype artifacts...');
   try {
-    const spikeFilesToRemove = [
-      SPIKE_FILES.matchGotmpl,
-      SPIKE_FILES.teamGotmpl,
-      SPIKE_FILES.leagueGotmpl,
-      SPIKE_FILES.spikeData,
-    ];
-    for (const f of spikeFilesToRemove) {
-      if (fs.existsSync(f)) {
+    for (const f of [SPIKE_FILES.matchGotmpl, SPIKE_FILES.teamGotmpl, SPIKE_FILES.leagueGotmpl]) {
+      if (f in SPIKE_BACKUP) {
+        fs.writeFileSync(f, SPIKE_BACKUP[f]);
+      } else if (fs.existsSync(f)) {
         fs.rmSync(f, { force: true });
       }
+    }
+    if (fs.existsSync(SPIKE_FILES.spikeData)) {
+      fs.rmSync(SPIKE_FILES.spikeData, { force: true });
     }
     const spikePartialDir = path.join(ROOT_DIR, 'layouts/_partials/spike');
     if (fs.existsSync(spikePartialDir)) {
