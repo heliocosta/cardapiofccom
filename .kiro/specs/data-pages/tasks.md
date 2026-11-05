@@ -81,7 +81,7 @@
   - Observable completed state: Calling helper partials returns accurate fallback names, canonical URLs matching the URL Map, and filtered match slug lists
   - _Boundary: NameResolver, UrlBuilder, Window_
   - _Requirements: 3.1, 5.4, 7.2, 8.2, 8.5, 9.1, 9.2, 9.3, 10.1, 10.3, 10.5, 12.4_
-- [ ] 4.2 (P) Implement match view-model service
+- [x] 4.2 (P) Implement match view-model service
   - Implement `layouts/_partials/cfcdata/match.html` constructing `MatchVM` with localized team names, league info, scores, venues, rounds, and foundation `Match` compatibility (lineup links/view-models out of scope)
   - Cache view-model instances using `partialCached` keyed by entity slug and language code
   - Observable completed state: Partial returns structured, localized view-models for matches or `nil` when data is absent

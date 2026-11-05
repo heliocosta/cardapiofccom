@@ -1,0 +1,205 @@
+{{/* layouts/_partials/cfcdata/match.html */}}
+{{/* Match view-model service: resolves match, teams, league, localized names and canonical URLs. */}}
+{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
+{{/* Signature: partial "cfcdata/match.html" (dict "slug" $slug "dataset"? $dataset "edition"? $edition "lang"? $lang) */}}
+{{/* or: partial "cfcdata/match.html" $slug */}}
+
+{{ $slug := "" }}
+{{ $dataset := index (dict) "nil" }}
+{{ $edition := index (dict) "nil" }}
+{{ $lang := "" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "slug" }}
+    {{ $slug = printf "%v" .slug }}
+  {{ end }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ end }}
+  {{ if isset . "edition" }}
+    {{ $edition = .edition }}
+  {{ end }}
+  {{ if isset . "lang" }}
+    {{ $lang = printf "%v" .lang }}
+  {{ end }}
+{{ else if . }}
+  {{ $slug = printf "%v" . }}
+{{ end }}
+
+{{/* Normalize slug */}}
+{{ $slug = strings.Trim (trim $slug " ") "/" }}
+
+{{/* Auto-resolve dataset if omitted */}}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Look up raw match */}}
+{{ $rawMatch := index (dict) "nil" }}
+{{ if and (ne $slug "") (reflect.IsMap $dataset) }}
+  {{ with $dataset.matches }}
+    {{ if reflect.IsMap . }}
+      {{ with index . $slug }}
+        {{ $rawMatch = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if not $rawMatch }}
+  {{ return nil }}
+{{ end }}
+
+{{/* Auto-resolve lang */}}
+{{ if not $lang }}
+  {{ with site.Language }}
+    {{ $lang = .Lang }}
+  {{ end }}
+{{ end }}
+{{ if not $lang }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{/* Auto-resolve edition */}}
+{{ if not $edition }}
+  {{ $edition = partialCached "edition/current.html" . }}
+{{ end }}
+
+{{/* Resolve home and away teams, and league */}}
+{{ $homeTeam := dict }}
+{{ with index $dataset.teams $rawMatch.homeSlug }}
+  {{ if reflect.IsMap . }}
+    {{ $homeTeam = . }}
+  {{ end }}
+{{ end }}
+
+{{ $awayTeam := dict }}
+{{ with index $dataset.teams $rawMatch.awaySlug }}
+  {{ if reflect.IsMap . }}
+    {{ $awayTeam = . }}
+  {{ end }}
+{{ end }}
+
+{{ $league := dict }}
+{{ with index $dataset.leagues $rawMatch.leagueSlug }}
+  {{ if reflect.IsMap . }}
+    {{ $league = . }}
+  {{ end }}
+{{ end }}
+
+{{/* Localized names via partial "cfcdata/name.html" */}}
+{{ $homeNames := index $homeTeam "names" }}
+{{ $homeShortNames := index $homeTeam "shortNames" }}
+{{ $awayNames := index $awayTeam "names" }}
+{{ $awayShortNames := index $awayTeam "shortNames" }}
+{{ $leagueNames := index $league "names" }}
+
+{{ $homeName := partial "cfcdata/name.html" (dict "names" $homeNames "lang" $lang) }}
+{{ $homeShortName := partial "cfcdata/name.html" (dict "names" $homeShortNames "lang" $lang) }}
+{{ $awayName := partial "cfcdata/name.html" (dict "names" $awayNames "lang" $lang) }}
+{{ $awayShortName := partial "cfcdata/name.html" (dict "names" $awayShortNames "lang" $lang) }}
+{{ $leagueName := partial "cfcdata/name.html" (dict "names" $leagueNames "lang" $lang) }}
+
+{{/* Fallback names to slug if empty */}}
+{{ if and (eq $homeName "") $rawMatch.homeSlug }}
+  {{ $homeName = $rawMatch.homeSlug }}
+{{ end }}
+{{ if and (eq $awayName "") $rawMatch.awaySlug }}
+  {{ $awayName = $rawMatch.awaySlug }}
+{{ end }}
+{{ if and (eq $leagueName "") $rawMatch.leagueSlug }}
+  {{ $leagueName = $rawMatch.leagueSlug }}
+{{ end }}
+
+{{/* Canonical URLs via partial "cfcdata/url.html" */}}
+{{ $matchUrl := partial "cfcdata/url.html" (dict "kind" "match" "slug" $slug "edition" $edition) }}
+{{ $homeUrl := "" }}
+{{ with $rawMatch.homeSlug }}
+  {{ $homeUrl = partial "cfcdata/url.html" (dict "kind" "team" "slug" . "edition" $edition) }}
+{{ end }}
+{{ $awayUrl := "" }}
+{{ with $rawMatch.awaySlug }}
+  {{ $awayUrl = partial "cfcdata/url.html" (dict "kind" "team" "slug" . "edition" $edition) }}
+{{ end }}
+{{ $leagueUrl := "" }}
+{{ with $rawMatch.leagueSlug }}
+  {{ $leagueUrl = partial "cfcdata/url.html" (dict "kind" "league" "slug" . "edition" $edition) }}
+{{ end }}
+
+{{/* Title and App Path */}}
+{{ $title := printf "%s vs %s" $homeName $awayName }}
+{{ $appPath := printf "/match/%s" $slug }}
+
+{{/* Logos and crests */}}
+{{ $leagueLogo := index $league "logo" | default "" }}
+{{ $homeCrest := index $homeTeam "crest" | default "" }}
+{{ $awayCrest := index $awayTeam "crest" | default "" }}
+
+{{/* Boolean flags */}}
+{{ $hasLineup := false }}
+{{ with index $rawMatch "hasLineup" }}
+  {{ if . }}
+    {{ $hasLineup = true }}
+  {{ end }}
+{{ end }}
+
+{{ $popular := false }}
+{{ with index $league "popular" }}
+  {{ if . }}
+    {{ $popular = true }}
+  {{ end }}
+{{ end }}
+
+{{/* Fields from raw match */}}
+{{ $uuid := index $rawMatch "uuid" | default "" }}
+{{ $kickoff := index $rawMatch "kickoff" }}
+{{ $status := index $rawMatch "status" }}
+{{ $statusShort := index $rawMatch "statusShort" }}
+{{ $score := index $rawMatch "score" }}
+{{ $round := index $rawMatch "round" }}
+{{ $venue := index $rawMatch "venue" }}
+
+{{/* Construct sub-dictionaries */}}
+{{ $leagueDict := dict
+  "slug" $rawMatch.leagueSlug
+  "name" $leagueName
+  "url" $leagueUrl
+  "logo" $leagueLogo
+}}
+
+{{ $homeDict := dict
+  "slug" $rawMatch.homeSlug
+  "name" $homeName
+  "shortName" $homeShortName
+  "url" $homeUrl
+  "crest" $homeCrest
+}}
+
+{{ $awayDict := dict
+  "slug" $rawMatch.awaySlug
+  "name" $awayName
+  "shortName" $awayShortName
+  "url" $awayUrl
+  "crest" $awayCrest
+}}
+
+{{/* Return MatchVM */}}
+{{ return (dict
+  "kind" "match"
+  "slug" $slug
+  "uuid" $uuid
+  "title" $title
+  "url" $matchUrl
+  "appPath" $appPath
+  "kickoff" $kickoff
+  "status" $status
+  "statusShort" $statusShort
+  "score" $score
+  "round" $round
+  "venue" $venue
+  "league" $leagueDict
+  "home" $homeDict
+  "away" $awayDict
+  "hasLineup" $hasLineup
+  "popular" $popular
+) }}
