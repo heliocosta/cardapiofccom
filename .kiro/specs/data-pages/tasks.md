@@ -190,7 +190,7 @@
 
 ## 8. Automated Verification and Failure Testing Suite
 - [ ] 8. Automated verification and failure testing suite
-- [ ] 8.1 Build automated build output verification script
+- [x] 8.1 Build automated build output verification script
   - Implement Node.js script `scripts/check-data-pages.mjs` inspecting `public/` directory after sample dataset build
   - Assert existence of all match, team, and league pages and absence of `/match/index.html`, `/team/index.html`, lineup pages, and legacy URL families
   - Assert channel filtering between regional and Global editions, time zone and day grouping differences across editions, and compressed page weight budgets

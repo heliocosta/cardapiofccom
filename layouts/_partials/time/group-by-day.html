@@ -30,9 +30,9 @@
 {{ range $sortedDays }}
   {{ $day := . }}
   {{ $dayItems := index $groupsMap $day }}
-  {{ $utcMidnight := time.AsTime (printf "%sT00:00:00Z" $day) }}
-  {{ $localMidnight := time.In $tz $utcMidnight }}
-  {{ $group := dict "day" $day "date" $localMidnight "items" $dayItems }}
+  {{ $utcNoon := time.AsTime (printf "%sT12:00:00Z" $day) }}
+  {{ $localNoon := time.In $tz $utcNoon }}
+  {{ $group := dict "day" $day "date" $localNoon "items" $dayItems }}
   {{ $result = $result | append $group }}
 {{ end }}
 

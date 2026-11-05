@@ -6,7 +6,7 @@
   {{- $dateInput := $day -}}
   {{- if eq (printf "%T" $day) "string" -}}
     {{- if not (findRE `T` $day) -}}
-      {{- $dateInput = printf "%sT00:00:00Z" $day -}}
+      {{- $dateInput = printf "%sT12:00:00Z" $day -}}
     {{- end -}}
   {{- end -}}
   {{- $isoDate := partial "time/format.html" (dict "t" $dateInput "style" "isoDate") -}}
