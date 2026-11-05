@@ -127,9 +127,9 @@
   - _Boundary: PageHeader, Breadcrumb, EmptyState_
   - _Requirements: 8.12, 9.3, 9.5_
 
-- [ ] 4. Site chrome, skeleton and page shells
+- [x] 4. Site chrome, skeleton and page shells
 
-- [ ] 4.1 Implement the hook dispatcher, SEO fallback and document head
+- [x] 4.1 Implement the hook dispatcher, SEO fallback and document head
   - Hook dispatcher renders a whitelisted slot's hook file with the page as context, else its fallback, else nothing, and fails the build on unknown slot names
   - SEO fallback renders the title and meta description from the page or the edition registry
   - Document head renders the meta tags, head slots in the specified order, theme colour, favicon and manifest, and no analytics, tag-manager, verification or custom-script output
@@ -137,7 +137,7 @@
   - Done when an uncommitted temporary hook file is rendered in its slot on the styleguide, deleting it leaves the slot empty with the build still succeeding, and calling the dispatcher with an unknown slot name fails the build
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 4.2 Implement the site header and footer
+- [x] 4.2 Implement the site header and footer
   - Header shows the logo linked to the edition home (logo text while the light logo is missing), the main menu, the edition switcher and the reused theme light/dark control
   - Footer shows the app and consent slots, the footer menu, links to every edition home (Global with the edition-choice marker) and the edition copyright
   - Preview header and footer inside the chrome styleguide section until the root skeleton exists
@@ -145,13 +145,13 @@
   - _Depends: 3.6_
   - _Requirements: 6.1, 6.8, 7.2, 10.1_
 
-- [ ] 4.3 Replace the document skeleton
+- [x] 4.3 Replace the document skeleton
   - Create the root skeleton with the edition locale and direction on the document, no microdata, the skip link, header/main/footer landmarks, the theme style and script bundles, all body slots in the specified positions, and the once-per-edition validator call (remove the temporary validator call from the edition styleguide section and the inline header/footer preview from the chrome styleguide section to avoid duplicate landmarks)
   - Done when every built page uses the new skeleton, declares the edition locale as its language, contains a working skip link, exactly one header/main/footer landmark, and no preloader, announcement, search modal or tag-manager markup, and `pnpm build` succeeds while the theme home/list/single templates are still active
   - _Depends: 4.1, 4.2_
   - _Requirements: 1.5, 2.4, 2.5, 9.5, 10.1, 10.5_
 
-- [ ] 4.4 Implement the home, list, detail and not-found page shells
+- [x] 4.4 Implement the home, list, detail and not-found page shells
   - Replace the temporary root home template from 1.5 if it exists
   - Home shell renders the page header from home front matter or interface strings and the home main slot with the localised empty-state fallback
   - List and detail shells render the page header, optional breadcrumb, content and (list) child page links
@@ -160,41 +160,41 @@
   - _Depends: 3.7, 4.3_
   - _Requirements: 3.2, 9.1, 9.2, 9.3, 9.4, 10.6_
 
-- [ ] 4.5 Remove unused modules and stock features
+- [x] 4.5 Remove unused modules and stock features
   - Remove the module imports listed in the design (adsense, search, icons, videos, accordion, tabs, modal, gallery, table of contents, preloader, social share, announcement, shortcodes, diagrams, comments), keeping the downstream-owned and reused modules
   - Done when `pnpm build` succeeds and the output contains no icon-font, search or preloader assets (and, as a regression check, still no slider or lightbox assets)
   - _Depends: 4.3, 4.4_
   - _Requirements: 3.6, 11.1, 11.2_
 
-- [ ] 5. Automated checks
+- [x] 5. Automated checks
 
-- [ ] 5.1 Implement the Site Build check for production output and repository invariants
+- [x] 5.1 Implement the Site Build check for production output and repository invariants
   - Implement the dependency-free check script and the `check` package script covering edition homes and 404s with correct languages, forbidden outputs, i18n key parity, token contrast pairs, absence of tracking scripts in foundation-owned files (guarded to assert absence in output only when `layouts/_partials/hooks/head-analytics.html` does not exist), page-weight and JavaScript budgets, version pins and lock files, unused deploy configs, and unchanged vendored directories
   - Report each failure with file, key or value and exit non-zero on any failure
   - Done when `pnpm build && pnpm check` passes on the current tree, and deliberately removing a key from one base table or changing the container Go version makes `pnpm check` fail with a message naming it
   - _Depends: 4.5_
   - _Requirements: 1.1, 1.4, 3.3, 3.4, 3.5, 4.4, 7.4, 10.5, 11.1, 11.2, 12.4_
 
-- [ ] 5.2 Add the component check mode
+- [x] 5.2 Add the component check mode
   - Add the `check:components` package script that builds the development styleguide into the resources folder and checks match-card size and image dimension attributes
   - Done when `pnpm check:components` passes, and inflating a fixture card beyond 2 KB makes it fail naming the card
   - _Depends: 3.4, 5.1_
   - _Requirements: 8.7, 11.3, 11.5_
 
-- [ ] 6. Validation
+- [x] 6. Validation
 
-- [ ] 6.1 Run end-to-end build validation and negative tests
+- [x] 6.1 Run end-to-end build validation and negative tests
   - Run `pnpm build`, `pnpm check` and `pnpm check:components` on a clean checkout; run the validator and time-parse negative cases (time-zone mismatch, missing i18n mount, offset-less fixture) and confirm each fails with the documented message, then restore
   - Verify translated-page switching with a temporary pair of translated pages, regional wording on Portugal versus Brazil, DST offsets and day grouping on the built styleguide
   - Done when all three commands pass and every negative case fails as documented
   - _Requirements: 1.1, 2.5, 2.6, 4.2, 4.3, 5.2, 5.5, 5.7, 5.8, 6.2, 9.4_
 
-- [ ] 6.2 Validate upgrade safety
+- [x] 6.2 Validate upgrade safety
   - In a temporary git worktree, run `pnpm update-theme`, then `pnpm build` and `pnpm check`; discard the worktree afterwards so the vendored theme in the main tree stays unchanged
   - Done when the build and check pass against the updated theme, or any incompatibility is reported with the affected reused theme partial
   - _Requirements: 1.4, 1.5_
 
-- [ ] 6.3 Audit accessibility and performance
+- [x] 6.3 Audit accessibility and performance
   - Confirm Lighthouse and Chrome are available (for example `pnpm dlx lighthouse --version`); if not, ask the user before proceeding
   - With `pnpm preview`, run a mobile Lighthouse audit on a home page and the styleguide (development) in light and dark mode, check 320 px layouts, keyboard-only navigation with JavaScript disabled, reduced-motion behaviour and font swap
   - Done when accessibility scores are at least 95, cumulative layout shift is at most 0.1, no horizontal scroll occurs at 320 px, and findings are fixed or reported
