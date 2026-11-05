@@ -171,7 +171,7 @@
   - _Boundary: TeamPage_
   - _Depends: 5.3, 6.3_
   - _Requirements: 3.1, 4.6, 7.1, 7.2, 7.3, 7.4, 10.3, 10.4, 10.5, 11.1, 11.2_
-- [ ] 7.3 Build league entity page and league directory templates
+- [x] 7.3 Build league entity page and league directory templates
   - Implement `layouts/league/page.html` with league logo header, 7-day past to 30-day future matches window (capped at 100), participating team links, empty states, and freshness footer
   - Implement `layouts/league/section.html` rendering directory of all leagues with popular competitions prioritized followed by alphabetical listings
   - Connect breadcrumbs from edition home through league directory to league page

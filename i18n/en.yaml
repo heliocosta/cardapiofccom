@@ -41,6 +41,7 @@ previous: "Previous"
 pagination: "Pagination"
 
 # data-pages
+teams: "Teams"
 round: "Round"
 venue: "Venue"
 league: "League"

@@ -6,6 +6,7 @@ status_finished: "Terminado"
 channel_type_free_tv: "TV em sinal aberto"
 
 # data-pages
+teams: "Equipas"
 round: "Jornada"
 where_to_watch_in: "Onde ver em {{ .Country }}"
 watch_in_other_countries: "Ver noutros países"

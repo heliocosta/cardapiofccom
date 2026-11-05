@@ -1,0 +1,97 @@
+{{/* layouts/league/section.html */}}
+{{/* League directory page template. */}}
+{{ define "main" }}
+  {{- $leagues := partial "cfcdata/league-list.html" . -}}
+  {{- $leaguesLabel := i18n "leagues" | default "Leagues" -}}
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $leaguesLabel "label" $leaguesLabel) -}}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/page-header.html" (dict "title" $leaguesLabel "heading" $leaguesLabel "breadcrumbs" $breadcrumbs "breadcrumb" $breadcrumbs) }}
+
+    {{- $popular := slice -}}
+    {{- $regular := slice -}}
+    {{- range $leagues -}}
+      {{- if .popular -}}
+        {{- $popular = $popular | append . -}}
+      {{- else -}}
+        {{- $regular = $regular | append . -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if gt (len $popular) 0 -}}
+      <section class="cfc-league-directory__popular my-8">
+        <h2 class="text-xl font-bold mb-4">{{ i18n "popular_leagues" | default "Popular Leagues" }}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {{- range $popular -}}
+            {{- $leagueName := .name -}}
+            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg border border-border bg-theme-light hover:border-primary transition" data-cfc-league="{{ .slug }}">
+              {{- with .logo -}}
+                <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
+              {{- end -}}
+              <div class="min-w-0">
+                <span class="cfc-league-card__name font-medium block truncate">{{ $leagueName }}</span>
+                {{- $meta := slice -}}
+                {{- with .country -}}
+                  {{- with .name -}}
+                    {{- $meta = $meta | append . -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- with .season -}}
+                  {{- $meta = $meta | append . -}}
+                {{- end -}}
+                {{- $metaStr := delimit $meta " · " -}}
+                {{- with $metaStr -}}
+                  <span class="cfc-league-card__meta text-xs text-muted block">{{ . }}</span>
+                {{- end -}}
+              </div>
+            </a>
+          {{- end -}}
+        </div>
+      </section>
+    {{- end -}}
+
+    {{- if gt (len $regular) 0 -}}
+      <section class="cfc-league-directory__all my-8">
+        {{- if gt (len $popular) 0 -}}
+          <h2 class="text-xl font-bold mb-4">{{ i18n "all_leagues" | default "All Leagues" }}</h2>
+        {{- end -}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {{- range $regular -}}
+            {{- $leagueName := .name -}}
+            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg border border-border bg-theme-light hover:border-primary transition" data-cfc-league="{{ .slug }}">
+              {{- with .logo -}}
+                <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
+              {{- end -}}
+              <div class="min-w-0">
+                <span class="cfc-league-card__name font-medium block truncate">{{ $leagueName }}</span>
+                {{- $meta := slice -}}
+                {{- with .country -}}
+                  {{- with .name -}}
+                    {{- $meta = $meta | append . -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- with .season -}}
+                  {{- $meta = $meta | append . -}}
+                {{- end -}}
+                {{- $metaStr := delimit $meta " · " -}}
+                {{- with $metaStr -}}
+                  <span class="cfc-league-card__meta text-xs text-muted block">{{ . }}</span>
+                {{- end -}}
+              </div>
+            </a>
+          {{- end -}}
+        </div>
+      </section>
+    {{- end -}}
+
+    {{- if and (eq (len $popular) 0) (eq (len $regular) 0) -}}
+      <div class="cfc-empty-state my-6">
+        <p class="cfc-empty-state__message">{{ i18n "no_matches_scheduled" | default "No leagues found." }}</p>
+      </div>
+    {{- end -}}
+
+    {{ partial "cfcpage/freshness.html" . }}
+  </div>
+{{ end }}
