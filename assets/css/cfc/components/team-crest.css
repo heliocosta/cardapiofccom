@@ -46,3 +46,8 @@
   height: 100%;
   text-transform: uppercase;
 }
+
+.dark .cfc-team-crest {
+  background-color: var(--color-darkmode-dark, #344E17);
+  color: var(--color-darkmode-text-light, #D1D5DB);
+}

@@ -29,3 +29,12 @@
   flex-wrap: wrap;
   gap: 1rem 1.5rem;
 }
+
+.dark .cfc-menu__link {
+  color: var(--color-darkmode-text, #E5E7EB);
+}
+
+.dark .cfc-menu__link:hover,
+.dark .cfc-menu__link.is-active {
+  color: var(--color-darkmode-primary, #CDEDA4);
+}

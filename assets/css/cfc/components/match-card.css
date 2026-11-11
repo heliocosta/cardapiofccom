@@ -116,3 +116,45 @@
   color: var(--color-muted, #6B7280);
   font-style: italic;
 }
+
+/* Dark mode styles */
+.dark .cfc-match-card {
+  background-color: var(--color-darkmode-surface, #1A2E05);
+  border-color: var(--color-darkmode-border, #90918A);
+  color: var(--color-darkmode-text, #E5E7EB);
+}
+
+.dark .cfc-match-card:hover {
+  border-color: var(--color-darkmode-primary, #CDEDA4);
+}
+
+.dark .cfc-match-card__league {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}
+
+.dark .cfc-match-card__score {
+  color: var(--color-darkmode-text-dark, #FFFFFF);
+}
+
+.dark .cfc-match-card__badge--live {
+  background-color: rgba(248, 113, 113, 0.2);
+  color: var(--color-darkmode-live, #F87171);
+}
+
+.dark .cfc-match-card__badge--finished {
+  background-color: var(--color-darkmode-dark, #344E17);
+  color: var(--color-darkmode-muted, #9CA3AF);
+}
+
+.dark .cfc-match-card__badge--warning {
+  background-color: rgba(251, 191, 36, 0.2);
+  color: var(--color-darkmode-warning, #FBBF24);
+}
+
+.dark .cfc-match-card__channels {
+  border-top-color: var(--color-darkmode-border, #90918A);
+}
+
+.dark .cfc-match-card__no-channels {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}

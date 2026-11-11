@@ -25,6 +25,8 @@
 
 .cfc-switcher__globe,
 .cfc-switcher__arrow {
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
 }
 
@@ -68,4 +70,28 @@
   font-weight: 700;
   color: var(--color-primary);
   background-color: var(--color-light, #F3F4F6);
+}
+
+.dark .cfc-switcher__summary {
+  background-color: var(--color-darkmode-surface, #1A2E05);
+  border-color: var(--color-darkmode-border, #90918A);
+  color: var(--color-darkmode-text, #E5E7EB);
+}
+
+.dark .cfc-switcher__dropdown {
+  background-color: var(--color-darkmode-surface, #1A2E05);
+  border-color: var(--color-darkmode-border, #90918A);
+}
+
+.dark .cfc-switcher__link {
+  color: var(--color-darkmode-text, #E5E7EB);
+}
+
+.dark .cfc-switcher__link:hover {
+  background-color: var(--color-darkmode-light, #1A2E05);
+}
+
+.dark .cfc-switcher__link.is-current {
+  color: var(--color-darkmode-primary, #CDEDA4);
+  background-color: var(--color-darkmode-light, #1A2E05);
 }

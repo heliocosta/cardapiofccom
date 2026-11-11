@@ -20,3 +20,12 @@
 .cfc-empty-state__action-wrapper {
   margin-top: 0.5rem;
 }
+
+.dark .cfc-empty-state {
+  background-color: var(--color-darkmode-surface, #1A2E05);
+  border-color: var(--color-darkmode-border, #90918A);
+}
+
+.dark .cfc-empty-state__message {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}

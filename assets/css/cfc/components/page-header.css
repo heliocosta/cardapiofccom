@@ -10,6 +10,14 @@
   margin-bottom: 0.5rem;
 }
 
+.dark .cfc-page-header__title {
+  color: var(--color-darkmode-text-dark, #FFFFFF);
+}
+
+.dark .cfc-page-header__intro {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}
+
 @media (min-width: 768px) {
   .cfc-page-header__title {
     font-size: 2.25rem;
