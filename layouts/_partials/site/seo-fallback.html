@@ -1,9 +1,78 @@
-{{/* site/seo-fallback.html - Basic title and meta description fallback */}}
+{{/* site/seo-fallback.html - Complete SEO with OpenGraph and Twitter card */}}
 {{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
 {{ $title := $ed.title }}
 {{ if and .Title (not .IsHome) }}
   {{ $title = printf "%s · %s" .Title $ed.title }}
 {{ end }}
 {{ $desc := .Description | default .Params.description | default $ed.description }}
+
 <title>{{ $title }}</title>
 <meta name="description" content="{{ $desc }}" />
+
+{{/* Resolve entity and OG image */}}
+{{ $slug := "" }}
+{{ with .Params.cfc }}
+  {{ with .slug }}
+    {{ $slug = . }}
+  {{ end }}
+{{ end }}
+{{ if not $slug }}
+  {{ with .File }}
+    {{ $slug = .ContentBaseName }}
+  {{ end }}
+{{ end }}
+
+{{ $ogImage := "" }}
+{{ $section := .Section | default "" }}
+
+{{ if and $slug (or (eq $section "matches") (eq $section "match")) }}
+  {{ $localOg := printf "og/matches/%s.png" $slug }}
+  {{ if fileExists (printf "static/%s" $localOg) }}
+    {{ $ogImage = $localOg | absURL }}
+  {{ else }}
+    {{ $m := partialCached "cfcdata/match.html" $slug $slug }}
+    {{ with $m }}
+      {{ with .home }}{{ with .crest }}{{ $ogImage = . }}{{ end }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ else if and $slug (or (eq $section "teams") (eq $section "team")) }}
+  {{ $localOg := printf "og/teams/%s.png" $slug }}
+  {{ if fileExists (printf "static/%s" $localOg) }}
+    {{ $ogImage = $localOg | absURL }}
+  {{ else }}
+    {{ $t := partialCached "cfcdata/team.html" $slug $slug }}
+    {{ with $t }}
+      {{ with .crest }}{{ $ogImage = . }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ else if and $slug (or (eq $section "leagues") (eq $section "league")) }}
+  {{ $localOg := printf "og/leagues/%s.png" $slug }}
+  {{ if fileExists (printf "static/%s" $localOg) }}
+    {{ $ogImage = $localOg | absURL }}
+  {{ else }}
+    {{ $l := partialCached "cfcdata/league.html" $slug $slug }}
+    {{ with $l }}
+      {{ with .logo }}{{ $ogImage = . }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* OpenGraph metadata */}}
+<meta property="og:title" content="{{ $title }}" />
+<meta property="og:description" content="{{ $desc }}" />
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:site_name" content="{{ $ed.title }}" />
+<meta property="og:locale" content="{{ site.Language.Locale | default site.Language.Lang }}" />
+
+{{ if $ogImage }}
+  <meta property="og:image" content="{{ $ogImage }}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{{ $ogImage }}" />
+{{ else }}
+  <meta name="twitter:card" content="summary" />
+{{ end }}
+<meta name="twitter:title" content="{{ $title }}" />
+<meta name="twitter:description" content="{{ $desc }}" />

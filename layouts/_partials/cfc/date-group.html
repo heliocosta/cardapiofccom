@@ -21,7 +21,7 @@
     <h{{ $hl }} id="{{ $sectionId }}" class="cfc-date-group__heading">
       <time datetime="{{ $isoDate }}">{{ $dayHeading }}</time>
     </h{{ $hl }}>
-    <div class="cfc-date-group__matches">
+    <div class="cfc-date-group__matches grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {{- range $sorted -}}
         {{- $opts := merge (dict "match" . "headingLevel" (add $hl 1)) $cardOpts -}}
         {{- partial "cfc/match-card.html" $opts -}}

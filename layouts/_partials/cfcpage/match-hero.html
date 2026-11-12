@@ -19,38 +19,46 @@
 {{- end -}}
 
 {{- if $m -}}
-<section class="cfc-match-hero my-6 p-4 md:p-6 rounded-lg bg-theme-light dark:bg-darkmode-theme-light">
+<section class="cfc-match-hero my-6 p-4 sm:p-6 md:p-8 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light">
   {{- with $m.league -}}
-  <div class="cfc-match-hero__meta text-sm text-muted dark:text-darkmode-muted mb-4"><a href="{{ .url }}" class="hover:underline font-medium text-text-dark dark:text-darkmode-text-dark">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ if or (strings.HasPrefix (lower .) "rodada") (strings.HasPrefix (lower .) "round") (strings.HasPrefix (lower .) "jornada") }}{{ . }}{{ else }}{{ i18n "round" }} {{ . }}{{ end }}</span>{{ end }}</div>
+  <div class="cfc-match-hero__meta text-xs sm:text-sm text-muted dark:text-darkmode-muted mb-4 text-center sm:text-left">
+    <a href="{{ .url }}" class="hover:underline font-semibold text-text-dark dark:text-darkmode-text-dark">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ if or (strings.HasPrefix (lower .) "rodada") (strings.HasPrefix (lower .) "round") (strings.HasPrefix (lower .) "jornada") }}{{ . }}{{ else }}{{ i18n "round" }} {{ . }}{{ end }}</span>{{ end }}
+  </div>
   {{- end -}}
 
-  <div class="cfc-match-hero__main grid grid-cols-1 md:grid-cols-3 items-center gap-4 text-center">
-    {{/* Home Team */}}
-    <div class="cfc-match-hero__team cfc-match-hero__team--home flex flex-col md:flex-row items-center justify-center md:justify-end gap-3 order-1">
-      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline order-2 md:order-1 text-center md:text-right text-text-dark dark:text-darkmode-text-dark">{{ $m.home.name }}</a>
-      <span class="order-1 md:order-2 flex-shrink-0">
+  <div class="cfc-match-hero__main flex flex-row items-center justify-between gap-2 sm:gap-4 md:gap-6 w-full text-center">
+    {{/* Home Team (Left) */}}
+    <div class="cfc-match-hero__team cfc-match-hero__team--home flex flex-col items-center justify-center flex-1 min-w-0">
+      <a href="{{ $m.home.url }}" class="block mb-2 group">
         {{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "lg" "decorative" false) }}
-      </span>
+      </a>
+      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name text-sm sm:text-base md:text-xl font-bold hover:underline text-text-dark dark:text-darkmode-text-dark line-clamp-2 max-w-full">
+        {{ $m.home.name }}
+      </a>
     </div>
 
-    {{/* Center: Kickoff Time */}}
-    <div class="cfc-match-hero__center flex flex-col items-center justify-center order-2">
-      <div class="text-3xl md:text-4xl font-bold font-secondary text-primary dark:text-darkmode-primary mb-1">x</div>
-      {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true) }}
+    {{/* Center: VS / Kickoff Time */}}
+    <div class="cfc-match-hero__center flex flex-col items-center justify-center shrink-0 px-2 sm:px-4">
+      <span class="text-2xl sm:text-3xl md:text-4xl font-bold font-secondary text-primary dark:text-darkmode-primary leading-none mb-1">x</span>
+      {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}
     </div>
 
-    {{/* Away Team */}}
-    <div class="cfc-match-hero__team cfc-match-hero__team--away flex flex-col md:flex-row items-center justify-center md:justify-start gap-3 order-3">
-      <span class="flex-shrink-0">
+    {{/* Away Team (Right) */}}
+    <div class="cfc-match-hero__team cfc-match-hero__team--away flex flex-col items-center justify-center flex-1 min-w-0">
+      <a href="{{ $m.away.url }}" class="block mb-2 group">
         {{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "lg" "decorative" false) }}
-      </span>
-      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline text-center md:text-left text-text-dark dark:text-darkmode-text-dark">{{ $m.away.name }}</a>
+      </a>
+      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name text-sm sm:text-base md:text-xl font-bold hover:underline text-text-dark dark:text-darkmode-text-dark line-clamp-2 max-w-full">
+        {{ $m.away.name }}
+      </a>
     </div>
   </div>
 
   {{- with $m.venue -}}
     {{- if and (reflect.IsMap .) (ne (.name | default "") "") -}}
-    <div class="cfc-match-hero__venue text-sm text-muted dark:text-darkmode-muted text-center mt-4"><span class="font-medium">{{ i18n "venue" }}:</span> {{ .name }}{{ with .city }}, {{ . }}{{ end }}</div>
+    <div class="cfc-match-hero__venue text-xs sm:text-sm text-muted dark:text-darkmode-muted text-center mt-5">
+      <span class="font-medium">{{ i18n "venue" }}:</span> {{ .name }}{{ with .city }}, {{ . }}{{ end }}
+    </div>
     {{- end -}}
   {{- end -}}
 </section>

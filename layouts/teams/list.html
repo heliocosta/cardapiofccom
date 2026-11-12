@@ -58,13 +58,13 @@
       </div>
 
       {{/* Alphabetical Index Tab Navigation Bar */}}
-      <nav class="cfc-teams-index-nav sticky top-16 z-20 py-2.5 my-4 bg-body/90 dark:bg-darkmode-body/90 backdrop-blur-md border-y border-border/40 dark:border-darkmode-border/40 overflow-x-auto scrollbar-none flex items-center justify-center gap-1 sm:gap-1.5" aria-label="Alphabetical index">
+      <nav class="cfc-teams-index-nav sticky top-16 z-20 py-2.5 my-4 bg-body/90 dark:bg-darkmode-body/90 backdrop-blur-md shadow-xs rounded-xl overflow-x-auto scrollbar-none flex items-center justify-center gap-1 sm:gap-1.5 px-2" aria-label="Alphabetical index">
         {{- range $alphabet -}}
           {{- $letterTeams := index $teamsByLetter . | default slice -}}
           {{- if gt (len $letterTeams) 0 -}}
             <a 
               href="#letter-{{ . }}" 
-              class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs border border-border/20 dark:border-darkmode-border/20"
+              class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs"
               title="{{ . }} ({{ len $letterTeams }})"
             >{{ . }}</a>
           {{- else -}}
@@ -79,13 +79,13 @@
           {{- $letterTeams := index $teamsByLetter . | default slice -}}
           {{- if gt (len $letterTeams) 0 -}}
             <div id="letter-{{ . }}" class="scroll-mt-32">
-              <div class="flex items-center gap-3 mb-4 pb-2 border-b border-border/30 dark:border-darkmode-border/30">
+              <div class="flex items-center gap-3 mb-4 pb-2">
                 <span class="w-8 h-8 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center shadow-xs">{{ . }}</span>
                 <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $letterTeams }} {{ i18n "teams" | default "teams" }}</span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
                 {{- range $letterTeams -}}
-                  <a href="{{ .url }}" class="flex items-center gap-3 p-3.5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group border border-border/20 dark:border-darkmode-border/20">
+                  <a href="{{ .url }}" class="flex items-center gap-3 p-3.5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group">
                     {{ partial "cfc/team-crest.html" (dict "name" .name "shortName" .shortName "src" .crest "size" "md" "decorative" true) }}
                     <span class="font-medium text-sm truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ .name }}</span>
                   </a>

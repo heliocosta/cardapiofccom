@@ -41,6 +41,10 @@ previous: "Previous"
 pagination: "Pagination"
 
 # data-pages
+today: "Today"
+tomorrow: "Tomorrow"
+upcoming: "Upcoming"
+view_league: "View League"
 teams: "Teams"
 round: "Round"
 venue: "Venue"
@@ -134,12 +138,12 @@ step_3_desc: "Create pre-game notification alarms (5, 15, or 30 minutes before k
 
 # Where to Watch App Call to Action (Option 1 + Option 2)
 official_broadcast_guide: "Official Broadcast Guide"
-watch_in_app_desc: "Watch live on official TV & streaming. In the CardápioFC app, tap any channel to launch the official stream directly in the broadcaster's app with pre-match kickoff alarms."
-watch_on_app_title: "1-Tap Stream Launcher & Alarms"
-watch_on_app_sub: "Tap any channel in the CardápioFC app to jump straight into the live broadcast."
-open_stream_in_app: "Watch in CardápioFC App"
+watch_in_app_desc: "Check where to watch live on official TV & streaming. In the CardápioFC app, tap any channel to launch the official broadcaster with pre-match kickoff alarms."
+watch_on_app_title: "1-Tap Channel Links & Alarms"
+watch_on_app_sub: "Tap any channel in the CardápioFC app to open the official broadcaster platform."
+open_stream_in_app: "Open Channel Link"
 confirmed_channels_title: "Confirmed TV & Streaming Networks"
-stream_in_app: "Open in App"
+stream_in_app: "Open Channel"
 benefit_official_broadcasters: "100% legal official channels"
 benefit_kickoff_alarms: "Pre-match push alarms"
 benefit_custom_filter: "Filter your subscriptions"

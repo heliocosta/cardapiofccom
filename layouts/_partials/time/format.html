@@ -10,16 +10,19 @@
 {{ else if eq $style "isoDate" }}
   {{ $result = $local.Format "2006-01-02" }}
 {{ else }}
-  {{ $layoutKey := printf "layout_%s" $style }}
+  {{ $snakeStyle := $style }}
+  {{ if eq $style "dateShort" }}{{ $snakeStyle = "date_short" }}{{ end }}
+  {{ if eq $style "dayHeading" }}{{ $snakeStyle = "day_heading" }}{{ end }}
+  {{ $layoutKey := printf "layout_%s" $snakeStyle }}
   {{ $defaultLayout := "15:04" }}
-  {{ if eq $style "dateShort" }}
+  {{ if or (eq $style "dateShort") (eq $snakeStyle "date_short") }}
     {{ $defaultLayout = "Mon 2 Jan" }}
-  {{ else if eq $style "dayHeading" }}
+  {{ else if or (eq $style "dayHeading") (eq $snakeStyle "day_heading") }}
     {{ $defaultLayout = "Monday 2 January" }}
   {{ else if eq $style "datetime" }}
     {{ $defaultLayout = "Monday 2 January 2006, 15:04" }}
   {{ end }}
-  {{ $layout := i18n $layoutKey | default $defaultLayout }}
+  {{ $layout := i18n $layoutKey | default (i18n (printf "layout_%s" $style)) | default $defaultLayout }}
   {{ $result = time.Format $layout $local }}
 {{ end }}
 

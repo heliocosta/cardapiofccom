@@ -1,9 +1,9 @@
 {{- /* layouts/_partials/hooks/home-main.html */ -}}
-{{- /* Home page match listing slot: time-windowed, day-grouped, popular-ordered matches. */ -}}
+{{- /* Home page & matches page match listing slot: shows Today's matches (or next day if empty), grouped by league and sorted by time. */ -}}
 
 {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
 {{- $settings := partialCached "cfcdata/settings.html" . "settings" -}}
-{{- $edition := partialCached "edition/current.html" . -}}
+{{- $edition := partialCached "edition/current.html" . site.Language.Lang -}}
 
 {{- $genAt := "" -}}
 {{- with $dataset -}}
@@ -22,51 +22,177 @@
 {{- $asOf := time.AsTime $rawAsOf -}}
 {{- $edTz := $edition.timeZone | default "UTC" -}}
 {{- $localTime := time.In $edTz (time.AsTime $asOf) -}}
-{{- $startDayStr := $localTime.Format "2006-01-02" -}}
-{{- $from := time.AsTime (printf "%sT00:00:00%s" $startDayStr ($localTime.Format "-07:00")) -}}
+{{- $todayStr := $localTime.Format "2006-01-02" -}}
+{{- $tomorrowStr := ($localTime.AddDate 0 0 1).Format "2006-01-02" -}}
 
-{{- $days := 7 -}}
-{{- with $settings.home -}}
-  {{- with .days -}}
-    {{- $days = int . -}}
-  {{- end -}}
-{{- end -}}
-{{- $futureLocal := $localTime.AddDate 0 0 (int $days) -}}
-{{- $endDayStr := $futureLocal.Format "2006-01-02" -}}
-{{- $to := time.AsTime (printf "%sT23:59:59%s" $endDayStr ($futureLocal.Format "-07:00")) -}}
+{{- /* Collect raw matches grouped by local day */ -}}
+{{- $matchesByDay := dict -}}
+{{- $allDays := slice -}}
 
-{{- $allSlugs := partial "cfcdata/window.html" (dict "dataset" $dataset "from" $from "to" $to) -}}
-{{- if not $allSlugs -}}
-  {{- $allSlugs = slice -}}
-{{- end -}}
-
-{{- $max := 120 -}}
-{{- with $settings.home -}}
-  {{- with .max -}}
-    {{- $max = int . -}}
+{{- with $dataset.matches -}}
+  {{- range $slug, $raw := . -}}
+    {{- with $raw.kickoff -}}
+      {{- $mLocal := time.In $edTz (time.AsTime .) -}}
+      {{- $dayStr := $mLocal.Format "2006-01-02" -}}
+      {{- $dayList := index $matchesByDay $dayStr | default slice -}}
+      {{- $dayList = $dayList | append (dict "slug" $slug "raw" $raw) -}}
+      {{- if not (index $matchesByDay $dayStr) -}}
+        {{- $allDays = $allDays | append $dayStr -}}
+      {{- end -}}
+      {{- $matchesByDay = merge $matchesByDay (dict $dayStr $dayList) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 
-{{- $truncated := false -}}
-{{- $matchSlugs := $allSlugs -}}
-{{- if and (gt $max 0) (gt (len $allSlugs) $max) -}}
-  {{- $matchSlugs = first $max $allSlugs -}}
-  {{- $truncated = true -}}
+{{- /* Sort available days ascending */ -}}
+{{- $sortedDays := sort $allDays -}}
+
+{{- /* Find target day: Today, or first upcoming day with matches >= todayStr */ -}}
+{{- $targetDay := "" -}}
+{{- if index $matchesByDay $todayStr -}}
+  {{- $targetDay = $todayStr -}}
+{{- else -}}
+  {{- range $sortedDays -}}
+    {{- if and (not $targetDay) (ge . $todayStr) -}}
+      {{- $targetDay = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* If still no upcoming day, fall back to the latest day available */ -}}
+{{- if and (not $targetDay) (gt (len $sortedDays) 0) -}}
+  {{- $targetDay = index $sortedDays 0 -}}
 {{- end -}}
 
 {{- $leagueDirUrl := partial "cfcdata/url.html" (dict "kind" "leagues" "edition" $edition) -}}
 
-{{- if eq (len $allSlugs) 0 -}}
+{{- if not $targetDay -}}
   {{ partial "cfc/empty-state.html" (dict "message" (i18n "home_empty" | default "No matches scheduled.") "action" (dict "label" (i18n "see_all_leagues" | default "See all leagues") "url" $leagueDirUrl)) }}
   {{ partial "cfcpage/freshness.html" . }}
 {{- else -}}
-  {{ partial "cfcpage/match-days.html" (dict "matches" $matchSlugs "popularFirst" true "headingLevel" 2 "showLeague" true) }}
-  {{- if $truncated -}}
-    <div class="cfc-home-more text-center my-6">
-      <a href="{{ $leagueDirUrl }}" class="btn btn-outline-primary"
-        >{{ i18n "see_all_leagues" | default "See all leagues" }}</a
-      >
-    </div>
+  {{- /* Resolve full match view-models for target day */ -}}
+  {{- $dayRawMatches := index $matchesByDay $targetDay | default slice -}}
+  {{- $dayMatches := slice -}}
+  {{- range $dayRawMatches -}}
+    {{- $m := partialCached "cfcdata/match.html" .slug .slug site.Language.Lang -}}
+    {{- with $m -}}
+      {{- $dayMatches = $dayMatches | append . -}}
+    {{- end -}}
   {{- end -}}
-  {{ partial "cfcpage/freshness.html" . }}
+
+  {{- if eq (len $dayMatches) 0 -}}
+    {{ partial "cfc/empty-state.html" (dict "message" (i18n "home_empty" | default "No matches scheduled.") "action" (dict "label" (i18n "see_all_leagues" | default "See all leagues") "url" $leagueDirUrl)) }}
+    {{ partial "cfcpage/freshness.html" . }}
+  {{- else -}}
+    {{- /* Group matches by league */ -}}
+    {{- $leagueOrder := slice -}}
+    {{- $leagueMatches := dict -}}
+    {{- $leagueMeta := dict -}}
+
+    {{- range $dayMatches -}}
+      {{- $m := . -}}
+      {{- $lSlug := $m.leagueSlug | default "other" -}}
+      {{- $currentList := index $leagueMatches $lSlug | default slice -}}
+      {{- $currentList = $currentList | append $m -}}
+      {{- if not (index $leagueMatches $lSlug) -}}
+        {{- $leagueOrder = $leagueOrder | append $lSlug -}}
+        {{- $leagueMeta = merge $leagueMeta (dict $lSlug $m.league) -}}
+      {{- end -}}
+      {{- $leagueMatches = merge $leagueMatches (dict $lSlug $currentList) -}}
+    {{- end -}}
+
+    {{- /* Sort leagues: popular first, then by name */ -}}
+    {{- $popularSlugs := slice -}}
+    {{- $regularSlugs := slice -}}
+    {{- range $leagueOrder -}}
+      {{- $lMeta := index $leagueMeta . -}}
+      {{- if and $lMeta $lMeta.popular -}}
+        {{- $popularSlugs = $popularSlugs | append . -}}
+      {{- else -}}
+        {{- $regularSlugs = $regularSlugs | append . -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $regularWithNames := slice -}}
+    {{- range $regularSlugs -}}
+      {{- $lMeta := index $leagueMeta . -}}
+      {{- $name := . -}}
+      {{- with $lMeta -}}
+        {{- $name = .name | default $name -}}
+      {{- end -}}
+      {{- $regularWithNames = $regularWithNames | append (dict "slug" . "name" $name) -}}
+    {{- end -}}
+    {{- $sortedRegularWithNames := sort $regularWithNames "name" "asc" -}}
+
+    {{- $finalLeagueSlugs := $popularSlugs -}}
+    {{- range $sortedRegularWithNames -}}
+      {{- $finalLeagueSlugs = $finalLeagueSlugs | append .slug -}}
+    {{- end -}}
+
+    {{- $isToday := eq $targetDay $todayStr -}}
+    {{- $isTomorrow := eq $targetDay $tomorrowStr -}}
+    {{- $formattedDate := partial "time/format.html" (dict "t" (printf "%sT12:00:00Z" $targetDay) "style" "dayHeading") -}}
+
+    <div class="cfc-today-matches my-6">
+      {{/* Date Heading */}}
+      <div class="cfc-day-header mb-8 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary dark:bg-darkmode-primary/15 dark:text-darkmode-primary select-none">
+            {{ if $isToday }}
+              {{ i18n "today" | default "Today" }}
+            {{ else if $isTomorrow }}
+              {{ i18n "tomorrow" | default "Tomorrow" }}
+            {{ else }}
+              {{ i18n "upcoming" | default "Upcoming" }}
+            {{ end }}
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark capitalize">
+            <time datetime="{{ $targetDay }}">{{ $formattedDate }}</time>
+          </h3>
+        </div>
+      </div>
+
+      {{/* Leagues and Matches */}}
+      <div class="cfc-leagues-list space-y-10">
+        {{- range $finalLeagueSlugs -}}
+          {{- $lSlug := . -}}
+          {{- $lMeta := index $leagueMeta $lSlug -}}
+          {{- $lMatches := index $leagueMatches $lSlug -}}
+          {{- $sortedMatches := sort $lMatches "kickoff" "asc" -}}
+
+          <section class="cfc-league-group">
+            <div class="cfc-league-group__header flex items-center justify-between gap-3 mb-4 pb-2 border-b-0">
+              <div class="flex items-center gap-3 min-w-0">
+                {{ with $lMeta.logo }}
+                  <img src="{{ . }}" alt="{{ $lMeta.name }}" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0" loading="lazy">
+                {{ end }}
+                <div class="min-w-0">
+                  <a href="{{ $lMeta.url }}" class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark hover:text-primary dark:hover:text-darkmode-primary transition-colors truncate block">
+                    {{ $lMeta.name }}
+                  </a>
+                  {{ with $lMeta.country }}
+                    {{ with .name }}
+                      <span class="text-xs sm:text-sm text-muted dark:text-darkmode-muted font-normal block">{{ . }}</span>
+                    {{ end }}
+                  {{ end }}
+                </div>
+              </div>
+              {{ with $lMeta.url }}
+                <a href="{{ . }}" class="text-xs sm:text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline shrink-0">
+                  {{ i18n "view_league" | default "View League" }} &rarr;
+                </a>
+              {{ end }}
+            </div>
+
+            <div class="cfc-league-group__matches grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {{- range $sortedMatches -}}
+                {{ partial "cfc/match-card.html" (dict "match" . "showLeague" false "headingLevel" 4) }}
+              {{- end -}}
+            </div>
+          </section>
+        {{- end -}}
+      </div>
+    </div>
+    {{ partial "cfcpage/freshness.html" . }}
+  {{- end -}}
 {{- end -}}

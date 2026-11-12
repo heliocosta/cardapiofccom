@@ -12,7 +12,7 @@ fixedPerEdition: 5
 lineupPages: "all" # "all" | "available"
 home:
   days: 7
-  max: 120
+  max: 0
 league:
   pastDays: 7
   futureDays: 30

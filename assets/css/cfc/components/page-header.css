@@ -18,7 +18,7 @@
 }
 
 .dark .cfc-page-header__intro {
-  color: var(--color-darkmode-muted, #9CA3AF);
+  color: var(--color-darkmode-text-light, #D1D5DB);
 }
 
 @media (min-width: 768px) {

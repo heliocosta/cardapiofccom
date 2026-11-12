@@ -48,7 +48,7 @@
 
 {{/* Auto-resolve edition */}}
 {{ if not $edition }}
-  {{ $edition = partialCached "edition/current.html" . }}
+  {{ $edition = partialCached "edition/current.html" . site.Language.Lang }}
 {{ else if not (reflect.IsMap $edition) }}
   {{ $edCode := printf "%v" $edition }}
   {{ range partialCached "edition/all.html" . }}
