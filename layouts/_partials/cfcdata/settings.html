@@ -20,18 +20,11 @@
   {{ end }}
 {{ end }}
 
-{{/* 1. source: "sample" | "remote" (auto -> sample in dev, remote in prod; env wins) */}}
+{{/* 1. source: "sample" | "remote" | "webhook" (auto -> sample in dev, remote/webhook in prod; env wins) */}}
 {{ $source := $raw.source | default "auto" }}
 {{ $envSource := os.Getenv "HUGO_CFC_DATA_SOURCE" }}
 {{ if ne $envSource "" }}
   {{ $source = $envSource }}
-{{ end }}
-{{ if eq $source "auto" }}
-  {{ if hugo.IsDevelopment }}
-    {{ $source = "sample" }}
-  {{ else }}
-    {{ $source = "remote" }}
-  {{ end }}
 {{ end }}
 
 {{/* 2. baseURL */}}
@@ -39,6 +32,28 @@
 {{ $envBaseURL := os.Getenv "HUGO_CFC_DATA_BASEURL" }}
 {{ if ne $envBaseURL "" }}
   {{ $baseURL = $envBaseURL }}
+{{ end }}
+
+{{/* 2b. webhookURL & webhookKey */}}
+{{ $webhookURL := $raw.webhookURL | default "" }}
+{{ $envWebhook := os.Getenv "HUGO_CFC_WEBHOOK_URL" }}
+{{ if ne $envWebhook "" }}
+  {{ $webhookURL = $envWebhook }}
+{{ end }}
+{{ $webhookKey := $raw.webhookKey | default "" }}
+{{ $envWebhookKey := os.Getenv "HUGO_CFC_WEBHOOK_KEY" }}
+{{ if ne $envWebhookKey "" }}
+  {{ $webhookKey = $envWebhookKey }}
+{{ end }}
+
+{{ if eq $source "auto" }}
+  {{ if hugo.IsDevelopment }}
+    {{ $source = "sample" }}
+  {{ else if ne $webhookURL "" }}
+    {{ $source = "webhook" }}
+  {{ else }}
+    {{ $source = "remote" }}
+  {{ end }}
 {{ end }}
 
 {{/* 3. prefix */}}
@@ -129,6 +144,8 @@
 {{ $settings := dict
   "source" $source
   "baseURL" $baseURL
+  "webhookURL" $webhookURL
+  "webhookKey" $webhookKey
   "prefix" $prefix
   "sampleDir" $sampleDir
   "token" $token

@@ -16,104 +16,172 @@
   {{ $settings = partialCached "cfcdata/settings.html" . "settings" }}
 {{ end }}
 
-{{/* 1. Fetch index.json */}}
-{{ $index := partial "cfcdata/fetch.html" (dict "file" "index.json" "settings" $settings) }}
-
-{{/* 2. Validate major version early */}}
-{{ $schemaVersion := "" }}
-{{ with $index }}
-  {{ with .schemaVersion }}
-    {{ $schemaVersion = printf "%v" . }}
-  {{ end }}
-{{ end }}
-
-{{ if not (strings.HasPrefix $schemaVersion "1.") }}
-  {{ errorf "data-pages: index.json: contract major version mismatch (declared \"%s\", supported 1)" $schemaVersion }}
-{{ end }}
-
-{{/* 3. Fetch entity files listed in index.files using declared sha256 */}}
-{{ $indexFiles := dict }}
-{{ with $index }}
-  {{ with .files }}
-    {{ if reflect.IsMap . }}
-      {{ $indexFiles = . }}
-    {{ end }}
-  {{ end }}
-{{ end }}
-
-{{/* leagues.json -> extract .leagues */}}
-{{ $leaguesSha := "" }}
-{{ with index $indexFiles "leagues.json" }}
-  {{ if reflect.IsMap . }}
-    {{ $leaguesSha = .sha256 | default "" }}
-  {{ end }}
-{{ end }}
-{{ $leaguesData := partial "cfcdata/fetch.html" (dict "file" "leagues.json" "sha256" $leaguesSha "settings" $settings) }}
+{{ $index := dict }}
 {{ $leagues := dict }}
-{{ if reflect.IsMap $leaguesData }}
-  {{ if isset $leaguesData "leagues" }}
-    {{ $leagues = $leaguesData.leagues }}
-  {{ else }}
-    {{ $leagues = $leaguesData }}
-  {{ end }}
-{{ end }}
-
-{{/* teams.json -> extract .teams */}}
-{{ $teamsSha := "" }}
-{{ with index $indexFiles "teams.json" }}
-  {{ if reflect.IsMap . }}
-    {{ $teamsSha = .sha256 | default "" }}
-  {{ end }}
-{{ end }}
-{{ $teamsData := partial "cfcdata/fetch.html" (dict "file" "teams.json" "sha256" $teamsSha "settings" $settings) }}
 {{ $teams := dict }}
-{{ if reflect.IsMap $teamsData }}
-  {{ if isset $teamsData "teams" }}
-    {{ $teams = $teamsData.teams }}
-  {{ else }}
-    {{ $teams = $teamsData }}
-  {{ end }}
-{{ end }}
-
-{{/* matches.json -> extract .matches and .order */}}
-{{ $matchesSha := "" }}
-{{ with index $indexFiles "matches.json" }}
-  {{ if reflect.IsMap . }}
-    {{ $matchesSha = .sha256 | default "" }}
-  {{ end }}
-{{ end }}
-{{ $matchesData := partial "cfcdata/fetch.html" (dict "file" "matches.json" "sha256" $matchesSha "settings" $settings) }}
 {{ $matches := dict }}
 {{ $order := slice }}
-{{ if reflect.IsMap $matchesData }}
-  {{ if isset $matchesData "matches" }}
-    {{ $matches = $matchesData.matches }}
-  {{ else }}
-    {{ $matches = $matchesData }}
-  {{ end }}
-  {{ if isset $matchesData "order" }}
-    {{ $order = $matchesData.order }}
-  {{ end }}
-{{ end }}
-
-{{/* 4. Fetch regional channel files for each country listed in index.countries */}}
 {{ $channels := dict }}
-{{ with $index }}
-  {{ with .countries }}
-    {{ range $cc := . }}
-      {{ $ccStr := printf "%v" $cc }}
-      {{ $chanFile := printf "channels/%s.json" $ccStr }}
-      {{ $chanSha := "" }}
-      {{ $hasChanFile := false }}
-      {{ with index $indexFiles $chanFile }}
-        {{ $hasChanFile = true }}
-        {{ if reflect.IsMap . }}
-          {{ $chanSha = .sha256 | default "" }}
+{{ $genAt := "" }}
+
+{{ if eq $settings.source "webhook" }}
+  {{ $headers := dict "Content-Type" "application/json" }}
+  {{ with $settings.webhookKey }}
+    {{ $headers = merge $headers (dict "X-Workflow-Api-Key" .) }}
+  {{ end }}
+  {{ $opts := dict "method" "post" "headers" $headers "key" (printf "cfc-webhook#%d" now.Unix) }}
+  {{ $resTry := try (resources.GetRemote $settings.webhookURL $opts) }}
+  {{ if $resTry.Err }}
+    {{ errorf "data-pages: webhook fetch failed: %v" $resTry.Err }}
+    {{ return dict }}
+  {{ else if not $resTry.Value }}
+    {{ errorf "data-pages: webhook fetch failed: resource is nil" }}
+    {{ return dict }}
+  {{ end }}
+  {{ $payload := $resTry.Value.Content | transform.Unmarshal }}
+
+  {{ with $payload }}
+    {{ with .leagues }}
+      {{ if isset . "leagues" }}{{ $leagues = .leagues }}{{ else }}{{ $leagues = . }}{{ end }}
+    {{ end }}
+    {{ with .teams }}
+      {{ if isset . "teams" }}{{ $teams = .teams }}{{ else }}{{ $teams = . }}{{ end }}
+    {{ end }}
+    {{ with .matches }}
+      {{ if isset . "matches" }}{{ $matches = .matches }}{{ else }}{{ $matches = . }}{{ end }}
+      {{ if isset . "order" }}{{ $order = .order }}{{ end }}
+    {{ end }}
+    {{ with .channels }}
+      {{ $channels = . }}
+    {{ end }}
+    {{ $genAt = printf "%v" (.generatedAt | default (now.Format "2006-01-02T15:04:05Z")) }}
+
+    {{ if and (isset . "index") (reflect.IsMap .index) }}
+      {{ $index = .index }}
+    {{ else }}
+      {{ $minKickoff := $genAt }}
+      {{ $maxKickoff := $genAt }}
+      {{ if gt (len $order) 0 }}
+        {{ with index $matches (index $order 0) }}
+          {{ $minKickoff = .kickoff }}
+        {{ end }}
+        {{ with index $matches (index $order (sub (len $order) 1)) }}
+          {{ $maxKickoff = .kickoff }}
         {{ end }}
       {{ end }}
-      {{ if $hasChanFile }}
-        {{ $chanData := partial "cfcdata/fetch.html" (dict "file" $chanFile "sha256" $chanSha "settings" $settings) }}
-        {{ $channels = merge $channels (dict $ccStr $chanData) }}
+      {{ $index = dict
+        "schemaVersion" "1.0.0"
+        "generatedAt" $genAt
+        "counts" (dict
+          "leagues" (len $leagues)
+          "teams" (len $teams)
+          "matches" (len $matches)
+        )
+        "window" (dict
+          "from" $minKickoff
+          "to" $maxKickoff
+        )
+        "countries" (slice "BR" "GB" "IE" "PT" "AR")
+        "files" dict
+      }}
+    {{ end }}
+  {{ end }}
+
+{{ else }}
+  {{/* 1. Fetch index.json */}}
+  {{ $index = partial "cfcdata/fetch.html" (dict "file" "index.json" "settings" $settings) }}
+
+  {{/* 2. Validate major version early */}}
+  {{ $schemaVersion := "" }}
+  {{ with $index }}
+    {{ with .schemaVersion }}
+      {{ $schemaVersion = printf "%v" . }}
+    {{ end }}
+  {{ end }}
+
+  {{ if not (strings.HasPrefix $schemaVersion "1.") }}
+    {{ errorf "data-pages: index.json: contract major version mismatch (declared \"%s\", supported 1)" $schemaVersion }}
+  {{ end }}
+
+  {{/* 3. Fetch entity files listed in index.files using declared sha256 */}}
+  {{ $indexFiles := dict }}
+  {{ with $index }}
+    {{ with .files }}
+      {{ if reflect.IsMap . }}
+        {{ $indexFiles = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{/* leagues.json -> extract .leagues */}}
+  {{ $leaguesSha := "" }}
+  {{ with index $indexFiles "leagues.json" }}
+    {{ if reflect.IsMap . }}
+      {{ $leaguesSha = .sha256 | default "" }}
+    {{ end }}
+  {{ end }}
+  {{ $leaguesData := partial "cfcdata/fetch.html" (dict "file" "leagues.json" "sha256" $leaguesSha "settings" $settings) }}
+  {{ if reflect.IsMap $leaguesData }}
+    {{ if isset $leaguesData "leagues" }}
+      {{ $leagues = $leaguesData.leagues }}
+    {{ else }}
+      {{ $leagues = $leaguesData }}
+    {{ end }}
+  {{ end }}
+
+  {{/* teams.json -> extract .teams */}}
+  {{ $teamsSha := "" }}
+  {{ with index $indexFiles "teams.json" }}
+    {{ if reflect.IsMap . }}
+      {{ $teamsSha = .sha256 | default "" }}
+    {{ end }}
+  {{ end }}
+  {{ $teamsData := partial "cfcdata/fetch.html" (dict "file" "teams.json" "sha256" $teamsSha "settings" $settings) }}
+  {{ if reflect.IsMap $teamsData }}
+    {{ if isset $teamsData "teams" }}
+      {{ $teams = $teamsData.teams }}
+    {{ else }}
+      {{ $teams = $teamsData }}
+    {{ end }}
+  {{ end }}
+
+  {{/* matches.json -> extract .matches and .order */}}
+  {{ $matchesSha := "" }}
+  {{ with index $indexFiles "matches.json" }}
+    {{ if reflect.IsMap . }}
+      {{ $matchesSha = .sha256 | default "" }}
+    {{ end }}
+  {{ end }}
+  {{ $matchesData := partial "cfcdata/fetch.html" (dict "file" "matches.json" "sha256" $matchesSha "settings" $settings) }}
+  {{ if reflect.IsMap $matchesData }}
+    {{ if isset $matchesData "matches" }}
+      {{ $matches = $matchesData.matches }}
+    {{ else }}
+      {{ $matches = $matchesData }}
+    {{ end }}
+    {{ if isset $matchesData "order" }}
+      {{ $order = $matchesData.order }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 4. Fetch regional channel files for each country listed in index.countries */}}
+  {{ with $index }}
+    {{ with .countries }}
+      {{ range $cc := . }}
+        {{ $ccStr := printf "%v" $cc }}
+        {{ $chanFile := printf "channels/%s.json" $ccStr }}
+        {{ $chanSha := "" }}
+        {{ $hasChanFile := false }}
+        {{ with index $indexFiles $chanFile }}
+          {{ $hasChanFile = true }}
+          {{ if reflect.IsMap . }}
+            {{ $chanSha = .sha256 | default "" }}
+          {{ end }}
+        {{ end }}
+        {{ if $hasChanFile }}
+          {{ $chanData := partial "cfcdata/fetch.html" (dict "file" $chanFile "sha256" $chanSha "settings" $settings) }}
+          {{ $channels = merge $channels (dict $ccStr $chanData) }}
+        {{ end }}
       {{ end }}
     {{ end }}
   {{ end }}
