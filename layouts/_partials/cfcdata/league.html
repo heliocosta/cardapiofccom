@@ -113,11 +113,28 @@
   {{ end }}
 {{ end }}
 
-{{/* Popular boolean flag */}}
+{{/* Popular boolean flag: checks edition country in popularByCountry first, then global popular */}}
 {{ $popular := false }}
-{{ with index $rawLeague "popular" }}
-  {{ if . }}
-    {{ $popular = true }}
+{{ $edCountry := "" }}
+{{ if reflect.IsMap $edition }}
+  {{ with $edition.country }}
+    {{ $edCountry = . }}
+  {{ end }}
+{{ end }}
+{{ $hasCountryPop := false }}
+{{ if and $edCountry (index $rawLeague "popularByCountry") }}
+  {{ with index (index $rawLeague "popularByCountry") $edCountry }}
+    {{ $hasCountryPop = true }}
+    {{ if .popular }}
+      {{ $popular = true }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ if not $hasCountryPop }}
+  {{ with index $rawLeague "popular" }}
+    {{ if . }}
+      {{ $popular = true }}
+    {{ end }}
   {{ end }}
 {{ end }}
 
