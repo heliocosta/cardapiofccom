@@ -46,8 +46,8 @@
   border-top: none;
 }
 
-/* Prevent horizontal overflow at 320px viewport */
+/* Prevent horizontal overflow at 320px viewport while preserving position: sticky */
 html, body {
-  overflow-x: hidden;
+  overflow-x: clip;
   min-width: 320px;
 }
