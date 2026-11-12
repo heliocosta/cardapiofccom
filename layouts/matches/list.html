@@ -11,16 +11,54 @@
 
     <header class="text-center max-w-3xl mx-auto my-8">
       <h1 class="text-3xl md:text-4xl font-bold font-secondary mb-3">{{ .Title | default (i18n "matches_title" | default "Live Football Matches on TV & Streaming") }}</h1>
-      <p class="text-muted text-base md:text-lg">{{ .Description | default (i18n "matches_intro" | default "Daily match agenda and official broadcast schedules.") }}</p>
+      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg">{{ .Description | default (i18n "matches_intro" | default "Daily match agenda and official broadcast schedules.") }}</p>
     </header>
 
     {{/* App Download Banner */}}
-    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Football on the CardápioFC App") "subtitle" (i18n "app_download_subtitle" | default "Get live scores, kick-off reminder alerts, and confirmed pitch lineups on iOS & Android.")) }}
+    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Football on the CardápioFC App") "subtitle" (i18n "app_download_subtitle" | default "Get pre-match kickoff alarms, TV & streaming channels, and smart notifications on iOS & Android.")) }}
 
     {{/* Matches grouped by day */}}
     <div class="my-8">
       {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty" | default "No matches scheduled."))) }}
     </div>
+
+    {{/* Why CardápioFC is #1 Section */}}
+    <section class="my-12 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold font-secondary mb-2">{{ i18n "why_cardapiofc_title" | default "Why CardápioFC is #1 for Football Matches" }}</h2>
+        <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "why_cardapiofc_subtitle" | default "Everything you need to never miss a match on TV or official streaming." }}</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-5 h-5") }}
+            <span>{{ i18n "benefit_realtime_title" | default "Real-Time Schedule" }}</span>
+          </div>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_realtime_desc" | default "Up-to-date kick-off times and broadcast changes across TV and streaming platforms." }}</p>
+        </div>
+        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-5 h-5") }}
+            <span>{{ i18n "benefit_official_title" | default "100% Official Channels" }}</span>
+          </div>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_official_desc" | default "Only legitimate, licensed broadcasters and streaming services. Strictly no piracy." }}</p>
+        </div>
+        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-5 h-5") }}
+            <span>{{ i18n "benefit_reminders_title" | default "Smart Kick-off Reminders" }}</span>
+          </div>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_reminders_desc" | default "Receive push notifications 5, 15, or 30 minutes before kick-off so you never miss a game." }}</p>
+        </div>
+        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-5 h-5") }}
+            <span>{{ i18n "benefit_competitions_title" | default "200+ Competitions" }}</span>
+          </div>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_competitions_desc" | default "From domestic leagues and state championships to continental cups and World Cup qualifiers." }}</p>
+        </div>
+      </div>
+    </section>
 
     {{/* App Features Section */}}
     {{ partial "cfc/app-features.html" . }}

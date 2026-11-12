@@ -28,8 +28,8 @@
 
     {{/* Agenda: Today & Upcoming Matches */}}
     <section class="my-10">
-      <div class="flex items-center justify-between mb-6 pb-2 border-b border-border">
-        <h2 class="text-2xl font-bold font-secondary">{{ i18n "upcoming_matches" | default "Upcoming Matches" }}</h2>
+      <div class="flex items-center justify-between mb-6 pb-2">
+        <h2 class="text-2xl md:text-3xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark">{{ i18n "upcoming_matches" | default "Upcoming Matches" }}</h2>
         <a href="{{ "/matches/" | relLangURL }}" class="text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline flex items-center gap-1">
           <span>{{ i18n "fixtures" | default "Full Schedule" }}</span>
           <span>&rarr;</span>
@@ -38,7 +38,79 @@
       {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty"))) }}
     </section>
 
-    {{/* App Features Showcase (20 mobile app capabilities) */}}
+    {{/* How CardápioFC Works Section */}}
+    <section class="my-12 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "how_it_works_title" | default "How CardápioFC Works — Simple Football TV Guide" }}</h2>
+        <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "how_it_works_subtitle" | default "Designed for football fans who want instant access to where every match is broadcast. Simple, fast, and always up-to-date." }}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm text-center">
+          <div class="w-12 h-12 rounded-full bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center mx-auto mb-4 text-primary dark:text-darkmode-primary font-bold text-lg">1</div>
+          <h3 class="text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "step_1_title" | default "Open CardápioFC App" }}</h3>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "step_1_desc" | default "View all today's football matches organized chronologically by kick-off time and competition." }}</p>
+        </div>
+
+        <div class="p-6 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm text-center">
+          <div class="w-12 h-12 rounded-full bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center mx-auto mb-4 text-primary dark:text-darkmode-primary font-bold text-lg">2</div>
+          <h3 class="text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "step_2_title" | default "Find Where to Watch Any Match" }}</h3>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "step_2_desc" | default "Tap any match to see official TV channels, cable networks, and verified streaming platforms in your region." }}</p>
+        </div>
+
+        <div class="p-6 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm text-center">
+          <div class="w-12 h-12 rounded-full bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center mx-auto mb-4 text-primary dark:text-darkmode-primary font-bold text-lg">3</div>
+          <h3 class="text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "step_3_title" | default "Set Smart Kick-off Reminders" }}</h3>
+          <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "step_3_desc" | default "Create pre-game notification alarms (5, 15, or 30 minutes before kickoff) so you never miss a match start." }}</p>
+        </div>
+      </div>
+    </section>
+
+    {{/* All Competitions Available Directory */}}
+    <section class="my-12">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">
+          {{ if $countryName }}
+            {{ printf "All Football Competitions Available in %s" $countryName }}
+          {{ else }}
+            All Football Competitions Available
+          {{ end }}
+        </h2>
+        <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">Complete coverage of major domestic championships, continental tournaments, and international cups.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <h3 class="text-lg font-bold mb-3 text-primary dark:text-darkmode-primary flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-5 h-5") }}
+            <span>Domestic Championships & Cups</span>
+          </h3>
+          <ul class="space-y-2 text-sm text-muted dark:text-darkmode-muted">
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Campeonato Brasileiro Série A, B, C &amp; D</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Copa do Brasil &amp; State Championships (Paulista, Carioca, Mineiro, Gaúcho)</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Campeonato Brasileiro Feminino A1 &amp; A2</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Copa do Nordeste, Copa Verde &amp; Regional Tournaments</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Major League Soccer (MLS) &amp; Continental Americas</span></li>
+          </ul>
+        </div>
+
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <h3 class="text-lg font-bold mb-3 text-primary dark:text-darkmode-primary flex items-center gap-2">
+            {{ partial "cfc/icon.html" (dict "name" "star" "class" "w-5 h-5") }}
+            <span>International &amp; European Tournaments</span>
+          </h3>
+          <ul class="space-y-2 text-sm text-muted dark:text-darkmode-muted">
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Copa Libertadores &amp; Copa Sudamericana</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>UEFA Champions League, Europa League &amp; Conference League</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>Premier League, LaLiga, Serie A, Bundesliga, Ligue 1</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>FIFA World Cup, Qualifiers &amp; International Friendlies</span></li>
+            <li class="flex items-center gap-2"><span>&bull;</span> <span>UEFA Women's Champions League &amp; International Women's Cups</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    {{/* App Features Showcase (20 mobile app capabilities - strictly zero lineups) */}}
     {{ partial "cfc/app-features.html" . }}
 
     {{/* Secondary CTA */}}

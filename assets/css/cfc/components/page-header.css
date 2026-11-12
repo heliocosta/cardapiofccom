@@ -70,3 +70,19 @@
   color: var(--color-text, #1F2937);
   font-weight: 500;
 }
+
+.dark .cfc-breadcrumb__list {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}
+
+.dark .cfc-breadcrumb__link:hover {
+  color: var(--color-darkmode-primary, #CDEDA4);
+}
+
+.dark .cfc-breadcrumb__separator {
+  color: var(--color-darkmode-border, #90918A);
+}
+
+.dark .cfc-breadcrumb__current {
+  color: var(--color-darkmode-text, #E5E7EB);
+}

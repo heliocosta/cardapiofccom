@@ -5,7 +5,7 @@
 
 <header class="cfc-header{{ if $sticky }} is-sticky{{ end }}">
   <div class="cfc-container flex items-center justify-between py-3">
-    <a href="{{ $ed.prefix }}" class="navbar-brand inline-flex items-center text-xl font-bold font-secondary text-primary" aria-label="CardápioFC Home">
+    <a href="{{ $ed.prefix }}" class="navbar-brand inline-flex items-center text-xl font-bold font-secondary text-primary dark:text-darkmode-primary" aria-label="CardápioFC Home">
       {{ partial "logo" }}
     </a>
 
@@ -15,11 +15,11 @@
       </nav>
 
       {{/* App Store & Google Play Quick Links */}}
-      <div class="hidden sm:flex items-center gap-1.5 border-l border-border pl-3">
-        <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-theme-dark text-text hover:text-primary dark:text-darkmode-text dark:hover:text-darkmode-primary transition-colors" aria-label="Download on the App Store">
+      <div class="hidden sm:flex items-center gap-1.5 pl-2">
+        <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Download on the App Store">
           {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-5 h-5") }}
         </a>
-        <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-theme-dark text-text hover:text-primary dark:text-darkmode-text dark:hover:text-darkmode-primary transition-colors" aria-label="Get it on Google Play">
+        <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Get it on Google Play">
           {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "w-5 h-5") }}
         </a>
       </div>

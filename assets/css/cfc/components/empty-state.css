@@ -5,9 +5,9 @@
   justify-content: center;
   padding: 3rem 1.5rem;
   text-align: center;
-  border: 1px dashed var(--color-border, #D1D5DB);
+  border: none;
   border-radius: var(--radius-card, 0.5rem);
-  background-color: var(--color-surface, #ffffff);
+  background-color: var(--color-light, #F3F4F6);
 }
 
 .cfc-empty-state__message {
@@ -23,7 +23,7 @@
 
 .dark .cfc-empty-state {
   background-color: var(--color-darkmode-surface, #1A2E05);
-  border-color: var(--color-darkmode-border, #90918A);
+  border: none;
 }
 
 .dark .cfc-empty-state__message {

@@ -1,82 +1,82 @@
-{{/* cfc/app-features.html - Highlights the 20 native mobile app capabilities */}}
+{{/* cfc/app-features.html - Highlights native mobile app capabilities (strictly NO lineups) */}}
 <section class="cfc-app-features my-12">
   <div class="text-center mb-8">
     <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light rounded-full mb-3">Native Mobile App Features</span>
     <h2 class="text-2xl md:text-3xl font-bold font-secondary mb-3">Everything Football Fans Need, in Your Pocket</h2>
-    <p class="text-muted max-w-2xl mx-auto text-sm md:text-base">The CardápioFC mobile app is loaded with live match companion features you won't find anywhere else. Completely free, no ads, no piracy.</p>
+    <p class="text-muted dark:text-darkmode-muted max-w-2xl mx-auto text-sm md:text-base">The CardápioFC mobile app is loaded with live match companion features you won't find anywhere else. Completely free, no ads, no piracy.</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-5 h-5") }}
         <span>Instant "Where to Watch" Guide</span>
       </div>
-      <p class="text-sm text-muted">Know immediately which TV channel, cable network, or legal streaming service broadcasts any football match in your country.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Know immediately which TV channel, cable network, or legal streaming service broadcasts any football match in your country.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-5 h-5") }}
         <span>Real-Time Scores & Match Clock</span>
       </div>
-      <p class="text-sm text-muted">Follow live scores, elapsed minutes, halftime/fulltime results, and penalty shootouts as they happen in real time.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Follow live scores, elapsed minutes, halftime/fulltime results, and penalty shootouts as they happen in real time.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-5 h-5") }}
         <span>One-Tap Launch to Streaming Apps</span>
       </div>
-      <p class="text-sm text-muted">Tap a broadcast channel directly on any match to jump straight into the official broadcaster's app or live stream.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Tap a broadcast channel directly on any match to jump straight into the official broadcaster's app or live stream.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "calendar" "class" "w-5 h-5") }}
         <span>Daily Football "Menu" by Date</span>
       </div>
-      <p class="text-sm text-muted">Swipe smoothly across days (yesterday, today, tomorrow, and upcoming fixtures) to plan your football viewing week.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Swipe smoothly across days (yesterday, today, tomorrow, and upcoming fixtures) to plan your football viewing week.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-5 h-5") }}
         <span>Custom Reminders & Alerts</span>
       </div>
-      <p class="text-sm text-muted">Set pre-match reminder alarms (e.g., 15 or 30 minutes before kick-off) and receive push notifications for your teams' games.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Set pre-match reminder alarms (e.g., 15 or 30 minutes before kick-off) and receive push notifications for your teams' games.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "star" "class" "w-5 h-5") }}
         <span>Personalised Favourites & Watchlist</span>
       </div>
-      <p class="text-sm text-muted">Follow your favourite clubs, leagues, and channels, and bookmark upcoming games in "My Agenda" so you never lose track.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Follow your favourite clubs, leagues, and channels, and bookmark upcoming games in "My Agenda" so you never lose track.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "check" "class" "w-5 h-5") }}
-        <span>Visual Pitch Lineups & Formations</span>
+        <span>Match Stats & Head-to-Head</span>
       </div>
-      <p class="text-sm text-muted">See confirmed starting XIs, tactical formations on an interactive 2D pitch, jersey numbers, and bench substitutes.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Compare team form, past head-to-head results, stadium info, and match statistics before and during every game.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "check" "class" "w-5 h-5") }}
-        <span>Interactive Lineup Builder</span>
+        <span>Live Standings & Knockout Brackets</span>
       </div>
-      <p class="text-sm text-muted">Build your dream starting XI on a virtual pitch and share your tactical formation with friends via a link or image.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Check up-to-date league tables, points, goal differences, qualification zones, and visual tournament knockout trees.</p>
     </div>
 
-    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
       <div class="text-primary dark:text-darkmode-primary mb-2 font-bold flex items-center gap-2">
         {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-5 h-5") }}
         <span>Multi-Country & Big-Screen Companion</span>
       </div>
-      <p class="text-sm text-muted">Check live schedules on your wrist with Wear OS, browse on Android TV, or switch countries when traveling abroad.</p>
+      <p class="text-sm text-muted dark:text-darkmode-muted">Check live schedules on your wrist with Wear OS, browse on Android TV, or switch countries when traveling abroad.</p>
     </div>
   </div>
 </section>

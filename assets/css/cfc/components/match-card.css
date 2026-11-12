@@ -3,17 +3,17 @@
   flex-direction: column;
   padding: 0.875rem 1rem;
   background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #E5E7EB);
+  border: none;
   border-radius: var(--radius-card, 0.5rem);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cfc-match-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.15);
 }
 
 .cfc-match-card__league {
@@ -68,7 +68,6 @@
   gap: 0.375rem;
   margin-top: 0.75rem;
   padding-top: 0.5rem;
-  border-top: 1px dashed var(--color-border, #E5E7EB);
 }
 
 .cfc-match-card__no-channels {
@@ -80,12 +79,13 @@
 /* Dark mode styles */
 .dark .cfc-match-card {
   background-color: var(--color-darkmode-surface, #1A2E05);
-  border-color: var(--color-darkmode-border, #90918A);
+  border: none;
   color: var(--color-darkmode-text, #E5E7EB);
 }
 
 .dark .cfc-match-card:hover {
-  border-color: var(--color-darkmode-primary, #CDEDA4);
+  border: none;
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.4);
 }
 
 .dark .cfc-match-card__league {
@@ -93,7 +93,7 @@
 }
 
 .dark .cfc-match-card__channels {
-  border-top-color: var(--color-darkmode-border, #90918A);
+  border-top: none;
 }
 
 .dark .cfc-match-card__no-channels {

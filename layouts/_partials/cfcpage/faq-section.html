@@ -1,0 +1,82 @@
+{{/* layouts/_partials/cfcpage/faq-section.html */}}
+{{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+{{- $countryName := "" -}}
+{{- with $ed.country -}}
+  {{- $countryKey := printf "country_%s" (lower .) -}}
+  {{- $countryName = i18n $countryKey | default . -}}
+{{- end -}}
+{{- if not $countryName }}{{ $countryName = $ed.label }}{{ end -}}
+
+{{- $m := . -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "match" -}}
+    {{- $m = .match -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $homeTeam := "" -}}
+{{- $awayTeam := "" -}}
+{{- $leagueName := "" -}}
+{{- with $m -}}
+  {{- with .home }}{{ $homeTeam = .name }}{{ end -}}
+  {{- with .away }}{{ $awayTeam = .name }}{{ end -}}
+  {{- with .league }}{{ $leagueName = .name }}{{ end -}}
+{{- end -}}
+
+<section class="cfc-faq-section my-12">
+  <div class="text-center max-w-2xl mx-auto mb-8">
+    <h2 class="text-2xl md:text-3xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "faq" | default "Frequently Asked Questions" }}</h2>
+    <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "faq_intro_short" | default "Everything you need to know about official TV broadcasts and streaming platforms." }}</p>
+  </div>
+
+  <div class="max-w-3xl mx-auto space-y-4">
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+      <h3 class="text-base md:text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">
+        {{ if and $homeTeam $awayTeam }}
+          {{ printf "Where can I watch %s x %s in %s?" $homeTeam $awayTeam $countryName }}
+        {{ else }}
+          {{ i18n "faq_q1" | default "Where can I watch football matches on TV and streaming today?" }}
+        {{ end }}
+      </h3>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">
+        {{ if and $homeTeam $awayTeam }}
+          {{ printf "Check the CardápioFC match guide above or download the free CardápioFC app to see verified, real-time broadcasts on official TV channels and streaming platforms in %s." $countryName }}
+        {{ else }}
+          {{ i18n "faq_a1" | default "CardápioFC displays official broadcast channels and legal streaming platforms for every match in your country." }}
+        {{ end }}
+      </p>
+    </div>
+
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+      <h3 class="text-base md:text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">
+        {{ if $leagueName }}
+          {{ printf "Which channels and streaming platforms broadcast %s in %s?" $leagueName $countryName }}
+        {{ else }}
+          {{ i18n "faq_q3" | default "Which competitions and leagues are covered?" }}
+        {{ end }}
+      </h3>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">
+        {{ if $leagueName }}
+          {{ printf "CardápioFC lists all authorized free-to-air, cable TV networks, and verified streaming services licensed to show %s in %s." $leagueName $countryName }}
+        {{ else }}
+          {{ i18n "faq_a3" | default "CardápioFC covers major domestic, continental, and international tournaments including the Brasileirão, Copa do Brasil, State Championships, Libertadores, Champions League, Premier League, LaLiga, and World Cup." }}
+        {{ end }}
+      </p>
+    </div>
+
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+      <h3 class="text-base md:text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "faq_q4" | default "Can I get smart kick-off reminders before the game?" }}</h3>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "faq_a4" | default "Yes. Turn on smart reminders in the CardápioFC mobile app to receive a push notification 5, 15, or 30 minutes before kick-off with channel details." }}</p>
+    </div>
+
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+      <h3 class="text-base md:text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "faq_q2" | default "Does CardápioFC stream the match live?" }}</h3>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "faq_a2" | default "No. CardápioFC is strictly an informational TV guide. We do not host or broadcast streams. We provide verified schedules for 100% legal, official broadcasters and help you avoid dangerous piracy sites." }}</p>
+    </div>
+
+    <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+      <h3 class="text-base md:text-lg font-bold mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "faq_q11" | default "Is CardápioFC free to use?" }}</h3>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "faq_a11" | default "Yes! CardápioFC is 100% free to use on web and to download on iOS and Android. No registration or subscription required to check broadcast schedules." }}</p>
+    </div>
+  </div>
+</section>

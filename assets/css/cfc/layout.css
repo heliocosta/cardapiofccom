@@ -20,8 +20,13 @@
   position: relative;
   width: 100%;
   background-color: var(--color-surface, #ffffff);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: none;
   z-index: 40;
+}
+
+.dark .cfc-header {
+  background-color: var(--color-darkmode-body, #0F2000);
+  border-bottom: none;
 }
 
 .cfc-header.is-sticky {
@@ -32,8 +37,13 @@
 .cfc-footer {
   width: 100%;
   background-color: var(--color-surface, #ffffff);
-  border-top: 1px solid var(--color-border);
+  border-top: none;
   margin-top: auto;
+}
+
+.dark .cfc-footer {
+  background-color: var(--color-darkmode-body, #0F2000);
+  border-top: none;
 }
 
 /* Prevent horizontal overflow at 320px viewport */

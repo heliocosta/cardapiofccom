@@ -11,7 +11,7 @@
 
     <header class="text-center max-w-3xl mx-auto my-8">
       <h1 class="text-3xl md:text-4xl font-bold font-secondary mb-3">{{ .Title | default (i18n "leagues_title" | default "Football Leagues & Cups | Where To Watch") }}</h1>
-      <p class="text-muted text-base md:text-lg">{{ .Description | default (i18n "leagues_intro" | default "Browse major domestic championships, continental tournaments, and international cups.") }}</p>
+      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg">{{ .Description | default (i18n "leagues_intro" | default "Browse major domestic championships, continental tournaments, and international cups.") }}</p>
     </header>
 
     {{/* App Download Banner */}}
@@ -29,16 +29,16 @@
 
     {{- if gt (len $popular) 0 -}}
       <section class="cfc-league-directory__popular my-8">
-        <h2 class="text-xl font-bold mb-4">{{ i18n "popular_leagues" | default "Popular Leagues" }}</h2>
+        <h2 class="text-2xl font-bold font-secondary mb-4">{{ i18n "popular_leagues" | default "Popular Leagues" }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {{- range $popular -}}
             {{- $leagueName := .name -}}
-            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg border border-border bg-surface dark:bg-darkmode-surface hover:border-primary transition group" data-cfc-league="{{ .slug }}">
+            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
               {{- with .logo -}}
                 <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
               {{- end -}}
               <div class="min-w-0">
-                <span class="cfc-league-card__name font-medium block truncate group-hover:text-primary transition-colors">{{ $leagueName }}</span>
+                <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
                 {{- $meta := slice -}}
                 {{- with .country -}}
                   {{- with .name -}}
@@ -50,7 +50,7 @@
                 {{- end -}}
                 {{- $metaStr := delimit $meta " · " -}}
                 {{- with $metaStr -}}
-                  <span class="cfc-league-card__meta text-xs text-muted block">{{ . }}</span>
+                  <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
                 {{- end -}}
               </div>
             </a>
@@ -60,16 +60,16 @@
     {{- end -}}
 
     <section class="cfc-league-directory__all my-8">
-      <h2 class="text-xl font-bold mb-4">{{ i18n "all_leagues" | default "All Leagues & Tournaments" }}</h2>
+      <h2 class="text-2xl font-bold font-secondary mb-4">{{ i18n "all_leagues" | default "All Leagues & Tournaments" }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {{- range $leagues -}}
           {{- $leagueName := .name -}}
-          <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg border border-border bg-surface dark:bg-darkmode-surface hover:border-primary transition group" data-cfc-league="{{ .slug }}">
+          <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
             {{- with .logo -}}
               <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
             {{- end -}}
             <div class="min-w-0">
-              <span class="cfc-league-card__name font-medium block truncate group-hover:text-primary transition-colors">{{ $leagueName }}</span>
+              <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
               {{- $meta := slice -}}
               {{- with .country -}}
                 {{- with .name -}}
@@ -81,7 +81,7 @@
               {{- end -}}
               {{- $metaStr := delimit $meta " · " -}}
               {{- with $metaStr -}}
-                <span class="cfc-league-card__meta text-xs text-muted block">{{ . }}</span>
+                <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
               {{- end -}}
             </div>
           </a>

@@ -11,8 +11,8 @@
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: var(--radius-card, 0.375rem);
-  border: 1px solid var(--color-border, #E5E7EB);
-  background-color: var(--color-surface, #ffffff);
+  border: none;
+  background-color: var(--color-light, #F3F4F6);
   color: var(--color-text, #1F2937);
   cursor: pointer;
   user-select: none;
@@ -41,7 +41,7 @@
   min-width: 12rem;
   padding: 0.375rem 0;
   background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #E5E7EB);
+  border: none;
   border-radius: var(--radius-card, 0.375rem);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   z-index: 50;
@@ -73,14 +73,14 @@
 }
 
 .dark .cfc-switcher__summary {
-  background-color: var(--color-darkmode-surface, #1A2E05);
-  border-color: var(--color-darkmode-border, #90918A);
+  background-color: var(--color-darkmode-dark, #344E17);
+  border: none;
   color: var(--color-darkmode-text, #E5E7EB);
 }
 
 .dark .cfc-switcher__dropdown {
   background-color: var(--color-darkmode-surface, #1A2E05);
-  border-color: var(--color-darkmode-border, #90918A);
+  border: none;
 }
 
 .dark .cfc-switcher__link {

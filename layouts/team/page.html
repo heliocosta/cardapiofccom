@@ -49,7 +49,7 @@
             {{- end -}}
           {{- end -}}
           {{- with $countryName -}}
-            <p class="cfc-team__country text-sm text-muted mt-1">{{ . }}</p>
+            <p class="cfc-team__country text-sm text-muted dark:text-darkmode-muted mt-1">{{ . }}</p>
           {{- end -}}
         </div>
       </header>
@@ -58,7 +58,7 @@
       {{- $upcomingSlugs := partial "cfcdata/window.html" (dict "dataset" $dataset "slugs" .matchSlugs "statuses" $upcomingStatuses "limit" ($settings.team.upcoming | default 10)) -}}
 
       <section class="cfc-team-upcoming my-8">
-        <h2 class="text-xl font-bold mb-4">{{ i18n "upcoming_matches" }}</h2>
+        <h2 class="text-2xl font-bold font-secondary mb-4 text-text-dark dark:text-darkmode-text-dark">{{ i18n "upcoming_matches" }}</h2>
         {{ partial "cfcpage/match-days.html" (dict "matches" $upcomingSlugs "emptyMessage" (i18n "no_upcoming_matches") "headingLevel" 3 "showLeague" true) }}
       </section>
 
@@ -67,18 +67,18 @@
 
       {{- if gt (len $recentSlugs) 0 -}}
         <section class="cfc-team-recent my-8">
-          <h2 class="text-xl font-bold mt-8 mb-4">{{ i18n "recent_results" }}</h2>
+          <h2 class="text-2xl font-bold font-secondary mt-8 mb-4 text-text-dark dark:text-darkmode-text-dark">{{ i18n "recent_results" }}</h2>
           {{ partial "cfcpage/match-days.html" (dict "matches" $recentSlugs "headingLevel" 3 "showLeague" true) }}
         </section>
       {{- end -}}
 
       {{- if and .leagues (gt (len .leagues) 0) -}}
         <section class="cfc-team-leagues my-8">
-          <h2 class="text-base font-semibold mb-3">{{ i18n "leagues" }}</h2>
+          <h2 class="text-2xl font-bold font-secondary mb-4 text-text-dark dark:text-darkmode-text-dark">{{ i18n "leagues" }}</h2>
           <ul class="flex flex-wrap gap-2">
             {{- range .leagues -}}
               <li>
-                <a href="{{ .url }}" class="inline-block px-3 py-1 text-sm font-medium border border-border rounded-full hover:bg-theme-light transition">
+                <a href="{{ .url }}" class="inline-block px-3 py-1.5 text-sm font-medium bg-surface dark:bg-darkmode-surface rounded-full shadow-sm hover:text-primary dark:hover:text-darkmode-primary transition">
                   {{ .name }}
                 </a>
               </li>
@@ -88,7 +88,33 @@
       {{- end -}}
     {{- end -}}
 
-    {{ partial "cfc/app-download.html" (dict "title" (printf (i18n "app_download_team_title" | default "Follow %s in the CardápioFC App") $teamTitle) "subtitle" (i18n "app_download_team_subtitle" | default "Bookmark your favourite team to receive match notifications, confirmed pitch lineups, and live scores.")) }}
+    {{/* Why fans love CardápioFC for this Team */}}
+    <section class="my-10 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light">
+      <h2 class="text-2xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ printf "Why fans love CardápioFC for %s" $teamTitle }}</h2>
+      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6">Everything you need to follow every fixture with official channels and smart notifications.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Match Calendar</div>
+          <p class="text-xs text-muted dark:text-darkmode-muted">Complete fixture calendar with kickoff times in your timezone.</p>
+        </div>
+        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Broadcast Info</div>
+          <p class="text-xs text-muted dark:text-darkmode-muted">Know exactly which TV channels and streaming services show the game.</p>
+        </div>
+        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Team Alerts</div>
+          <p class="text-xs text-muted dark:text-darkmode-muted">Get push notifications before every game so you never miss kickoff.</p>
+        </div>
+        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Zero Piracy</div>
+          <p class="text-xs text-muted dark:text-darkmode-muted">Only legal, official TV networks and authorized streaming platforms.</p>
+        </div>
+      </div>
+    </section>
+
+    {{ partial "cfc/app-download.html" (dict "title" (printf (i18n "app_download_team_title" | default "Follow %s in the CardápioFC App") $teamTitle) "subtitle" (i18n "app_download_team_subtitle" | default "Bookmark your favourite team to receive match notifications, official TV channels, and streaming alerts.")) }}
+
+    {{ partial "cfcpage/faq-section.html" (dict "match" (dict "home" $team) "page" .) }}
 
     {{ partial "cfcpage/freshness.html" . }}
   </div>

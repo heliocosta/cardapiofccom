@@ -19,15 +19,15 @@
 {{- end -}}
 
 {{- if $m -}}
-<section class="cfc-match-hero my-6 p-4 md:p-6 rounded-lg bg-theme-light dark:bg-darkmode-theme-light border border-border">
+<section class="cfc-match-hero my-6 p-4 md:p-6 rounded-lg bg-theme-light dark:bg-darkmode-theme-light">
   {{- with $m.league -}}
-  <div class="cfc-match-hero__meta text-sm text-muted mb-4"><a href="{{ .url }}" class="hover:underline font-medium">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ i18n "round" }} {{ . }}</span>{{ end }}</div>
+  <div class="cfc-match-hero__meta text-sm text-muted dark:text-darkmode-muted mb-4"><a href="{{ .url }}" class="hover:underline font-medium text-text-dark dark:text-darkmode-text-dark">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ if or (strings.HasPrefix (lower .) "rodada") (strings.HasPrefix (lower .) "round") (strings.HasPrefix (lower .) "jornada") }}{{ . }}{{ else }}{{ i18n "round" }} {{ . }}{{ end }}</span>{{ end }}</div>
   {{- end -}}
 
   <div class="cfc-match-hero__main grid grid-cols-1 md:grid-cols-3 items-center gap-4 text-center">
     {{/* Home Team */}}
     <div class="cfc-match-hero__team cfc-match-hero__team--home flex flex-col md:flex-row items-center justify-center md:justify-end gap-3 order-1">
-      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline order-2 md:order-1 text-center md:text-right">{{ $m.home.name }}</a>
+      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline order-2 md:order-1 text-center md:text-right text-text-dark dark:text-darkmode-text-dark">{{ $m.home.name }}</a>
       <span class="order-1 md:order-2 flex-shrink-0">
         {{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "lg" "decorative" false) }}
       </span>
@@ -44,13 +44,13 @@
       <span class="flex-shrink-0">
         {{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "lg" "decorative" false) }}
       </span>
-      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline text-center md:text-left">{{ $m.away.name }}</a>
+      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name text-lg md:text-xl font-bold hover:underline text-center md:text-left text-text-dark dark:text-darkmode-text-dark">{{ $m.away.name }}</a>
     </div>
   </div>
 
   {{- with $m.venue -}}
     {{- if and (reflect.IsMap .) (ne (.name | default "") "") -}}
-    <div class="cfc-match-hero__venue text-sm text-muted text-center mt-4"><span class="font-medium">{{ i18n "venue" }}:</span> {{ .name }}{{ with .city }}, {{ . }}{{ end }}</div>
+    <div class="cfc-match-hero__venue text-sm text-muted dark:text-darkmode-muted text-center mt-4"><span class="font-medium">{{ i18n "venue" }}:</span> {{ .name }}{{ with .city }}, {{ . }}{{ end }}</div>
     {{- end -}}
   {{- end -}}
 </section>

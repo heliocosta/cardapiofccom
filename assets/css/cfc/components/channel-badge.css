@@ -8,7 +8,7 @@
   border-radius: 9999px;
   background-color: var(--color-light, #F3F4F6);
   color: var(--color-text, #1F2937);
-  border: 1px solid var(--color-border, #D1D5DB);
+  border: none;
   text-decoration: none;
   transition: opacity 0.15s ease;
 }
@@ -35,7 +35,7 @@ a.cfc-channel-badge:hover {
 .dark .cfc-channel-badge {
   background-color: var(--color-darkmode-dark, #344E17);
   color: var(--color-darkmode-text, #E5E7EB);
-  border-color: var(--color-darkmode-border, #90918A);
+  border: none;
 }
 
 .dark .cfc-channel-badge__type {

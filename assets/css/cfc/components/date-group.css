@@ -8,7 +8,7 @@
   color: var(--color-text-dark, #000000);
   margin-bottom: 0.75rem;
   padding-bottom: 0.25rem;
-  border-bottom: 2px solid var(--color-primary);
+  border-bottom: none;
   text-transform: capitalize;
 }
 
@@ -20,5 +20,5 @@
 
 .dark .cfc-date-group__heading {
   color: var(--color-darkmode-text-dark, #FFFFFF);
-  border-bottom-color: var(--color-darkmode-primary, #CDEDA4);
+  border-bottom: none;
 }

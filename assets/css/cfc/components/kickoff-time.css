@@ -13,3 +13,7 @@
   font-size: 0.75rem;
   color: var(--color-muted, #6B7280);
 }
+
+.dark .cfc-kickoff-time__zone {
+  color: var(--color-darkmode-muted, #9CA3AF);
+}

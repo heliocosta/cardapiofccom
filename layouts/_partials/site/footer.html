@@ -6,14 +6,14 @@
   <div class="cfc-container py-8">
     {{ partial "site/hook.html" (dict "name" "footer-app" "page" .) }}
 
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 py-4 border-b border-border">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 py-4">
       <nav aria-label="Footer Navigation">
         {{ partial "cfc/menu.html" (dict "page" . "menu" "footer") }}
       </nav>
     </div>
 
-    <nav class="py-6 border-b border-border text-center" aria-label="Available in">
-      <p class="mb-3 font-semibold text-xs uppercase tracking-wider text-muted">{{ i18n "available_in" | default "Available in" }}</p>
+    <nav class="py-6 text-center" aria-label="Available in">
+      <p class="mb-3 font-semibold text-xs uppercase tracking-wider text-muted dark:text-darkmode-muted">{{ i18n "available_in" | default "Available in" }}</p>
       <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
         {{ range $all }}
           {{ $targetUrl := .prefix }}
@@ -24,7 +24,7 @@
             <a href="{{ $targetUrl }}"
                hreflang="{{ .hreflang }}"
                lang="{{ .locale }}"
-               class="underline underline-offset-4 hover:text-primary transition-colors">
+               class="underline underline-offset-4 text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors">
               {{ .label }}
             </a>
           </li>
@@ -32,7 +32,7 @@
       </ul>
     </nav>
 
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-muted">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-muted dark:text-darkmode-muted">
       <p>{{ site.Params.copyright | default (printf "© %d CardápioFC. All rights reserved." now.Year) }}</p>
       {{ partial "site/hook.html" (dict "name" "footer-consent" "page" .) }}
     </div>
