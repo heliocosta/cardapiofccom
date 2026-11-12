@@ -63,20 +63,32 @@
       <h2 class="text-2xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "why_cardapiofc_title" | default "Why CardápioFC is #1 for Live Matches" }}</h2>
       <p class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6">Everything you need to watch this match and follow 200+ competitions with confidence.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Real-Time Schedule</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Real-Time Schedule</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Instant kickoff time updates in your local timezone.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">100% Official Channels</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">100% Official Channels</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Only legal TV networks and official streaming platforms.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Kick-off Reminders</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Kick-off Reminders</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Push notification alarms 5, 15, or 30 minutes before kick-off.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">200+ Competitions</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">200+ Competitions</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">From local state championships to continental finals.</p>
         </div>
       </div>

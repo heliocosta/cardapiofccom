@@ -93,20 +93,32 @@
       <h2 class="text-2xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ printf "Why fans love CardápioFC for %s" $teamTitle }}</h2>
       <p class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6">Everything you need to follow every fixture with official channels and smart notifications.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Match Calendar</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "calendar" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Match Calendar</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Complete fixture calendar with kickoff times in your timezone.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Broadcast Info</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Broadcast Info</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Know exactly which TV channels and streaming services show the game.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Team Alerts</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Team Alerts</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Get push notifications before every game so you never miss kickoff.</p>
         </div>
-        <div class="p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="font-bold text-sm text-primary dark:text-darkmode-primary mb-1">Zero Piracy</div>
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "check" "class" "w-6 h-6") }}
+          </div>
+          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Zero Piracy</div>
           <p class="text-xs text-muted dark:text-darkmode-muted">Only legal, official TV networks and authorized streaming platforms.</p>
         </div>
       </div>

@@ -29,32 +29,32 @@
         <p class="text-sm md:text-base text-muted dark:text-darkmode-muted">{{ i18n "why_cardapiofc_subtitle" | default "Everything you need to never miss a match on TV or official streaming." }}</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
-            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-5 h-5") }}
-            <span>{{ i18n "benefit_realtime_title" | default "Real-Time Schedule" }}</span>
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-7 h-7") }}
           </div>
+          <div class="font-bold text-base text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "benefit_realtime_title" | default "Real-Time Schedule" }}</div>
           <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_realtime_desc" | default "Up-to-date kick-off times and broadcast changes across TV and streaming platforms." }}</p>
         </div>
-        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
-            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-5 h-5") }}
-            <span>{{ i18n "benefit_official_title" | default "100% Official Channels" }}</span>
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-7 h-7") }}
           </div>
+          <div class="font-bold text-base text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "benefit_official_title" | default "100% Official Channels" }}</div>
           <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_official_desc" | default "Only legitimate, licensed broadcasters and streaming services. Strictly no piracy." }}</p>
         </div>
-        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
-            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-5 h-5") }}
-            <span>{{ i18n "benefit_reminders_title" | default "Smart Kick-off Reminders" }}</span>
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-7 h-7") }}
           </div>
+          <div class="font-bold text-base text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "benefit_reminders_title" | default "Smart Kick-off Reminders" }}</div>
           <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_reminders_desc" | default "Receive push notifications 5, 15, or 30 minutes before kick-off so you never miss a game." }}</p>
         </div>
-        <div class="p-5 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="text-primary dark:text-darkmode-primary font-bold mb-2 flex items-center gap-2">
-            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-5 h-5") }}
-            <span>{{ i18n "benefit_competitions_title" | default "200+ Competitions" }}</span>
+        <div class="p-6 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
+          <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
+            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-7 h-7") }}
           </div>
+          <div class="font-bold text-base text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "benefit_competitions_title" | default "200+ Competitions" }}</div>
           <p class="text-sm text-muted dark:text-darkmode-muted">{{ i18n "benefit_competitions_desc" | default "From domestic leagues and state championships to continental cups and World Cup qualifiers." }}</p>
         </div>
       </div>

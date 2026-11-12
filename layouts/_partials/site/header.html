@@ -16,11 +16,11 @@
 
       {{/* App Store & Google Play Quick Links */}}
       <div class="hidden sm:flex items-center gap-1.5 pl-2">
-        <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Download on the App Store">
-          {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-5 h-5") }}
+        <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Download on the App Store">
+          {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-7 h-7") }}
         </a>
-        <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Get it on Google Play">
-          {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "w-5 h-5") }}
+        <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg hover:bg-light dark:hover:bg-darkmode-surface text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors" aria-label="Get it on Google Play">
+          {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "w-7 h-7") }}
         </a>
       </div>
 
