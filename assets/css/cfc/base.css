@@ -5,10 +5,30 @@
   outline-offset: 2px;
 }
 
-/* Typography: Saira Condensed titles are rendered uppercase in CSS only */
-.font-secondary {
+/* Typography: Saira Condensed titles and headings are rendered uppercase in CSS only */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.font-secondary,
+[class*="font-secondary"],
+h1 *,
+h2 *,
+h3 *,
+h4 *,
+h5 *,
+h6 *,
+.font-secondary * {
   font-family: var(--font-secondary, "Saira Condensed", sans-serif);
-  text-transform: uppercase;
+  text-transform: uppercase !important;
   letter-spacing: 0.025em;
 }
 

@@ -9,7 +9,7 @@
   margin-bottom: 0.75rem;
   padding-bottom: 0.25rem;
   border-bottom: none;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 .cfc-date-group__matches {
