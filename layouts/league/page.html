@@ -39,7 +39,7 @@
           <img src="{{ . }}" alt="{{ $league.name }}" width="48" height="48" class="cfc-league-header__logo w-12 h-12 object-contain" />
         {{- end -}}
         <div>
-          <h1 class="cfc-league__name text-2xl md:text-3xl font-bold">{{ .name }}</h1>
+          <h1 class="cfc-league__name text-2xl md:text-3xl font-bold font-secondary">{{ .name }}</h1>
           {{- $countryName := "" -}}
           {{- with .country -}}
             {{- with .code -}}

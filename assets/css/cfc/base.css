@@ -5,6 +5,13 @@
   outline-offset: 2px;
 }
 
+/* Typography: Saira Condensed titles are rendered uppercase in CSS only */
+.font-secondary {
+  font-family: var(--font-secondary, "Saira Condensed", sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
 .cfc-skip-link {
   position: absolute;
   top: -9999px;

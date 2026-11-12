@@ -35,7 +35,7 @@
       <header class="cfc-team-header flex items-center gap-4 my-6">
         {{ partial "cfc/team-crest.html" (dict "size" "lg" "name" .name "shortName" .shortName "src" .crest "decorative" false) }}
         <div>
-          <h1 class="cfc-team__name text-2xl md:text-3xl font-bold">{{ .name }}</h1>
+          <h1 class="cfc-team__name text-2xl md:text-3xl font-bold font-secondary">{{ .name }}</h1>
           {{- $countryName := "" -}}
           {{- with .country -}}
             {{- with .code -}}

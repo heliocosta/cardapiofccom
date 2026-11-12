@@ -3,6 +3,9 @@
 }
 
 .cfc-page-header__title {
+  font-family: var(--font-secondary, "Saira Condensed", sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
   font-size: 1.875rem;
   line-height: 2.25rem;
   font-weight: 700;

@@ -22,11 +22,8 @@ a.cfc-channel-badge:hover {
   font-size: 0.875rem;
 }
 
-.cfc-channel-badge__logo {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  flex-shrink: 0;
+.cfc-channel-badge__name {
+  font-weight: 600;
 }
 
 .cfc-channel-badge__type {
