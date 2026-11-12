@@ -19,13 +19,7 @@
 {{- end -}}
 
 {{- if $m -}}
-  {{- $status := $m.status | default "scheduled" -}}
-  {{- $validStatuses := slice "scheduled" "live" "halftime" "finished" "postponed" "cancelled" "suspended" -}}
-  {{- if not (in $validStatuses $status) -}}
-    {{- $status = "scheduled" -}}
-  {{- end -}}
-
-<section class="cfc-match-hero cfc-match-hero--{{ $status }} my-6 p-4 md:p-6 rounded-lg bg-theme-light dark:bg-darkmode-theme-light border border-border">
+<section class="cfc-match-hero my-6 p-4 md:p-6 rounded-lg bg-theme-light dark:bg-darkmode-theme-light border border-border">
   {{- with $m.league -}}
   <div class="cfc-match-hero__meta text-sm text-muted mb-4"><a href="{{ .url }}" class="hover:underline font-medium">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ i18n "round" }} {{ . }}</span>{{ end }}</div>
   {{- end -}}
@@ -39,17 +33,10 @@
       </span>
     </div>
 
-    {{/* Center: Kickoff / Live Score / Final Score / Status */}}
+    {{/* Center: Kickoff Time */}}
     <div class="cfc-match-hero__center flex flex-col items-center justify-center order-2">
-      {{- if eq $status "scheduled" -}}
-        {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true) }}
-      {{- else if or (eq $status "live") (eq $status "halftime") -}}
-        <div class="cfc-match-hero__live"><span class="cfc-match-card__badge cfc-match-card__badge--live"><span class="cfc-match-card__pulse" aria-hidden="true"></span>{{ if eq $status "halftime" }}{{ i18n "status_halftime" }}{{ else }}{{ i18n "status_live" }}{{ end }}</span>{{ with $m.score }}<div class="cfc-match-hero__score text-2xl md:text-3xl font-bold font-secondary mt-1">{{ .home }} - {{ .away }}</div>{{ end }}</div>
-      {{- else if eq $status "finished" -}}
-        <div class="cfc-match-hero__finished">{{ with $m.score }}<div class="cfc-match-hero__score text-2xl md:text-3xl font-bold font-secondary mb-1">{{ .home }} - {{ .away }}</div>{{ end }}<span class="cfc-match-card__badge cfc-match-card__badge--finished">{{ i18n "status_finished" }}</span></div>
-      {{- else -}}
-        <span class="cfc-match-card__badge cfc-match-card__badge--warning">{{ i18n (printf "status_%s" $status) | default $status }}</span>
-      {{- end -}}
+      <div class="text-3xl md:text-4xl font-bold font-secondary text-primary dark:text-darkmode-primary mb-1">x</div>
+      {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true) }}
     </div>
 
     {{/* Away Team */}}

@@ -3,3 +3,27 @@ identifier = "home"
 name = "Home"
 url = "/"
 weight = 1
+
+[[main]]
+identifier = "leagues"
+name = "Leagues"
+url = "/leagues/"
+weight = 2
+
+[[main]]
+identifier = "teams"
+name = "Teams"
+url = "/teams/"
+weight = 3
+
+[[main]]
+identifier = "matches"
+name = "Matches"
+url = "/matches/"
+weight = 4
+
+[[main]]
+identifier = "faq"
+name = "FAQ"
+url = "/faq/"
+weight = 5

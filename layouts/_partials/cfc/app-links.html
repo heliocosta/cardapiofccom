@@ -1,0 +1,21 @@
+{{/* cfc/app-links.html - returns dict with ios and android URLs including localized UTM parameters */}}
+{{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+{{- $market := "global" -}}
+{{- if $ed.country -}}
+  {{- $market = lower $ed.country -}}
+{{- else if eq site.Language.Lang "pt-br" -}}
+  {{- $market = "br" -}}
+{{- else if eq site.Language.Lang "pt-pt" -}}
+  {{- $market = "pt" -}}
+{{- else if eq site.Language.Lang "en-gb" -}}
+  {{- $market = "gb" -}}
+{{- else if eq site.Language.Lang "en-ie" -}}
+  {{- $market = "ie" -}}
+{{- else if eq site.Language.Lang "es-ar" -}}
+  {{- $market = "ar" -}}
+{{- end -}}
+
+{{- $ios := printf "https://apps.apple.com/app/id6745226833?utm_campaign=app_download&utm_content=%s-ios&utm_medium=web&utm_source=website" $market -}}
+{{- $android := printf "https://play.google.com/store/apps/details?id=br.com.cardapiofutebol&utm_campaign=app_download&utm_content=%s-android&utm_medium=web&utm_source=website" $market -}}
+
+{{- return (dict "ios" $ios "android" $android "market" $market) -}}

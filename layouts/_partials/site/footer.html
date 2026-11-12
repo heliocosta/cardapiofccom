@@ -10,22 +10,27 @@
       <nav aria-label="Footer Navigation">
         {{ partial "cfc/menu.html" (dict "page" . "menu" "footer") }}
       </nav>
+    </div>
 
-      <div class="flex flex-wrap gap-3 text-xs text-muted" aria-label="Editions">
+    <nav class="py-6 border-b border-border text-center" aria-label="Available in">
+      <p class="mb-3 font-semibold text-xs uppercase tracking-wider text-muted">{{ i18n "available_in" | default "Available in" }}</p>
+      <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
         {{ range $all }}
           {{ $targetUrl := .prefix }}
           {{ if .isGlobal }}
             {{ $targetUrl = "/?edition=en" }}
           {{ end }}
-          <a href="{{ $targetUrl }}"
-             hreflang="{{ .hreflang }}"
-             lang="{{ .locale }}"
-             class="hover:text-primary transition-colors">
-            {{ .label }}
-          </a>
+          <li>
+            <a href="{{ $targetUrl }}"
+               hreflang="{{ .hreflang }}"
+               lang="{{ .locale }}"
+               class="underline underline-offset-4 hover:text-primary transition-colors">
+              {{ .label }}
+            </a>
+          </li>
         {{ end }}
-      </div>
-    </div>
+      </ul>
+    </nav>
 
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-muted">
       <p>{{ site.Params.copyright | default (printf "© %d CardápioFC. All rights reserved." now.Year) }}</p>

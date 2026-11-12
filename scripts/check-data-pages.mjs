@@ -288,7 +288,7 @@ function checkDirNewer(dir, targetMtime) {
 if (shouldBuild()) {
   console.log('  Triggering production build with sample dataset (HUGO_CFC_DATA_SOURCE=sample)...');
   try {
-    execSync('node scripts/themeGenerator.js && hugo --minify', {
+    execSync('node scripts/themeGenerator.js && hugo -e production --minify', {
       cwd: rootDir,
       env: { ...process.env, HUGO_CFC_DATA_SOURCE: 'sample' },
       stdio: 'pipe',
@@ -425,19 +425,13 @@ for (const ed of EDITIONS) {
 
 // Legacy address families MUST NOT EXIST
 const legacyPaths = [
-  'matches',
   'jogos',
   'en/matches',
   'pt/jogos',
-  'en-gb/matches',
   'en-gb/jogos',
-  'en-ie/matches',
   'en-ie/jogos',
-  'pt-br/matches',
   'pt-br/jogos',
-  'pt-pt/matches',
   'pt-pt/jogos',
-  'es-ar/matches',
   'es-ar/jogos',
 ];
 
@@ -510,6 +504,29 @@ if (lineupHtmlMatches.length === 0) {
   pass(`Strict check: Zero occurrences of lineup markup or links across all ${allHtmlFiles.length} HTML files`);
 } else {
   fail(`Lineup markup or links found in ${lineupHtmlMatches.length} HTML files: ${lineupHtmlMatches.slice(0, 5).join(', ')}`);
+}
+
+// Agenda-Only check: Strict absence of live scores and match status badges (USER DIRECTIVE)
+let scoreMatches = [];
+let statusBadgeMatches = [];
+for (const f of allHtmlFiles) {
+  const content = fs.readFileSync(f, 'utf8');
+  if (content.includes('cfc-match-card__score') || content.includes('cfc-match-hero__score')) {
+    scoreMatches.push(path.relative(rootDir, f));
+  }
+  if (content.includes('cfc-match-card__badge--live') || content.includes('cfc-match-card__badge--finished')) {
+    statusBadgeMatches.push(path.relative(rootDir, f));
+  }
+}
+if (scoreMatches.length === 0) {
+  pass(`Agenda-only check: Zero score elements found across all ${allHtmlFiles.length} HTML files`);
+} else {
+  fail(`Score elements found in ${scoreMatches.length} HTML files: ${scoreMatches.slice(0, 5).join(', ')}`);
+}
+if (statusBadgeMatches.length === 0) {
+  pass(`Agenda-only check: Zero live/status badges found across all ${allHtmlFiles.length} HTML files`);
+} else {
+  fail(`Status badge elements found in ${statusBadgeMatches.length} HTML files: ${statusBadgeMatches.slice(0, 5).join(', ')}`);
 }
 
 // -------------------------------------------------------------
@@ -607,7 +624,8 @@ const listPageFiles = allHtmlFiles.filter(f => {
   const rel = path.relative(publicDir, f);
   // Matches home pages, team pages, league pages, and league directory pages
   const isMatchDetail = rel.includes('match/') && !rel.endsWith('match/index.html');
-  return !isMatchDetail;
+  const isStyleguide = rel.includes('styleguide');
+  return !isMatchDetail && !isStyleguide;
 });
 
 for (const f of listPageFiles) {

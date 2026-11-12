@@ -140,6 +140,8 @@
       {{- end -}}
     {{- end -}}
 
+    {{ partial "cfc/app-download.html" (dict "title" (printf (i18n "app_download_league_title" | default "Follow %s in the CardápioFC App") $leagueTitle) "subtitle" (i18n "app_download_league_subtitle" | default "Track the full league schedule, real-time standings, and kickoff alerts in the free mobile app.")) }}
+
     {{ partial "cfcpage/freshness.html" . }}
   </div>
 {{ end }}

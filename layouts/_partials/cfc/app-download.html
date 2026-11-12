@@ -1,0 +1,34 @@
+{{/* cfc/app-download.html - Dual QR-code and app store badge cards for iOS & Android */}}
+{{- $links := partial "cfc/app-links.html" . -}}
+{{- $title := .title | default (i18n "app_download_title" | default "Download CardápioFC") -}}
+{{- $subtitle := .subtitle | default (i18n "app_download_subtitle" | default "Free on iOS and Android. No ads, no piracy — just official TV & streaming schedules.") -}}
+{{- $compact := .compact | default false -}}
+
+<div class="cfc-app-download my-8 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light border border-border text-center">
+  {{- with $title -}}
+    <h3 class="text-xl md:text-2xl font-bold font-secondary text-primary dark:text-darkmode-primary mb-2">{{ . }}</h3>
+  {{- end -}}
+  {{- with $subtitle -}}
+    <p class="text-sm md:text-base text-muted mb-6 max-w-xl mx-auto">{{ . }}</p>
+  {{- end -}}
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-md mx-auto">
+    {{/* iOS Card */}}
+    <div class="flex flex-col items-center justify-between p-4 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+      <img src="/images/qr/qr-ios.png" width="112" height="112" alt="QR code to download CardápioFC on App Store" class="mx-auto mb-3 rounded-md shadow-sm" loading="lazy">
+      <div class="font-semibold text-sm mb-3">CardápioFC — iOS</div>
+      <a href="{{ $links.ios }}" target="_blank" rel="noopener noreferrer" class="inline-block transition-opacity hover:opacity-85" aria-label="Download CardápioFC on the App Store">
+        <img src="/images/apple-badge-button.en.svg" width="135" height="40" alt="Download on the App Store" class="h-10 w-auto" loading="lazy">
+      </a>
+    </div>
+
+    {{/* Android Card */}}
+    <div class="flex flex-col items-center justify-between p-4 rounded-lg bg-surface dark:bg-darkmode-surface border border-border">
+      <img src="/images/qr/qr-android.png" width="112" height="112" alt="QR code to download CardápioFC on Google Play" class="mx-auto mb-3 rounded-md shadow-sm" loading="lazy">
+      <div class="font-semibold text-sm mb-3">CardápioFC — Android</div>
+      <a href="{{ $links.android }}" target="_blank" rel="noopener noreferrer" class="inline-block transition-opacity hover:opacity-85" aria-label="Get CardápioFC on Google Play">
+        <img src="/images/google-play-badge-button.en.svg" width="135" height="40" alt="Get it on Google Play" class="h-10 w-auto" loading="lazy">
+      </a>
+    </div>
+  </div>
+</div>

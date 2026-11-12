@@ -88,6 +88,8 @@
       {{- end -}}
     {{- end -}}
 
+    {{ partial "cfc/app-download.html" (dict "title" (printf (i18n "app_download_team_title" | default "Follow %s in the CardápioFC App") $teamTitle) "subtitle" (i18n "app_download_team_subtitle" | default "Bookmark your favourite team to receive match notifications, confirmed pitch lineups, and live scores.")) }}
+
     {{ partial "cfcpage/freshness.html" . }}
   </div>
 {{ end }}

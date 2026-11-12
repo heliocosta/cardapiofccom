@@ -1,0 +1,38 @@
+{{ define "main" }}
+  {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+  {{- $edition := partialCached "edition/current.html" . -}}
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default "Home" -}}
+  {{- $teamsLabel := i18n "teams" | default "Teams" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $teamsLabel "label" $teamsLabel) -}}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    <header class="text-center max-w-3xl mx-auto my-8">
+      <h1 class="text-3xl md:text-4xl font-bold font-secondary mb-3">{{ .Title | default (i18n "teams_title" | default "Football Teams | Where To Watch") }}</h1>
+      <p class="text-muted text-base md:text-lg">{{ .Description | default (i18n "teams_intro" | default "Find upcoming match schedules and official TV channels for your favourite football clubs.") }}</p>
+    </header>
+
+    {{/* App Download Banner */}}
+    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Your Favourite Teams in CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Bookmark clubs to receive match alerts, starting lineups, and streaming notifications.")) }}
+
+    {{/* Teams Directory Grid */}}
+    <section class="my-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {{- range $slug, $t := $dataset.teams -}}
+          {{- $teamUrl := printf "%steam/%s/" $edition.prefix $slug -}}
+          {{- $teamName := partial "cfcdata/name.html" (dict "names" $t.names "lang" site.Language.Lang) -}}
+          {{- if not $teamName }}{{ $teamName = $t.shortName | default $slug }}{{ end -}}
+          <a href="{{ $teamUrl }}" class="flex items-center gap-3 p-4 rounded-lg border border-border bg-surface dark:bg-darkmode-surface hover:border-primary transition group">
+            {{ partial "cfc/team-crest.html" (dict "name" $teamName "shortName" $t.shortName "src" $t.crest "size" "md" "decorative" true) }}
+            <span class="font-medium text-sm truncate group-hover:text-primary transition-colors">{{ $teamName }}</span>
+          </a>
+        {{- end -}}
+      </div>
+    </section>
+
+    {{/* App Features Section */}}
+    {{ partial "cfc/app-features.html" . }}
+  </div>
+{{ end }}

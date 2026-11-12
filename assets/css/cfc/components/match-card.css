@@ -61,46 +61,6 @@
   text-align: right;
 }
 
-.cfc-match-card__score {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-text-dark, #000000);
-}
-
-.cfc-match-card__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.375rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  border-radius: 0.25rem;
-}
-
-.cfc-match-card__badge--live {
-  background-color: #FEE2E2;
-  color: var(--color-live, #B91C1C);
-}
-
-.cfc-match-card__pulse {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background-color: currentColor;
-}
-
-.cfc-match-card__badge--finished {
-  background-color: var(--color-light, #F3F4F6);
-  color: var(--color-muted, #6B7280);
-}
-
-.cfc-match-card__badge--warning {
-  background-color: #FEF3C7;
-  color: var(--color-warning, #B45309);
-}
-
 .cfc-match-card__channels {
   display: flex;
   flex-wrap: wrap;
@@ -130,25 +90,6 @@
 
 .dark .cfc-match-card__league {
   color: var(--color-darkmode-muted, #9CA3AF);
-}
-
-.dark .cfc-match-card__score {
-  color: var(--color-darkmode-text-dark, #FFFFFF);
-}
-
-.dark .cfc-match-card__badge--live {
-  background-color: rgba(248, 113, 113, 0.2);
-  color: var(--color-darkmode-live, #F87171);
-}
-
-.dark .cfc-match-card__badge--finished {
-  background-color: var(--color-darkmode-dark, #344E17);
-  color: var(--color-darkmode-muted, #9CA3AF);
-}
-
-.dark .cfc-match-card__badge--warning {
-  background-color: rgba(251, 191, 36, 0.2);
-  color: var(--color-darkmode-warning, #FBBF24);
 }
 
 .dark .cfc-match-card__channels {

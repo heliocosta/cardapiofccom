@@ -1,10 +1,47 @@
 {{ define "main" }}
-  {{- $heading := .Params.heading | default (i18n "home_heading") -}}
+  {{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+  {{- $countryName := "" -}}
+  {{- with $ed.country -}}
+    {{- $countryKey := printf "country_%s" (lower .) -}}
+    {{- $countryName = i18n $countryKey | default . -}}
+  {{- end -}}
+
+  {{- $heading := .Params.heading -}}
+  {{- if not $heading -}}
+    {{- if $countryName -}}
+      {{- $heading = printf "%s — %s" (i18n "home_heading") $countryName -}}
+    {{- else -}}
+      {{- $heading = i18n "home_heading" -}}
+    {{- end -}}
+  {{- end -}}
   {{- $intro := .Params.intro | default (i18n "home_intro") -}}
 
-  {{ partial "cfc/page-header.html" (dict "heading" $heading "intro" $intro) }}
-
   <div class="cfc-container py-6">
-    {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty"))) }}
+    {{/* Hero Header */}}
+    <header class="text-center max-w-3xl mx-auto my-6">
+      <h1 class="text-3xl md:text-5xl font-bold font-secondary tracking-tight mb-4 text-primary dark:text-darkmode-primary">{{ $heading }}</h1>
+      <p class="text-muted text-base md:text-xl max-w-2xl mx-auto">{{ $intro }}</p>
+    </header>
+
+    {{/* App Download Hero Block */}}
+    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Download CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Free on iOS and Android. No ads, no piracy — just official TV & streaming schedules.")) }}
+
+    {{/* Agenda: Today & Upcoming Matches */}}
+    <section class="my-10">
+      <div class="flex items-center justify-between mb-6 pb-2 border-b border-border">
+        <h2 class="text-2xl font-bold font-secondary">{{ i18n "upcoming_matches" | default "Upcoming Matches" }}</h2>
+        <a href="{{ "/matches/" | relLangURL }}" class="text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline flex items-center gap-1">
+          <span>{{ i18n "fixtures" | default "Full Schedule" }}</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+      {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty"))) }}
+    </section>
+
+    {{/* App Features Showcase (20 mobile app capabilities) */}}
+    {{ partial "cfc/app-features.html" . }}
+
+    {{/* Secondary CTA */}}
+    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_cta_title" | default "Ready to Never Miss Another Match?") "subtitle" (i18n "app_download_cta_subtitle" | default "Install CardápioFC now for iOS & Android.")) }}
   </div>
 {{ end }}

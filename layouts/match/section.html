@@ -40,6 +40,7 @@
     {{ partial "cfcpage/match-hero.html" (dict "match" $m) }}
     {{ partial "cfcpage/channels.html" (dict "match" $m) }}
     {{ partial "cfcpage/edition-links.html" (dict "match" $m) }}
+    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_match_title" | default "Follow This Match in the CardápioFC App") "subtitle" (i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, live scores, lineups, and push notifications directly on your phone.")) }}
     {{ if templates.Exists "_partials/cfcpage/faq-section.html" }}
       {{ partial "cfcpage/faq-section.html" . }}
     {{ end }}

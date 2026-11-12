@@ -7,13 +7,7 @@
 {{- $hl := .headingLevel | default 3 -}}
 {{- $loading := .loading | default "lazy" -}}
 {{- $edCode := site.Language.Lang -}}
-{{- $status := $m.status | default "scheduled" -}}
-{{- $validStatuses := slice "scheduled" "live" "halftime" "finished" "postponed" "cancelled" "suspended" -}}
-{{- if not (in $validStatuses $status) -}}
-  {{- warnf "site-foundation: unknown match status %q on match %q; defaulting to scheduled" $status ($m.slug | default $m.url) -}}
-  {{- $status = "scheduled" -}}
-{{- end -}}
-<a href="{{ $m.url }}" class="cfc-match-card cfc-match-card--{{ $status }}" data-cfc-event="match_open" {{ with $m.slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ $edCode }}">
+<a href="{{ $m.url }}" class="cfc-match-card" data-cfc-event="match_open" {{ with $m.slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ $edCode }}">
 {{- if and $showLeague $m.league -}}
 <div class="cfc-match-card__league"><span>{{ $m.league.name }}</span>{{ with $m.round }} <span class="cfc-match-card__round">· {{ . }}</span>{{ end }}</div>
 {{- end -}}
@@ -23,15 +17,7 @@
 <div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "sm" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.away.name }}</span></div>
 </div>
 <div class="cfc-match-card__status">
-{{- if eq $status "scheduled" -}}
 {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true) }}
-{{- else if or (eq $status "live") (eq $status "halftime") -}}
-<span class="cfc-match-card__badge cfc-match-card__badge--live"><span class="cfc-match-card__pulse" aria-hidden="true"></span>{{ if eq $status "halftime" }}{{ i18n "status_halftime" }}{{ else }}{{ i18n "status_live" }}{{ end }}</span>{{ with $m.score }}<span class="cfc-match-card__score font-secondary">{{ .home }} - {{ .away }}</span>{{ end }}
-{{- else if eq $status "finished" -}}
-{{ with $m.score }}<span class="cfc-match-card__score font-secondary">{{ .home }} - {{ .away }}</span>{{ end }}<span class="cfc-match-card__badge cfc-match-card__badge--finished">{{ i18n "status_finished" }}</span>
-{{- else -}}
-<span class="cfc-match-card__badge cfc-match-card__badge--warning">{{ i18n (printf "status_%s" $status) | default $status }}</span>
-{{- end -}}
 </div>
 </div>
 <h{{ $hl }} class="sr-only">{{ $m.home.name }} {{ i18n "vs" }} {{ $m.away.name }}</h{{ $hl }}>
