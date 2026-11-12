@@ -27,3 +27,45 @@ identifier = "faq"
 name = "FAQ"
 url = "/faq/"
 weight = 5
+
+[[main]]
+identifier = "about"
+name = "About"
+url = "/about/"
+weight = 6
+
+[[footer]]
+identifier = "home"
+name = "Home"
+url = "/"
+weight = 1
+
+[[footer]]
+identifier = "leagues"
+name = "Leagues"
+url = "/leagues/"
+weight = 2
+
+[[footer]]
+identifier = "teams"
+name = "Teams"
+url = "/teams/"
+weight = 3
+
+[[footer]]
+identifier = "matches"
+name = "Matches"
+url = "/matches/"
+weight = 4
+
+[[footer]]
+identifier = "faq"
+name = "FAQ"
+url = "/faq/"
+weight = 5
+
+[[footer]]
+identifier = "about"
+name = "About"
+url = "/about/"
+weight = 6

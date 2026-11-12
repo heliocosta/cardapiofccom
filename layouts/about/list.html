@@ -1,0 +1,213 @@
+{{ define "main" }}
+  {{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+  {{ $homeUrl := "/" | relLangURL }}
+  {{ $homeLabel := i18n "home" | default "Home" }}
+  {{ $aboutLabel := i18n "about" | default "About" }}
+  {{ $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $aboutLabel "label" $aboutLabel) }}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    <header class="text-center max-w-3xl mx-auto my-8">
+      <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light rounded-full mb-3">
+        {{ i18n "about_badge" | default "About CardápioFC" }}
+      </span>
+      <h1 class="text-3xl md:text-5xl font-bold font-secondary uppercase mb-4 text-text-dark dark:text-darkmode-text-dark">
+        {{ i18n "about_title" | default "Your Football Menu: Where to Watch Football Legally" }}
+      </h1>
+      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg max-w-2xl mx-auto">
+        {{ i18n "about_intro" | default "CardápioFC was born out of a simple passion: helping football fans discover exactly which channel or official streaming service is broadcasting their favourite teams, with zero spam, zero piracy, and absolute clarity." }}
+      </p>
+    </header>
+
+    {{/* App Download Banner */}}
+    <div class="mb-10">
+      {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Download the CardápioFC App") "subtitle" (i18n "app_download_subtitle" | default "Get pre-match reminders, one-tap streaming links, and match notifications on iOS & Android.")) }}
+    </div>
+
+    {{/* Mission & Story Card */}}
+    <section class="max-w-4xl mx-auto my-8">
+      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+        <h2 class="text-2xl md:text-3xl font-bold font-secondary uppercase text-primary dark:text-darkmode-primary mb-4">
+          {{ i18n "about_story_title" | default "Why CardápioFC?" }}
+        </h2>
+        <div class="space-y-4 text-text dark:text-darkmode-text text-base leading-relaxed">
+          <p>
+            {{ i18n "about_story_p1" | default "Every football fan knows the struggle: matchday arrives, kick-off is minutes away, and you find yourself searching through dozens of websites, conflicting social media posts, and unreliable links just to find out where the match is being broadcast." }}
+          </p>
+          <p>
+            {{ i18n "about_story_p2" | default "With broadcasting rights fragmented across free-to-air television, premium cable channels, and a multitude of streaming subscriptions, finding the right screen has never been more confusing. CardápioFC simplifies your matchday by providing a clean, verified, and always-updated TV guide." }}
+          </p>
+          <p>
+            {{ i18n "about_story_p3" | default "Our web platform is dedicated exclusively to the schedule: clean, fast, and lightweight. And for supporters who want the complete live matchday experience, our mobile app brings pre-match reminder alarms, live scores, instant stream launchers, and personalised team alerts directly to your pocket." }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {{/* Core Values / Four Pillars */}}
+    <section class="max-w-4xl mx-auto my-10">
+      <h2 class="text-2xl md:text-3xl font-bold font-secondary uppercase text-center mb-8 text-text-dark dark:text-darkmode-text-dark">
+        {{ i18n "about_pillars_title" | default "Our Core Pillars" }}
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{/* Pillar 1 */}}
+        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
+              <span class="material-symbols-outlined text-3xl">verified</span>
+            </div>
+            <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
+              {{ i18n "about_pillar1_title" | default "100% Official Broadcasters Only" }}
+            </h3>
+            <p class="text-sm md:text-base text-muted dark:text-darkmode-muted leading-relaxed">
+              {{ i18n "about_pillar1_desc" | default "We list only legitimate, licensed broadcasters and official streaming services—such as TV Globo, SporTV, ESPN, TNT Sports, Prime Video, Disney+, Max, CazéTV, Sky Sports, BBC, and DAZN. No sketchy pop-ups, no pirated streams, and no malware." }}
+            </p>
+          </div>
+        </div>
+
+        {{/* Pillar 2 */}}
+        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
+              <span class="material-symbols-outlined text-3xl">speed</span>
+            </div>
+            <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
+              {{ i18n "about_pillar2_title" | default "Zero-Ad, Lightning Fast Experience" }}
+            </h3>
+            <p class="text-sm md:text-base text-muted dark:text-darkmode-muted leading-relaxed">
+              {{ i18n "about_pillar2_desc" | default "We believe finding a game should take seconds, not minutes. CardápioFC is built with zero intrusive advertising banners and blazing-fast loading speeds, making it the most frictionless football agenda on the web." }}
+            </p>
+          </div>
+        </div>
+
+        {{/* Pillar 3 */}}
+        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
+              <span class="material-symbols-outlined text-3xl">public</span>
+            </div>
+            <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
+              {{ i18n "about_pillar3_title" | default "Country-Tailored Schedules" }}
+            </h3>
+            <p class="text-sm md:text-base text-muted dark:text-darkmode-muted leading-relaxed">
+              {{ i18n "about_pillar3_desc" | default "Broadcast rights vary by country. CardápioFC automatically adapts schedules and channel listings to your territory—including Brazil, United Kingdom, Ireland, Portugal, and Argentina—so you always see channels relevant to you." }}
+            </p>
+          </div>
+        </div>
+
+        {{/* Pillar 4 */}}
+        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
+              <span class="material-symbols-outlined text-3xl">shield</span>
+            </div>
+            <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
+              {{ i18n "about_pillar4_title" | default "Supporting the Beautiful Game" }}
+            </h3>
+            <p class="text-sm md:text-base text-muted dark:text-darkmode-muted leading-relaxed">
+              {{ i18n "about_pillar4_desc" | default "By driving fans directly to licensed rights holders, clubs, and legitimate platforms, we actively support the football ecosystem and protect supporters from hazardous illegal retransmission sites." }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{/* App Capabilities Grid */}}
+    <section class="max-w-4xl mx-auto my-12">
+      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light rounded-full mb-2">
+            {{ i18n "about_app_badge" | default "Mobile App Powers" }}
+          </span>
+          <h2 class="text-2xl md:text-4xl font-bold font-secondary uppercase text-text-dark dark:text-darkmode-text-dark mb-3">
+            {{ i18n "about_app_heading" | default "Everything You Need in Your Pocket" }}
+          </h2>
+          <p class="text-muted dark:text-darkmode-muted text-sm md:text-base">
+            {{ i18n "about_app_subheading" | default "While the website focuses strictly on the match agenda, our native iOS & Android apps offer a rich suite of matchday tools." }}
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {{/* Feature 1 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">timer</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_live_scores_title" | default "Real-Time Live Scores" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_live_scores_desc" | default "Follow elapsed minutes, halftime/fulltime scores, and penalty shootouts live." }}</p>
+            </div>
+          </div>
+
+          {{/* Feature 2 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">alarm</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_reminders_title" | default "Pre-Match Reminders" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_reminders_desc" | default "Custom alerts 15 or 30 minutes before kick-off for your teams." }}</p>
+            </div>
+          </div>
+
+          {{/* Feature 3 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">open_in_new</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_one_tap_title" | default "One-Tap Launchers" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_one_tap_desc" | default "Jump straight into official streaming apps (Globoplay, Disney+, Max) with one tap." }}</p>
+            </div>
+          </div>
+
+          {{/* Feature 4 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">radio</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_radio_title" | default "Live Radio Streams" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_radio_desc" | default "Listen to live radio commentary directly inside the app when on the go." }}</p>
+            </div>
+          </div>
+
+          {{/* Feature 5 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">filter_list</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_filter_subs_title" | default "Subscription Filters" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_filter_subs_desc" | default "Filter matches to only show games airing on channels you subscribe to." }}</p>
+            </div>
+          </div>
+
+          {{/* Feature 6 */}}
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">leaderboard</span>
+            <div>
+              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_tables_title" | default "Standings & Brackets" }}</h4>
+              <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_tables_desc" | default "Follow up-to-date league tables and visual tournament knockout brackets." }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{/* Contact & Transparency */}}
+    <section class="max-w-4xl mx-auto my-10 text-center">
+      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+        <h2 class="text-2xl font-bold font-secondary uppercase text-text-dark dark:text-darkmode-text-dark mb-3">
+          {{ i18n "about_contact_title" | default "Questions, Partnerships & Feedback" }}
+        </h2>
+        <p class="text-muted dark:text-darkmode-muted text-sm md:text-base max-w-xl mx-auto mb-6">
+          {{ i18n "about_contact_desc" | default "Are you a broadcaster, football club, or supporter with suggestions? We are continually refining our coverage and would love to hear from you." }}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="{{ "/faq/" | relLangURL }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-lg">help_outline</span>
+            {{ i18n "about_btn_faq" | default "Visit FAQ" }}
+          </a>
+          <a href="mailto:contato@cardapiofc.com" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-primary dark:bg-darkmode-primary dark:text-darkmode-body hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-lg">mail</span>
+            {{ i18n "about_btn_contact" | default "Contact Us" }}
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+{{ end }}

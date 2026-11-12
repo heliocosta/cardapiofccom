@@ -144,5 +144,33 @@ benefit_official_broadcasters: "100% canales y streams oficiales"
 benefit_kickoff_alarms: "Alarmas previas al partido"
 benefit_custom_filter: "Filtra por tus canales suscritos"
 
+# About Page
+menu_about: "Acerca de"
+about: "Acerca de"
+about_badge: "Sobre CardápioFC"
+about_title: "Tu Menú de Fútbol: Dónde Ver Fútbol Legalmente"
+about_intro: "CardápioFC nació de una pasión simple: ayudar a los aficionados al fútbol a descubrir exactamente en qué canal o servicio de streaming oficial juega su equipo, sin piratería, sin spam y con total claridad."
+about_story_title: "¿Por qué CardápioFC?"
+about_story_p1: "Todo aficionado conoce esa sensación: faltan minutos para que comience el partido y empieza la búsqueda caótica en decenas de páginas web, publicaciones en redes sociales y enlaces poco confiables solo para averiguar dónde se transmite."
+about_story_p2: "Con los derechos de transmisión fragmentados entre televisión abierta, canales de cable y múltiples suscripciones de streaming, seguir el fútbol se volvió confuso. CardápioFC simplifica tu día de partido con una guía de TV 100% oficial y siempre actualizada."
+about_story_p3: "Nuestra web está dedicada exclusivamente al calendario de partidos: rápida, limpia y sin anuncios invasivos. Y para quienes buscan la experiencia completa de partido, nuestra app móvil ofrece alarmas previas, marcadores en vivo, lanzadores de streaming y alertas personalizadas."
+about_pillars_title: "Nuestros Pilares"
+about_pillar1_title: "100% Canales Oficiales y Legales"
+about_pillar1_desc: "Listamos únicamente emisoras y plataformas con derechos oficiales: TV Globo, SporTV, ESPN, TNT Sports, Prime Video, Disney+, Max, CazéTV, Sky Sports, BBC y DAZN. Sin enlaces piratas ni publicidad engañosa."
+about_pillar2_title: "Cero Publicidad Invasiva & Máxima Velocidad"
+about_pillar2_desc: "Creemos que saber dónde ver el partido debe tardar segundos, no minutos. CardápioFC está libre de banners molestos y carga de forma instantánea."
+about_pillar3_title: "Programación Adaptada a Tu País"
+about_pillar3_desc: "Los derechos varían en cada territorio. CardápioFC adapta los horarios y canales a tu país (Brasil, Reino Unido, Irlanda, Portugal, Argentina y más) para que solo veas opciones disponibles para ti."
+about_pillar4_title: "Apoyo al Fútbol Real"
+about_pillar4_desc: "Al conectar directamente a los aficionados con los poseedores legítimos de las transmisiones, apoyamos a los clubes, ligas y creadores, protegiendo al hincha de páginas inseguras."
+about_app_badge: "Poderes de la App Móvil"
+about_app_heading: "Todo lo que Necesitas en Tu Teléfono"
+about_app_subheading: "Mientras la web se centra en el calendario, nuestras apps nativas para iOS y Android ofrecen un conjunto completo de herramientas para el día del partido."
+about_contact_title: "¿Preguntas, Alianzas o Sugerencias?"
+about_contact_desc: "¿Eres un canal, club de fútbol o aficionado con sugerencias? Nos encontramos en constante mejora y nos encantaría saber de ti."
+about_btn_faq: "Preguntas Frecuentes"
+about_btn_contact: "Contáctanos"
+
+
 
 

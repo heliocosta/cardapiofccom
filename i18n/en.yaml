@@ -144,5 +144,33 @@ benefit_official_broadcasters: "100% legal official channels"
 benefit_kickoff_alarms: "Pre-match push alarms"
 benefit_custom_filter: "Filter your subscriptions"
 
+# About Page
+menu_about: "About"
+about: "About"
+about_badge: "About CardápioFC"
+about_title: "Your Football Menu: Where to Watch Football Legally"
+about_intro: "CardápioFC was born out of a simple passion: helping football fans discover exactly which channel or official streaming service is broadcasting their favourite teams, with zero spam, zero piracy, and absolute clarity."
+about_story_title: "Why CardápioFC?"
+about_story_p1: "Every football fan knows the struggle: matchday arrives, kick-off is minutes away, and you find yourself searching through dozens of websites, conflicting social media posts, and unreliable links just to find out where the match is being broadcast."
+about_story_p2: "With broadcasting rights fragmented across free-to-air television, premium cable channels, and a multitude of streaming subscriptions, finding the right screen has never been more confusing. CardápioFC simplifies your matchday by providing a clean, verified, and always-updated TV guide."
+about_story_p3: "Our web platform is dedicated exclusively to the schedule: clean, fast, and lightweight. And for supporters who want the complete live matchday experience, our mobile app brings pre-match reminder alarms, live scores, instant stream launchers, and personalised team alerts directly to your pocket."
+about_pillars_title: "Our Core Pillars"
+about_pillar1_title: "100% Official Broadcasters Only"
+about_pillar1_desc: "We list only legitimate, licensed broadcasters and official streaming services—such as TV Globo, SporTV, ESPN, TNT Sports, Prime Video, Disney+, Max, CazéTV, Sky Sports, BBC, and DAZN. No sketchy pop-ups, no pirated streams, and no malware."
+about_pillar2_title: "Zero-Ad, Lightning Fast Experience"
+about_pillar2_desc: "We believe finding a game should take seconds, not minutes. CardápioFC is built with zero intrusive advertising banners and blazing-fast loading speeds, making it the most frictionless football agenda on the web."
+about_pillar3_title: "Country-Tailored Schedules"
+about_pillar3_desc: "Broadcast rights vary by country. CardápioFC automatically adapts schedules and channel listings to your territory—including Brazil, United Kingdom, Ireland, Portugal, and Argentina—so you always see channels relevant to you."
+about_pillar4_title: "Supporting the Beautiful Game"
+about_pillar4_desc: "By driving fans directly to licensed rights holders, clubs, and legitimate platforms, we actively support the football ecosystem and protect supporters from hazardous illegal retransmission sites."
+about_app_badge: "Mobile App Powers"
+about_app_heading: "Everything You Need in Your Pocket"
+about_app_subheading: "While the website focuses strictly on the match agenda, our native iOS & Android apps offer a rich suite of matchday tools."
+about_contact_title: "Questions, Partnerships & Feedback"
+about_contact_desc: "Are you a broadcaster, football club, or supporter with suggestions? We are continually refining our coverage and would love to hear from you."
+about_btn_faq: "Visit FAQ"
+about_btn_contact: "Contact Us"
+
+
 
 
