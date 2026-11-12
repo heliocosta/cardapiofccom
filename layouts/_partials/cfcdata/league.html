@@ -92,7 +92,7 @@
 
 {{/* Canonical URL and appPath */}}
 {{ $leagueUrl := partial "cfcdata/url.html" (dict "kind" "league" "slug" $slug "edition" $edition) }}
-{{ $appPath := printf "/league/%s" $slug }}
+{{ $appPath := printf "/leagues/%s" $slug }}
 
 {{/* Country resolution: { "code": $league.country.code, "name": (localized country name or code) } */}}
 {{ $country := index (dict) "nil" }}

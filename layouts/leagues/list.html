@@ -33,7 +33,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {{- range $popular -}}
             {{- $leagueName := .name -}}
-            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
+            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group border border-border/20 dark:border-darkmode-border/20" data-cfc-league="{{ .slug }}">
               {{- with .logo -}}
                 <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
               {{- end -}}
@@ -59,32 +59,65 @@
       </section>
     {{- end -}}
 
+    {{- /* Group all leagues by Country */ -}}
+    {{- $countriesMap := dict -}}
+    {{- $countriesOrder := slice -}}
+    {{- range $leagues -}}
+      {{- $countryName := i18n "international" | default "International" -}}
+      {{- with .country -}}
+        {{- with .name -}}
+          {{- if ne . "" }}{{ $countryName = . }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $existing := index $countriesMap $countryName | default slice -}}
+      {{- $countriesMap = merge $countriesMap (dict $countryName ($existing | append .)) -}}
+      {{- if not (in $countriesOrder $countryName) -}}
+        {{- $countriesOrder = $countriesOrder | append $countryName -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $sortedCountries := sort $countriesOrder -}}
+
     <section class="cfc-league-directory__all my-8">
-      <h2 class="text-2xl font-bold font-secondary mb-4">{{ i18n "all_leagues" | default "All Leagues & Tournaments" }}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {{- range $leagues -}}
-          {{- $leagueName := .name -}}
-          <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
-            {{- with .logo -}}
-              <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
-            {{- end -}}
-            <div class="min-w-0">
-              <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
-              {{- $meta := slice -}}
-              {{- with .country -}}
-                {{- with .name -}}
-                  {{- $meta = $meta | append . -}}
-                {{- end -}}
-              {{- end -}}
-              {{- with .season -}}
-                {{- $meta = $meta | append . -}}
-              {{- end -}}
-              {{- $metaStr := delimit $meta " · " -}}
-              {{- with $metaStr -}}
-                <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold font-secondary">{{ i18n "all_leagues" | default "Leagues by Country" }}</h2>
+        <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $leagues }} {{ i18n "leagues" | default "leagues" }} · {{ len $sortedCountries }} {{ i18n "countries" | default "countries" }}</span>
+      </div>
+
+      {{/* Quick-jump Country Bar */}}
+      <nav class="cfc-country-quicknav flex gap-2 overflow-x-auto py-2.5 mb-8 scrollbar-none border-b border-border/30 dark:border-darkmode-border/30" aria-label="Jump to Country">
+        {{- range $sortedCountries -}}
+          <a href="#country-{{ . | urlize }}" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs border border-border/30 dark:border-darkmode-border/30">
+            {{ . }} <span class="opacity-70 text-[10px]">({{ len (index $countriesMap .) }})</span>
+          </a>
+        {{- end -}}
+      </nav>
+
+      {{/* Country Sections */}}
+      <div class="space-y-10">
+        {{- range $countryName := $sortedCountries -}}
+          {{- $countryLeagues := index $countriesMap $countryName -}}
+          <div id="country-{{ $countryName | urlize }}" class="scroll-mt-24">
+            <div class="flex items-center gap-3 mb-4 pb-2 border-b border-border/30 dark:border-darkmode-border/30">
+              <h3 class="text-lg md:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark">{{ $countryName }}</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-theme-light dark:bg-darkmode-theme-light text-muted dark:text-darkmode-muted font-medium">{{ len $countryLeagues }}</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {{- range $countryLeagues -}}
+                {{- $leagueName := .name -}}
+                <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group border border-border/20 dark:border-darkmode-border/20" data-cfc-league="{{ .slug }}">
+                  {{- with .logo -}}
+                    <img src="{{ . }}" alt="{{ $leagueName }}" width="36" height="36" class="cfc-league-card__logo w-9 h-9 object-contain shrink-0" loading="lazy" />
+                  {{- end -}}
+                  <div class="min-w-0">
+                    <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
+                    {{- with .season -}}
+                      <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
+                    {{- end -}}
+                  </div>
+                </a>
               {{- end -}}
             </div>
-          </a>
+          </div>
         {{- end -}}
       </div>
     </section>

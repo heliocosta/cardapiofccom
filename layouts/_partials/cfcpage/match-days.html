@@ -57,29 +57,103 @@
   {{- end -}}
 {{- else -}}
   {{- $groups := partial "time/group-by-day.html" (dict "items" $matches "key" "kickoff") -}}
-  <div class="cfc-match-days space-y-6 my-6">
-    {{- range $groups -}}
-      {{- $dayItems := .items -}}
-      {{- if $popularFirst -}}
-        {{- $popularItems := slice -}}
-        {{- $regularItems := slice -}}
-        {{- range .items -}}
-          {{- if .popular -}}
-            {{- $popularItems = $popularItems | append . -}}
-          {{- else -}}
-            {{- $regularItems = $regularItems | append . -}}
-          {{- end -}}
-        {{- end -}}
-        {{- $orderedItems := slice -}}
-        {{- range $popularItems -}}
-          {{- $orderedItems = $orderedItems | append . -}}
-        {{- end -}}
-        {{- range $regularItems -}}
-          {{- $orderedItems = $orderedItems | append . -}}
-        {{- end -}}
-        {{- $dayItems = $orderedItems -}}
+  <div class="cfc-match-days my-6" data-cfc-day-tabs>
+    {{/* Tab Buttons per Day */}}
+    <div class="cfc-day-tabs-bar flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-border/30 dark:border-darkmode-border/30" role="tablist" aria-label="{{ i18n "matches_by_day" | default "Matches by Day" }}">
+      {{- range $idx, $group := $groups -}}
+        {{- $dayDate := $group.date -}}
+        {{- $dayKey := $group.day | default ($dayDate.Format "2006-01-02") -}}
+        {{- $dayName := partial "time/format.html" (dict "t" $dayDate "style" "dayHeading") -}}
+        {{- $shortDate := $dayDate.Format "02 Jan" -}}
+        {{- $isActive := eq $idx 0 -}}
+        <button 
+          type="button" 
+          role="tab" 
+          id="tab-day-{{ $dayKey }}"
+          aria-controls="pane-day-{{ $dayKey }}"
+          aria-selected="{{ cond $isActive "true" "false" }}"
+          data-cfc-tab="{{ $dayKey }}"
+          class="cfc-day-tab shrink-0 px-4 py-2.5 rounded-xl text-center transition-all cursor-pointer font-medium select-none {{ cond $isActive "bg-primary text-white shadow-sm font-bold" "bg-surface dark:bg-darkmode-surface text-text-dark dark:text-darkmode-text-dark hover:bg-theme-light dark:hover:bg-darkmode-theme-light border border-border/30 dark:border-darkmode-border/30" }}"
+        >
+          <span class="block text-xs uppercase opacity-85 leading-tight">{{ $dayDate.Format "Mon" }}</span>
+          <span class="block text-sm leading-tight mt-0.5 font-bold">{{ $shortDate }}</span>
+          <span class="block text-[11px] opacity-75 mt-0.5">({{ len $group.items }})</span>
+        </button>
       {{- end -}}
-      {{ partial "cfc/date-group.html" (dict "matches" $dayItems "day" .date "headingLevel" $hl "card" (dict "showChannels" false "showLeague" $showLeague) "disableSort" $popularFirst) }}
-    {{- end -}}
+    </div>
+
+    {{/* Tab Panels */}}
+    <div class="cfc-day-panels">
+      {{- range $idx, $group := $groups -}}
+        {{- $dayItems := $group.items -}}
+        {{- if $popularFirst -}}
+          {{- $popularItems := slice -}}
+          {{- $regularItems := slice -}}
+          {{- range $group.items -}}
+            {{- if .popular -}}
+              {{- $popularItems = $popularItems | append . -}}
+            {{- else -}}
+              {{- $regularItems = $regularItems | append . -}}
+            {{- end -}}
+          {{- end -}}
+          {{- $orderedItems := slice -}}
+          {{- range $popularItems -}}
+            {{- $orderedItems = $orderedItems | append . -}}
+          {{- end -}}
+          {{- range $regularItems -}}
+            {{- $orderedItems = $orderedItems | append . -}}
+          {{- end -}}
+          {{- $dayItems = $orderedItems -}}
+        {{- end -}}
+        {{- $isActive := eq $idx 0 -}}
+        {{- $dayKey := $group.day | default ($group.date.Format "2006-01-02") -}}
+        <div 
+          role="tabpanel" 
+          id="pane-day-{{ $dayKey }}" 
+          aria-labelledby="tab-day-{{ $dayKey }}"
+          data-cfc-pane="{{ $dayKey }}"
+          class="cfc-day-pane space-y-4 {{ cond $isActive "" "hidden" }}"
+        >
+          {{ partial "cfc/date-group.html" (dict "matches" $dayItems "day" $dayKey "headingLevel" $hl "card" (dict "showChannels" false "showLeague" $showLeague) "disableSort" $popularFirst) }}
+        </div>
+      {{- end -}}
+    </div>
   </div>
+
+  <script>
+    (function() {
+      const container = document.querySelector('[data-cfc-day-tabs]');
+      if (!container) return;
+      const tabs = container.querySelectorAll('[data-cfc-tab]');
+      const panes = container.querySelectorAll('[data-cfc-pane]');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const target = tab.getAttribute('data-cfc-tab');
+
+          // Update tabs
+          tabs.forEach(t => {
+            const isMatch = t === tab;
+            t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+            if (isMatch) {
+              t.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+              t.classList.remove('bg-surface', 'dark:bg-darkmode-surface', 'border', 'border-border/30');
+            } else {
+              t.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+              t.classList.add('bg-surface', 'dark:bg-darkmode-surface', 'border', 'border-border/30');
+            }
+          });
+
+          // Update panes
+          panes.forEach(pane => {
+            if (pane.getAttribute('data-cfc-pane') === target) {
+              pane.classList.remove('hidden');
+            } else {
+              pane.classList.add('hidden');
+            }
+          });
+        });
+      });
+    })();
+  </script>
 {{- end -}}

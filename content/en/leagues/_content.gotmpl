@@ -9,12 +9,13 @@
     "path" $slug
     "title" $leagueName
     "weight" $weight
+    "aliases" (slice (printf "/league/%s/" $slug) (printf "/league/%s" $slug))
     "dates" (dict "date" (time.AsTime $dataset.generatedAt) "lastmod" (time.AsTime $dataset.generatedAt) "publishDate" (time.AsTime $dataset.generatedAt))
     "params" (dict
       "cfc" (dict
         "kind" "league"
         "slug" $slug
-        "appPath" (printf "/league/%s" $slug)
+        "appPath" (printf "/leagues/%s" $slug)
       )
     )
   ) }}

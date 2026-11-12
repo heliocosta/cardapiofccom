@@ -17,17 +17,82 @@
     {{/* App Download Banner */}}
     {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Your Favourite Teams in CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Bookmark clubs to receive match alerts, official TV channels, and streaming notifications.")) }}
 
-    {{/* Teams Directory Grid */}}
+    {{/* Teams Directory by Index (Numbers & Letters) */}}
+    {{- $alphabet := slice "#" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z" -}}
+    {{- $teamList := slice -}}
+    {{- range $slug, $t := $dataset.teams -}}
+      {{- $teamUrl := printf "%steam/%s/" $edition.prefix $slug -}}
+      {{- $teamName := partial "cfcdata/name.html" (dict "names" $t.names "lang" site.Language.Lang) -}}
+      {{- if not $teamName }}{{ $teamName = $t.shortName | default $slug }}{{ end -}}
+      {{- $trimmed := strings.TrimLeft " " $teamName -}}
+      {{- $char := "#" -}}
+      {{- if gt (len $trimmed) 0 -}}
+        {{- $rawChar := upper (substr $trimmed 0 1) -}}
+        {{- $rawChar = replaceRE `[ÀÁÂÃÄÅ]` "A" $rawChar -}}
+        {{- $rawChar = replaceRE `[ÈÉÊË]` "E" $rawChar -}}
+        {{- $rawChar = replaceRE `[ÌÍÎÏ]` "I" $rawChar -}}
+        {{- $rawChar = replaceRE `[ÒÓÔÕÖ]` "O" $rawChar -}}
+        {{- $rawChar = replaceRE `[ÙÚÛÜ]` "U" $rawChar -}}
+        {{- $rawChar = replaceRE `[Ç]` "C" $rawChar -}}
+        {{- if in $alphabet $rawChar -}}
+          {{- $char = $rawChar -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $teamObj := dict "slug" $slug "name" $teamName "crest" $t.crest "shortName" $t.shortName "firstChar" $char "url" $teamUrl -}}
+      {{- $teamList = $teamList | append $teamObj -}}
+    {{- end -}}
+    {{- $sortedTeams := sort $teamList "name" "asc" -}}
+
+    {{- /* Group by letter */ -}}
+    {{- $teamsByLetter := dict -}}
+    {{- range $sortedTeams -}}
+      {{- $ch := .firstChar -}}
+      {{- $existing := index $teamsByLetter $ch | default slice -}}
+      {{- $teamsByLetter = merge $teamsByLetter (dict $ch ($existing | append .)) -}}
+    {{- end -}}
+
     <section class="my-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {{- range $slug, $t := $dataset.teams -}}
-          {{- $teamUrl := printf "%steam/%s/" $edition.prefix $slug -}}
-          {{- $teamName := partial "cfcdata/name.html" (dict "names" $t.names "lang" site.Language.Lang) -}}
-          {{- if not $teamName }}{{ $teamName = $t.shortName | default $slug }}{{ end -}}
-          <a href="{{ $teamUrl }}" class="flex items-center gap-3 p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm hover:shadow-md transition group">
-            {{ partial "cfc/team-crest.html" (dict "name" $teamName "shortName" $t.shortName "src" $t.crest "size" "md" "decorative" true) }}
-            <span class="font-medium text-sm truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $teamName }}</span>
-          </a>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold font-secondary">{{ i18n "all_teams" | default "All Teams A-Z" }}</h2>
+        <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $teamList }} {{ i18n "teams" | default "teams" }}</span>
+      </div>
+
+      {{/* Alphabetical Index Tab Navigation Bar */}}
+      <nav class="cfc-teams-index-nav sticky top-16 z-20 py-2.5 my-4 bg-body/90 dark:bg-darkmode-body/90 backdrop-blur-md border-y border-border/40 dark:border-darkmode-border/40 overflow-x-auto scrollbar-none flex items-center justify-center gap-1 sm:gap-1.5" aria-label="Alphabetical index">
+        {{- range $alphabet -}}
+          {{- $letterTeams := index $teamsByLetter . | default slice -}}
+          {{- if gt (len $letterTeams) 0 -}}
+            <a 
+              href="#letter-{{ . }}" 
+              class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs border border-border/20 dark:border-darkmode-border/20"
+              title="{{ . }} ({{ len $letterTeams }})"
+            >{{ . }}</a>
+          {{- else -}}
+            <span class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium text-muted/30 dark:text-darkmode-muted/30 cursor-default select-none">{{ . }}</span>
+          {{- end -}}
+        {{- end -}}
+      </nav>
+
+      {{/* Letter Sections */}}
+      <div class="space-y-10 my-8">
+        {{- range $alphabet -}}
+          {{- $letterTeams := index $teamsByLetter . | default slice -}}
+          {{- if gt (len $letterTeams) 0 -}}
+            <div id="letter-{{ . }}" class="scroll-mt-32">
+              <div class="flex items-center gap-3 mb-4 pb-2 border-b border-border/30 dark:border-darkmode-border/30">
+                <span class="w-8 h-8 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center shadow-xs">{{ . }}</span>
+                <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $letterTeams }} {{ i18n "teams" | default "teams" }}</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                {{- range $letterTeams -}}
+                  <a href="{{ .url }}" class="flex items-center gap-3 p-3.5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group border border-border/20 dark:border-darkmode-border/20">
+                    {{ partial "cfc/team-crest.html" (dict "name" .name "shortName" .shortName "src" .crest "size" "md" "decorative" true) }}
+                    <span class="font-medium text-sm truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ .name }}</span>
+                  </a>
+                {{- end -}}
+              </div>
+            </div>
+          {{- end -}}
         {{- end -}}
       </div>
     </section>

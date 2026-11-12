@@ -49,7 +49,9 @@
 {{ if eq $source "auto" }}
   {{ if hugo.IsDevelopment }}
     {{ $source = "sample" }}
-  {{ else if ne $webhookURL "" }}
+  {{ else if eq $envSource "webhook" }}
+    {{ $source = "webhook" }}
+  {{ else if and (ne $webhookURL "") (ne $envSource "sample") }}
     {{ $source = "webhook" }}
   {{ else }}
     {{ $source = "remote" }}

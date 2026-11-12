@@ -87,9 +87,9 @@
   {{ if eq $slug "" }}
     {{ errorf "cfcdata/url.html: slug is required for kind \"league\"" }}
   {{ end }}
-  {{ $url = printf "%sleague/%s/" $prefix $slug }}
+  {{ $url = printf "%sleagues/%s/" $prefix $slug }}
 {{ else if eq $kind "leagues" }}
-  {{ $url = printf "%sleague/" $prefix }}
+  {{ $url = printf "%sleagues/" $prefix }}
 {{ else }}
   {{ errorf "cfcdata/url.html: unsupported kind %q (allowed: match, team, league, leagues; lineups out of scope)" $kind }}
 {{ end }}
