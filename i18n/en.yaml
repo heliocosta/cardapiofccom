@@ -132,5 +132,17 @@ step_2_desc: "Tap any match to see official TV channels, cable networks, and ver
 step_3_title: "Set Smart Kick-off Reminders"
 step_3_desc: "Create pre-game notification alarms (5, 15, or 30 minutes before kickoff) so you never miss a match start."
 
+# Where to Watch App Call to Action (Option 1 + Option 2)
+official_broadcast_guide: "Official Broadcast Guide"
+watch_in_app_desc: "Watch live on official TV & streaming. In the CardápioFC app, tap any channel to launch the official stream directly in the broadcaster's app with pre-match kickoff alarms."
+watch_on_app_title: "1-Tap Stream Launcher & Alarms"
+watch_on_app_sub: "Tap any channel in the CardápioFC app to jump straight into the live broadcast."
+open_stream_in_app: "Watch in CardápioFC App"
+confirmed_channels_title: "Confirmed TV & Streaming Networks"
+stream_in_app: "Open in App"
+benefit_official_broadcasters: "100% legal official channels"
+benefit_kickoff_alarms: "Pre-match push alarms"
+benefit_custom_filter: "Filter your subscriptions"
+
 
 

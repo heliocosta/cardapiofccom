@@ -132,5 +132,17 @@ step_2_desc: "Toque em qualquer partida para ver canais de TV aberta, por assina
 step_3_title: "Ative Alarmes Pré-Jogo"
 step_3_desc: "Crie lembretes 5, 15 ou 30 minutos antes da bola rolar para não perder nada."
 
+# Where to Watch App Call to Action (Option 1 + Option 2)
+official_broadcast_guide: "Guia Oficial de Transmissão"
+watch_in_app_desc: "Assista ao vivo na TV ou streaming oficial. No app CardápioFC, toque no canal para abrir a transmissão direto no app transmissor e receba alarmes antes da bola rolar."
+watch_on_app_title: "Transmissão com 1-Toque & Alarmes"
+watch_on_app_sub: "Toque em qualquer canal no app CardápioFC para abrir a transmissão ao vivo direto no aplicativo oficial."
+open_stream_in_app: "Assistir no App CardápioFC"
+confirmed_channels_title: "Canais Confirmados na Região"
+stream_in_app: "Abrir no App"
+benefit_official_broadcasters: "100% canais e streams legais"
+benefit_kickoff_alarms: "Alarmes pré-jogo no celular"
+benefit_custom_filter: "Filtre por canais que você assina"
+
 
 

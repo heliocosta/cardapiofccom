@@ -132,5 +132,17 @@ step_2_desc: "Toca cualquier partido para ver canales de TV y plataformas de str
 step_3_title: "Activa Recordatorios"
 step_3_desc: "Programa alertas 5, 15 o 30 minutos antes del saque inicial para no perderte nada."
 
+# Where to Watch App Call to Action (Option 1 + Option 2)
+official_broadcast_guide: "Guía Oficial de Transmisión"
+watch_in_app_desc: "Mira en vivo por TV o streaming oficial. En la app CardápioFC, toca el canal para abrir la transmisión directo en la app emisora y recibe alarmas antes del pitazo inicial."
+watch_on_app_title: "Transmisión en 1 Toque & Alarmas"
+watch_on_app_sub: "Toca cualquier canal en la app CardápioFC para abrir la transmisión oficial en vivo directamente en la aplicación."
+open_stream_in_app: "Ver en la App CardápioFC"
+confirmed_channels_title: "Canales Confirmados en la Región"
+stream_in_app: "Abrir en App"
+benefit_official_broadcasters: "100% canales y streams oficiales"
+benefit_kickoff_alarms: "Alarmas previas al partido"
+benefit_custom_filter: "Filtra por tus canales suscritos"
+
 
 
