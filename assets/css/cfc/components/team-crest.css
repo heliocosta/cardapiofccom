@@ -4,9 +4,6 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: 9999px;
-  overflow: hidden;
-  background-color: var(--color-light, #F3F4F6);
   font-weight: 700;
   color: var(--color-text-light, #4B5563);
 }
@@ -30,9 +27,7 @@
 }
 
 .cfc-team-crest__img {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -44,10 +39,19 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  border-radius: 9999px;
+  background-color: var(--color-light, #F3F4F6);
   text-transform: uppercase;
 }
 
+.cfc-team-crest__initials[hidden] {
+  display: none;
+}
+
 .dark .cfc-team-crest {
-  background-color: var(--color-darkmode-dark, #344E17);
   color: var(--color-darkmode-text-light, #D1D5DB);
+}
+
+.dark .cfc-team-crest__initials {
+  background-color: var(--color-darkmode-dark, #344E17);
 }

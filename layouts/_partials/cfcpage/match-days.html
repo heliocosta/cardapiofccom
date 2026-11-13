@@ -121,35 +121,35 @@
 
   <script>
     (function() {
-      const container = document.querySelector('[data-cfc-day-tabs]');
-      if (!container) return;
-      const tabs = container.querySelectorAll('[data-cfc-tab]');
-      const panes = container.querySelectorAll('[data-cfc-pane]');
+      document.querySelectorAll('[data-cfc-day-tabs]').forEach(container => {
+        const tabs = container.querySelectorAll('[data-cfc-tab]');
+        const panes = container.querySelectorAll('[data-cfc-pane]');
 
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const target = tab.getAttribute('data-cfc-tab');
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-cfc-tab');
 
-          // Update tabs
-          tabs.forEach(t => {
-            const isMatch = t === tab;
-            t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-            if (isMatch) {
-              t.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
-              t.classList.remove('bg-surface', 'dark:bg-darkmode-surface');
-            } else {
-              t.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
-              t.classList.add('bg-surface', 'dark:bg-darkmode-surface');
-            }
-          });
+            // Update tabs
+            tabs.forEach(t => {
+              const isMatch = t === tab;
+              t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+              if (isMatch) {
+                t.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+                t.classList.remove('bg-surface', 'dark:bg-darkmode-surface', 'text-text-dark', 'dark:text-darkmode-text-dark');
+              } else {
+                t.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+                t.classList.add('bg-surface', 'dark:bg-darkmode-surface', 'text-text-dark', 'dark:text-darkmode-text-dark');
+              }
+            });
 
-          // Update panes
-          panes.forEach(pane => {
-            if (pane.getAttribute('data-cfc-pane') === target) {
-              pane.classList.remove('hidden');
-            } else {
-              pane.classList.add('hidden');
-            }
+            // Update panes
+            panes.forEach(pane => {
+              if (pane.getAttribute('data-cfc-pane') === target) {
+                pane.classList.remove('hidden');
+              } else {
+                pane.classList.add('hidden');
+              }
+            });
           });
         });
       });

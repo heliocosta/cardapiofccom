@@ -1,0 +1,63 @@
+{{- /* layouts/_partials/cfcpage/matches-agenda.html */ -}}
+{{- /* Matches page agenda: time-windowed, day-tabbed, popular-ordered matches. */ -}}
+
+{{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+{{- $settings := partialCached "cfcdata/settings.html" . "settings" -}}
+{{- $edition := partialCached "edition/current.html" . site.Language.Lang -}}
+
+{{- $asOf := now -}}
+{{- if and (reflect.IsMap $settings) (isset $settings "asOfOverride") $settings.asOfOverride -}}
+  {{- $asOf = time.AsTime $settings.asOfOverride -}}
+{{- else if and (reflect.IsMap $dataset) (isset $dataset "asOf") $dataset.asOf -}}
+  {{- $asOf = time.AsTime $dataset.asOf -}}
+{{- end -}}
+{{- $edTz := $edition.timeZone | default "UTC" -}}
+{{- $localTime := time.In $edTz $asOf -}}
+{{- $startDayStr := $localTime.Format "2006-01-02" -}}
+{{- $from := time.AsTime (printf "%sT00:00:00%s" $startDayStr ($localTime.Format "-07:00")) -}}
+
+{{- $days := 7 -}}
+{{- with $settings.home -}}
+  {{- with .days -}}
+    {{- $days = int . -}}
+  {{- end -}}
+{{- end -}}
+{{- $futureLocal := $localTime.AddDate 0 0 (int $days) -}}
+{{- $endDayStr := $futureLocal.Format "2006-01-02" -}}
+{{- $to := time.AsTime (printf "%sT23:59:59%s" $endDayStr ($futureLocal.Format "-07:00")) -}}
+
+{{- $allSlugs := partial "cfcdata/window.html" (dict "dataset" $dataset "from" $from "to" $to) -}}
+{{- if not $allSlugs -}}
+  {{- $allSlugs = slice -}}
+{{- end -}}
+
+{{- $max := 0 -}}
+{{- with $settings.home -}}
+  {{- with .max -}}
+    {{- $max = int . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $truncated := false -}}
+{{- $matchSlugs := $allSlugs -}}
+{{- if and (gt $max 0) (gt (len $allSlugs) $max) -}}
+  {{- $matchSlugs = first $max $allSlugs -}}
+  {{- $truncated = true -}}
+{{- end -}}
+
+{{- $leagueDirUrl := partial "cfcdata/url.html" (dict "kind" "leagues" "edition" $edition) -}}
+
+{{- if eq (len $allSlugs) 0 -}}
+  {{ partial "cfc/empty-state.html" (dict "message" (i18n "home_empty" | default "No matches scheduled.") "action" (dict "label" (i18n "see_all_leagues" | default "See all leagues") "url" $leagueDirUrl)) }}
+  {{ partial "cfcpage/freshness.html" . }}
+{{- else -}}
+  {{ partial "cfcpage/match-days.html" (dict "matches" $matchSlugs "popularFirst" true "headingLevel" 2 "showLeague" true) }}
+  {{- if $truncated -}}
+    <div class="cfc-home-more text-center my-6">
+      <a href="{{ $leagueDirUrl }}" class="btn btn-outline-primary">
+        {{ i18n "see_all_leagues" | default "See all leagues" }}
+      </a>
+    </div>
+  {{- end -}}
+  {{ partial "cfcpage/freshness.html" . }}
+{{- end -}}

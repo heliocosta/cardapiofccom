@@ -11,30 +11,10 @@
 
 <a href="{{ $m.url }}" class="cfc-match-card {{ $statusClass }}" data-cfc-event="match_open" {{ with $m.slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ $edCode }}">
 {{- if and $showLeague $m.league -}}
-<div class="cfc-match-card__league text-center">
-  <span>{{ $m.league.name }}</span>{{ with $m.league.country }}{{ with .name }} - <span>{{ . }}</span>{{ end }}{{ end }}{{ with $m.round }} <span class="cfc-match-card__round">· {{ . }}</span>{{ end }}
-</div>
+<div class="cfc-match-card__league"><span>{{ $m.league.name }}</span>{{ with $m.league.country }}{{ with .name }} - <span>{{ . }}</span>{{ end }}{{ end }}{{ with $m.round }} <span class="cfc-match-card__round">· {{ . }}</span>{{ end }}</div>
 {{- end -}}
-
-<div class="cfc-match-card__main">
-  <div class="cfc-match-card__teams w-full">
-    <div class="cfc-match-card__matchup flex items-center justify-between gap-3 my-2 w-full">
-      <div class="cfc-match-card__team flex items-center justify-end gap-2.5 flex-1 min-w-0">
-        <span class="cfc-match-card__team-name font-semibold text-sm sm:text-base text-right truncate text-text-dark dark:text-darkmode-text-dark">{{ $m.home.name }}</span>
-        {{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "sm" "decorative" true "loading" $loading) }}
-      </div>
-      <span class="cfc-match-card__vs text-xs sm:text-sm font-bold text-muted px-2 shrink-0 select-none">x</span>
-      <div class="cfc-match-card__team flex items-center justify-start gap-2.5 flex-1 min-w-0">
-        {{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "sm" "decorative" true "loading" $loading) }}
-        <span class="cfc-match-card__team-name font-semibold text-sm sm:text-base text-left truncate text-text-dark dark:text-darkmode-text-dark">{{ $m.away.name }}</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="cfc-match-card__status text-center mt-2 pt-1">
-  {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}
-</div>
+<div class="cfc-match-card__main"><div class="cfc-match-card__teams"><div class="cfc-match-card__matchup"><div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.home.name }}</span></div><span class="cfc-match-card__vs">x</span><div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.away.name }}</span></div></div></div></div>
+<div class="cfc-match-card__status">{{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}</div>
 
 <h{{ $hl }} class="sr-only">{{ $m.home.name }} {{ i18n "vs" }} {{ $m.away.name }}</h{{ $hl }}>
 {{- if $showChannels -}}

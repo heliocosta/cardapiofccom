@@ -1,0 +1,23 @@
+{{/* layouts/_partials/hooks/head-app.html */}}
+{{/* Emits iOS Smart App Banner meta tag with entity-specific deep-link argument */}}
+{{- $appArgument := "cardapiofc://home" -}}
+{{- $kind := "" -}}
+{{- $slug := "" -}}
+{{- with .Params.cfc -}}
+  {{- $kind = .kind | default "" -}}
+  {{- $slug = .slug | default "" -}}
+{{- end -}}
+{{- if not $slug -}}
+  {{- with .File -}}
+    {{- $slug = .ContentBaseName -}}
+  {{- end -}}
+{{- end -}}
+{{- $section := .Section | default "" -}}
+{{- if and $slug (or (eq $kind "match") (eq $section "match")) -}}
+  {{- $appArgument = printf "cardapiofc://match/%s" $slug -}}
+{{- else if and $slug (or (eq $kind "team") (eq $section "team")) -}}
+  {{- $appArgument = printf "cardapiofc://team/%s" $slug -}}
+{{- else if and $slug (or (eq $kind "league") (eq $section "league") (eq $section "leagues")) -}}
+  {{- $appArgument = printf "cardapiofc://league/%s" $slug -}}
+{{- end -}}
+<meta id="cfc-ios-smart-banner" name="apple-itunes-app" content="app-id=6745226833, app-argument={{ $appArgument }}" />

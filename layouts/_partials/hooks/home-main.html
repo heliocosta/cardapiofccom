@@ -1,27 +1,18 @@
 {{- /* layouts/_partials/hooks/home-main.html */ -}}
-{{- /* Home page & matches page match listing slot: shows Today's matches (or next day if empty), grouped by league and sorted by time. */ -}}
+{{- /* Home page match listing slot: shows Today's matches (or next day if empty), grouped by league and sorted by time. */ -}}
 
 {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
 {{- $settings := partialCached "cfcdata/settings.html" . "settings" -}}
 {{- $edition := partialCached "edition/current.html" . site.Language.Lang -}}
 
-{{- $genAt := "" -}}
-{{- with $dataset -}}
-  {{- with .generatedAt -}}
-    {{- $genAt = . -}}
-  {{- end -}}
+{{- $asOf := now -}}
+{{- if and (reflect.IsMap $settings) (isset $settings "asOfOverride") $settings.asOfOverride -}}
+  {{- $asOf = time.AsTime $settings.asOfOverride -}}
+{{- else if and (reflect.IsMap $dataset) (isset $dataset "asOf") $dataset.asOf -}}
+  {{- $asOf = time.AsTime $dataset.asOf -}}
 {{- end -}}
-{{- $rawAsOf := $settings.asOfOverride -}}
-{{- if not $rawAsOf -}}
-  {{- if $genAt -}}
-    {{- $rawAsOf = time.AsTime $genAt -}}
-  {{- else -}}
-    {{- $rawAsOf = now -}}
-  {{- end -}}
-{{- end -}}
-{{- $asOf := time.AsTime $rawAsOf -}}
 {{- $edTz := $edition.timeZone | default "UTC" -}}
-{{- $localTime := time.In $edTz (time.AsTime $asOf) -}}
+{{- $localTime := time.In $edTz $asOf -}}
 {{- $todayStr := $localTime.Format "2006-01-02" -}}
 {{- $tomorrowStr := ($localTime.AddDate 0 0 1).Format "2006-01-02" -}}
 
@@ -61,7 +52,7 @@
 
 {{- /* If still no upcoming day, fall back to the latest day available */ -}}
 {{- if and (not $targetDay) (gt (len $sortedDays) 0) -}}
-  {{- $targetDay = index $sortedDays 0 -}}
+  {{- $targetDay = index $sortedDays (sub (len $sortedDays) 1) -}}
 {{- end -}}
 
 {{- $leagueDirUrl := partial "cfcdata/url.html" (dict "kind" "leagues" "edition" $edition) -}}
@@ -91,41 +82,51 @@
 
     {{- range $dayMatches -}}
       {{- $m := . -}}
-      {{- $lSlug := $m.leagueSlug | default "other" -}}
+      {{- $lSlug := "other" -}}
+      {{- with $m.league -}}
+        {{- with .slug -}}
+          {{- $lSlug = . -}}
+        {{- end -}}
+      {{- end -}}
       {{- $currentList := index $leagueMatches $lSlug | default slice -}}
       {{- $currentList = $currentList | append $m -}}
       {{- if not (index $leagueMatches $lSlug) -}}
         {{- $leagueOrder = $leagueOrder | append $lSlug -}}
-        {{- $leagueMeta = merge $leagueMeta (dict $lSlug $m.league) -}}
+        {{- $lVM := partialCached "cfcdata/league.html" $lSlug $lSlug site.Language.Lang -}}
+        {{- if $lVM -}}
+          {{- $leagueMeta = merge $leagueMeta (dict $lSlug $lVM) -}}
+        {{- else if $m.league -}}
+          {{- $leagueMeta = merge $leagueMeta (dict $lSlug $m.league) -}}
+        {{- end -}}
       {{- end -}}
       {{- $leagueMatches = merge $leagueMatches (dict $lSlug $currentList) -}}
     {{- end -}}
 
-    {{- /* Sort leagues: popular first, then by name */ -}}
-    {{- $popularSlugs := slice -}}
-    {{- $regularSlugs := slice -}}
-    {{- range $leagueOrder -}}
-      {{- $lMeta := index $leagueMeta . -}}
-      {{- if and $lMeta $lMeta.popular -}}
-        {{- $popularSlugs = $popularSlugs | append . -}}
-      {{- else -}}
-        {{- $regularSlugs = $regularSlugs | append . -}}
-      {{- end -}}
-    {{- end -}}
-
+    {{- /* Sort leagues: popular first (alphabetical), then regular (alphabetical) */ -}}
+    {{- $popularWithNames := slice -}}
     {{- $regularWithNames := slice -}}
-    {{- range $regularSlugs -}}
+    {{- range $leagueOrder -}}
       {{- $lMeta := index $leagueMeta . -}}
       {{- $name := . -}}
       {{- with $lMeta -}}
         {{- $name = .name | default $name -}}
       {{- end -}}
-      {{- $regularWithNames = $regularWithNames | append (dict "slug" . "name" $name) -}}
+      {{- $entry := dict "slug" . "name" $name -}}
+      {{- if and $lMeta $lMeta.popular -}}
+        {{- $popularWithNames = $popularWithNames | append $entry -}}
+      {{- else -}}
+        {{- $regularWithNames = $regularWithNames | append $entry -}}
+      {{- end -}}
     {{- end -}}
-    {{- $sortedRegularWithNames := sort $regularWithNames "name" "asc" -}}
 
-    {{- $finalLeagueSlugs := $popularSlugs -}}
-    {{- range $sortedRegularWithNames -}}
+    {{- $sortedPopular := sort $popularWithNames "name" "asc" -}}
+    {{- $sortedRegular := sort $regularWithNames "name" "asc" -}}
+
+    {{- $finalLeagueSlugs := slice -}}
+    {{- range $sortedPopular -}}
+      {{- $finalLeagueSlugs = $finalLeagueSlugs | append .slug -}}
+    {{- end -}}
+    {{- range $sortedRegular -}}
       {{- $finalLeagueSlugs = $finalLeagueSlugs | append .slug -}}
     {{- end -}}
 
@@ -163,24 +164,36 @@
           <section class="cfc-league-group">
             <div class="cfc-league-group__header flex items-center justify-between gap-3 mb-4 pb-2 border-b-0">
               <div class="flex items-center gap-3 min-w-0">
-                {{ with $lMeta.logo }}
-                  <img src="{{ . }}" alt="{{ $lMeta.name }}" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0" loading="lazy">
+                {{ with $lMeta }}
+                  {{ with .logo }}
+                    <img src="{{ . }}" alt="{{ $lMeta.name }}" width="32" height="32" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0" loading="lazy">
+                  {{ end }}
                 {{ end }}
                 <div class="min-w-0">
-                  <a href="{{ $lMeta.url }}" class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark hover:text-primary dark:hover:text-darkmode-primary transition-colors truncate block">
-                    {{ $lMeta.name }}
-                  </a>
-                  {{ with $lMeta.country }}
-                    {{ with .name }}
-                      <span class="text-xs sm:text-sm text-muted dark:text-darkmode-muted font-normal block">{{ . }}</span>
+                  {{ if and $lMeta $lMeta.url }}
+                    <a href="{{ $lMeta.url }}" class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark hover:text-primary dark:hover:text-darkmode-primary transition-colors truncate block">
+                      {{ $lMeta.name }}
+                    </a>
+                  {{ else }}
+                    <span class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark block">
+                      {{ with $lMeta }}{{ .name | default $lSlug }}{{ else }}{{ $lSlug }}{{ end }}
+                    </span>
+                  {{ end }}
+                  {{ with $lMeta }}
+                    {{ with .country }}
+                      {{ with .name }}
+                        <span class="text-xs sm:text-sm text-muted dark:text-darkmode-muted font-normal block">{{ . }}</span>
+                      {{ end }}
                     {{ end }}
                   {{ end }}
                 </div>
               </div>
-              {{ with $lMeta.url }}
-                <a href="{{ . }}" class="text-xs sm:text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline shrink-0">
-                  {{ i18n "view_league" | default "View League" }} &rarr;
-                </a>
+              {{ with $lMeta }}
+                {{ with .url }}
+                  <a href="{{ . }}" class="text-xs sm:text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline shrink-0">
+                    {{ i18n "view_league" | default "View League" }} &rarr;
+                  </a>
+                {{ end }}
               {{ end }}
             </div>
 

@@ -24,4 +24,4 @@
   {{- end -}}
 {{- end -}}
 {{- $initials = upper $initials -}}
-<span class="cfc-team-crest cfc-team-crest--{{ $size }}" aria-hidden="{{ if $decorative }}true{{ else }}false{{ end }}"><span class="cfc-team-crest__initials" aria-hidden="true">{{ $initials }}</span>{{ with $src }}<img class="cfc-team-crest__img" src="{{ . }}" width="{{ $px }}" height="{{ $px }}" loading="{{ $loading }}" decoding="async" {{ if $decorative }}alt="" aria-hidden="true"{{ else }}alt="{{ $name }}"{{ end }} onerror="this.hidden=true;" />{{ end }}</span>
+<span class="cfc-team-crest cfc-team-crest--{{ $size }}"{{ if $decorative }} aria-hidden="true"{{ end }}><span class="cfc-team-crest__initials"{{ if not $decorative }} aria-hidden="true"{{ end }}{{ if $src }} hidden{{ end }}>{{ $initials }}</span>{{ with $src }}<img class="cfc-team-crest__img" src="{{ . }}" width="{{ $px }}" height="{{ $px }}" loading="{{ $loading }}" decoding="async" alt="{{ if not $decorative }}{{ $name }}{{ end }}" onerror="this.hidden=true;this.previousElementSibling.hidden=false" />{{ end }}</span>

@@ -11,4 +11,4 @@
 {{- $iso := partial "time/format.html" (dict "t" $t "style" "iso") -}}
 {{- $formatted := partial "time/format.html" (dict "t" $t "style" $style) -}}
 {{- $zone := partial "time/zone.html" (dict "t" $t) -}}
-<time datetime="{{ $iso }}" class="cfc-kickoff-time flex flex-col items-center"><span class="cfc-kickoff-time__time text-base sm:text-lg font-bold font-secondary text-primary dark:text-darkmode-primary">{{ $formatted }}</span>{{ if $showZone }}<span class="cfc-kickoff-time__zone block text-xs text-muted dark:text-darkmode-muted mt-0.5">{{ $zone.label }}{{ if $showOffset }}{{ with $zone.offset }} <span class="cfc-kickoff-time__offset">({{ . }})</span>{{ end }}{{ end }}</span>{{ end }}</time>
+<time datetime="{{ $iso }}" class="cfc-kickoff-time"><span class="cfc-kickoff-time__time">{{ $formatted }}</span>{{ if $showZone }}<span class="cfc-kickoff-time__zone">{{ $zone.label }}{{ if $showOffset }}{{ with $zone.offset }} <span class="cfc-kickoff-time__offset">({{ . }})</span>{{ end }}{{ end }}</span>{{ end }}</time>
