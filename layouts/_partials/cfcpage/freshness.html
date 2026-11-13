@@ -27,7 +27,7 @@
   {{- $zone := partial "time/zone.html" (dict "t" $generatedAt) -}}
   {{- $when := trim (printf "%s %s" $formatted ($zone.label | default "")) " " -}}
   {{- $text := i18n "data_updated" (dict "When" $when) | default (printf "Data updated %s" $when) -}}
-  <footer class="cfc-freshness text-xs text-muted text-center my-8">
+  <footer class="cfc-freshness">
     <p>{{ $text }}</p>
   </footer>
 {{- end -}}

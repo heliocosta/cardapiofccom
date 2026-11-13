@@ -1,11 +1,12 @@
 @theme {
-  --radius-card: 0.5rem;
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px 0 rgb(15 32 0 / 0.06), 0 1px 3px 0 rgb(15 32 0 / 0.04);
   --container-max: 1200px;
 }
 
 @import "./cfc/base.css";
 @import "./cfc/layout.css";
+@import "./cfc/design.css";
 @import "./cfc/components/kickoff-time.css";
 @import "./cfc/components/team-crest.css";
 @import "./cfc/components/channel-badge.css";
@@ -15,3 +16,6 @@
 @import "./cfc/components/menu.css";
 @import "./cfc/components/page-header.css";
 @import "./cfc/components/empty-state.css";
+@import "./cfc/components/hero.css";
+@import "./cfc/components/showcase.css";
+@import "./cfc/components/app-download.css";

@@ -1,0 +1,11 @@
+{{- /* cfc/store-badges.html — App Store + Google Play badge links with localized UTM URLs. */ -}}
+{{- $links := partial "cfc/app-links.html" .page -}}
+{{- $size := .size | default "md" -}}
+<div class="cfc-store-badges cfc-store-badges--{{ $size }}">
+  <a href="{{ $links.ios }}" target="_blank" rel="noopener noreferrer" class="cfc-store-badge" data-cfc-event="store_open" data-cfc-store="ios" aria-label="{{ i18n "app_badge_ios_alt" | default "Download on the App Store" }}">
+    <img src="/images/apple-badge-button.en.svg" width="135" height="40" alt="" loading="lazy" decoding="async" />
+  </a>
+  <a href="{{ $links.android }}" target="_blank" rel="noopener noreferrer" class="cfc-store-badge" data-cfc-event="store_open" data-cfc-store="android" aria-label="{{ i18n "app_badge_android_alt" | default "Get it on Google Play" }}">
+    <img src="/images/google-play-badge-button.en.svg" width="135" height="40" alt="" loading="lazy" decoding="async" />
+  </a>
+</div>

@@ -1,0 +1,132 @@
+/* ---------- App showcase (dark "stadium night" panel) ---------- */
+.cfc-showcase__panel {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 2rem;
+  padding: 2.5rem 1.5rem 0;
+  border-radius: 2rem;
+  color: #ffffff;
+  background-image: linear-gradient(135deg, var(--color-darkmode-body) 0%, var(--color-darkmode-surface) 55%, var(--color-darkmode-dark) 100%);
+  box-shadow: var(--cfc-shadow-lg);
+}
+@media (min-width: 1024px) {
+  .cfc-showcase__panel {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    padding: 3.5rem 3rem 0;
+    min-height: 32rem;
+  }
+}
+.cfc-showcase__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cfc-showcase__glow {
+  position: absolute;
+  width: 44rem;
+  height: 44rem;
+  right: -14rem;
+  top: -12rem;
+  border-radius: 50%;
+  background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-darkmode-primary) 22%, transparent), transparent);
+}
+.cfc-showcase__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  -webkit-mask-image: radial-gradient(70% 80% at 70% 50%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(70% 80% at 70% 50%, #000 10%, transparent 75%);
+}
+.cfc-showcase__copy {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 1rem;
+}
+@media (min-width: 1024px) {
+  .cfc-showcase__copy {
+    padding-bottom: 3.5rem;
+  }
+}
+.cfc-showcase__title {
+  margin: 0.5rem 0 1rem;
+  font-size: clamp(1.875rem, 1.45rem + 1.9vw, 2.85rem);
+  line-height: 1;
+  color: #ffffff;
+  text-wrap: balance;
+}
+.cfc-showcase__intro {
+  margin: 0;
+  max-width: 32rem;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 0.78);
+}
+.cfc-showcase__list {
+  list-style: none;
+  margin: 1.5rem 0 1.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.625rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.92);
+}
+.cfc-showcase__list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.cfc-showcase__check {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--color-darkmode-primary);
+}
+.cfc-showcase__screens {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 16rem;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .cfc-showcase__screens {
+    height: 22rem;
+  }
+}
+@media (min-width: 1024px) {
+  .cfc-showcase__screens {
+    height: 30rem;
+    align-self: end;
+  }
+}
+.cfc-showcase__screens .cfc-phone {
+  flex-shrink: 0;
+  box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.75);
+}
+.cfc-phone--s1,
+.cfc-phone--s3 {
+  width: 30%;
+  max-width: 200px;
+  z-index: 1;
+  translate: 0 12%;
+}
+.cfc-phone--s1 {
+  rotate: -7deg;
+  margin-right: -6%;
+}
+.cfc-phone--s3 {
+  rotate: 7deg;
+  margin-left: -6%;
+}
+.cfc-phone--s2 {
+  width: 38%;
+  max-width: 240px;
+  z-index: 2;
+  translate: 0 6%;
+}

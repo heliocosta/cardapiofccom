@@ -134,27 +134,18 @@
     {{- $isTomorrow := eq $targetDay $tomorrowStr -}}
     {{- $formattedDate := partial "time/format.html" (dict "t" (printf "%sT12:00:00Z" $targetDay) "style" "dayHeading") -}}
 
-    <div class="cfc-today-matches my-6">
+    <div class="cfc-today-matches">
       {{/* Date Heading */}}
-      <div class="cfc-day-header mb-8 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary dark:bg-darkmode-primary/15 dark:text-darkmode-primary select-none">
-            {{ if $isToday }}
-              {{ i18n "today" | default "Today" }}
-            {{ else if $isTomorrow }}
-              {{ i18n "tomorrow" | default "Tomorrow" }}
-            {{ else }}
-              {{ i18n "upcoming" | default "Upcoming" }}
-            {{ end }}
-          </span>
-          <h3 class="text-xl sm:text-2xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark capitalize">
-            <time datetime="{{ $targetDay }}">{{ $formattedDate }}</time>
-          </h3>
-        </div>
+      <div class="cfc-day-header">
+        <span class="cfc-day-header__badge">
+          {{ if $isToday }}{{ i18n "today" | default "Today" }}{{ else if $isTomorrow }}{{ i18n "tomorrow" | default "Tomorrow" }}{{ else }}{{ i18n "upcoming" | default "Upcoming" }}{{ end }}
+        </span>
+        <h3 class="cfc-day-header__date"><time datetime="{{ $targetDay }}">{{ $formattedDate }}</time></h3>
+        <span class="cfc-day-header__count">{{ len $dayMatches }} {{ i18n "matches" | default "matches" }}</span>
       </div>
 
       {{/* Leagues and Matches */}}
-      <div class="cfc-leagues-list space-y-10">
+      <div class="cfc-leagues-list">
         {{- range $finalLeagueSlugs -}}
           {{- $lSlug := . -}}
           {{- $lMeta := index $leagueMeta $lSlug -}}
@@ -162,42 +153,26 @@
           {{- $sortedMatches := sort $lMatches "kickoff" "asc" -}}
 
           <section class="cfc-league-group">
-            <div class="cfc-league-group__header flex items-center justify-between gap-3 mb-4 pb-2 border-b-0">
-              <div class="flex items-center gap-3 min-w-0">
-                {{ with $lMeta }}
-                  {{ with .logo }}
-                    <img src="{{ . }}" alt="{{ $lMeta.name }}" width="32" height="32" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0" loading="lazy">
-                  {{ end }}
-                {{ end }}
-                <div class="min-w-0">
+            <div class="cfc-league-group__header">
+              <div class="cfc-league-group__identity">
+                <span class="cfc-league-group__logo">
+                  {{ with $lMeta }}{{ with .logo }}<img src="{{ . }}" alt="" width="32" height="32" loading="lazy" decoding="async" onerror="this.hidden=true">{{ end }}{{ end }}
+                </span>
+                <div class="cfc-league-group__text">
                   {{ if and $lMeta $lMeta.url }}
-                    <a href="{{ $lMeta.url }}" class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark hover:text-primary dark:hover:text-darkmode-primary transition-colors truncate block">
-                      {{ $lMeta.name }}
-                    </a>
+                    <a href="{{ $lMeta.url }}" class="cfc-league-group__name">{{ $lMeta.name }}</a>
                   {{ else }}
-                    <span class="text-lg sm:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark block">
-                      {{ with $lMeta }}{{ .name | default $lSlug }}{{ else }}{{ $lSlug }}{{ end }}
-                    </span>
+                    <span class="cfc-league-group__name">{{ with $lMeta }}{{ .name | default $lSlug }}{{ else }}{{ $lSlug }}{{ end }}</span>
                   {{ end }}
-                  {{ with $lMeta }}
-                    {{ with .country }}
-                      {{ with .name }}
-                        <span class="text-xs sm:text-sm text-muted dark:text-darkmode-muted font-normal block">{{ . }}</span>
-                      {{ end }}
-                    {{ end }}
-                  {{ end }}
+                  {{ with $lMeta }}{{ with .country }}{{ with .name }}<span class="cfc-league-group__country">{{ . }}</span>{{ end }}{{ end }}{{ end }}
                 </div>
               </div>
-              {{ with $lMeta }}
-                {{ with .url }}
-                  <a href="{{ . }}" class="text-xs sm:text-sm font-semibold text-primary dark:text-darkmode-primary hover:underline shrink-0">
-                    {{ i18n "view_league" | default "View League" }} &rarr;
-                  </a>
-                {{ end }}
-              {{ end }}
+              {{ with $lMeta }}{{ with .url }}
+                <a href="{{ . }}" class="cfc-league-group__more">{{ i18n "view_league" | default "View League" }} <span aria-hidden="true">→</span></a>
+              {{ end }}{{ end }}
             </div>
 
-            <div class="cfc-league-group__matches grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="cfc-league-group__matches cfc-card-grid">
               {{- range $sortedMatches -}}
                 {{ partial "cfc/match-card.html" (dict "match" . "showLeague" false "headingLevel" 4) }}
               {{- end -}}

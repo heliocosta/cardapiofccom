@@ -1,0 +1,23 @@
+{{- /* cfc/app-showcase.html — dark "stadium night" panel with three real app screens. */ -}}
+<section class="cfc-section cfc-showcase" aria-labelledby="cfc-showcase-title">
+  <div class="cfc-showcase__panel">
+    <div class="cfc-showcase__bg" aria-hidden="true"><span class="cfc-showcase__glow"></span><span class="cfc-showcase__grid"></span></div>
+    <div class="cfc-showcase__copy">
+      <p class="cfc-eyebrow cfc-eyebrow--on-dark">{{ i18n "showcase_eyebrow" | default "Inside the app" }}</p>
+      <h2 id="cfc-showcase-title" class="cfc-showcase__title">{{ i18n "showcase_title" | default "The matchday companion built for fans" }}</h2>
+      <p class="cfc-showcase__intro">{{ i18n "showcase_intro" | default "Standings, stadium guides, competition filters and top-scorer stats — all in a fast, ad-free native app." }}</p>
+      <ul class="cfc-showcase__list" role="list">
+        <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-showcase__check") }}<span>{{ i18n "showcase_screen_standings" | default "Live league standings" }}</span></li>
+        <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-showcase__check") }}<span>{{ i18n "showcase_screen_stadium" | default "Stadium guide with maps" }}</span></li>
+        <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-showcase__check") }}<span>{{ i18n "showcase_screen_filter" | default "Filter your competitions" }}</span></li>
+        <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-showcase__check") }}<span>{{ i18n "showcase_screen_stats" | default "Top scorers & stats" }}</span></li>
+      </ul>
+      {{ partial "cfc/store-badges.html" (dict "page" . "size" "md") }}
+    </div>
+    <div class="cfc-showcase__screens" aria-hidden="true">
+      <div class="cfc-phone cfc-phone--s1">{{ partialCached "cfc/app-screen.html" (dict "src" "images/app_screens/android/en/dark_09_team_stadium.png" "alt" "" "width" 200 "sizes" "(min-width: 1024px) 200px, 150px" "class" "cfc-phone__img") "images/app_screens/android/en/dark_09_team_stadium.png" }}</div>
+      <div class="cfc-phone cfc-phone--s2">{{ partialCached "cfc/app-screen.html" (dict "src" "images/app_screens/android/pt/dark_11_league_standings.png" "alt" "" "width" 240 "sizes" "(min-width: 1024px) 240px, 180px" "class" "cfc-phone__img") "images/app_screens/android/pt/dark_11_league_standings.png" }}</div>
+      <div class="cfc-phone cfc-phone--s3">{{ partialCached "cfc/app-screen.html" (dict "src" "images/app_screens/android/pt/dark_02_filter.png" "alt" "" "width" 200 "sizes" "(min-width: 1024px) 200px, 150px" "class" "cfc-phone__img") "images/app_screens/android/pt/dark_02_filter.png" }}</div>
+    </div>
+  </div>
+</section>

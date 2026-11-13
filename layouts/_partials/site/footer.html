@@ -1,40 +1,42 @@
-{{/* site/footer.html - Footer component */}}
+{{/* site/footer.html - Footer: brand, explore, editions, app badges */}}
 {{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
 {{ $all := partialCached "edition/all.html" . }}
 
 <footer class="cfc-footer">
-  <div class="cfc-container py-8">
+  <div class="cfc-container">
     {{ partial "site/hook.html" (dict "name" "footer-app" "page" .) }}
 
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 py-4">
-      <nav aria-label="Footer Navigation">
+    <div class="cfc-footer__grid">
+      <div class="cfc-footer__brand">
+        <a href="{{ $ed.prefix }}" class="cfc-footer__logo" aria-label="CardápioFC Home">{{ partial "logo" }}</a>
+        <p class="cfc-footer__tagline">{{ i18n "footer_tagline" | default "Your football menu: kick-off times and official TV & streaming channels, country by country." }}</p>
+        <p class="cfc-footer__get-app">{{ i18n "footer_get_app" | default "Get the app" }}</p>
+        {{ partial "cfc/store-badges.html" (dict "page" . "size" "sm") }}
+      </div>
+
+      <nav class="cfc-footer__col" aria-label="Footer Navigation">
+        <p class="cfc-footer__heading">{{ i18n "footer_explore" | default "Explore" }}</p>
         {{ partial "cfc/menu.html" (dict "page" . "menu" "footer") }}
+      </nav>
+
+      <nav class="cfc-footer__col" aria-label="{{ i18n "available_in" | default "Available in" }}">
+        <p class="cfc-footer__heading">{{ i18n "available_in" | default "Available in" }}</p>
+        <ul class="cfc-footer__editions" role="list">
+          {{ range $all }}
+            {{ $targetUrl := .prefix }}
+            {{ if .isGlobal }}{{ $targetUrl = "/?edition=en" }}{{ end }}
+            <li>
+              <a href="{{ $targetUrl }}" hreflang="{{ .hreflang }}" lang="{{ .locale }}" class="cfc-footer__edition{{ if eq .code $ed.code }} is-current{{ end }}"{{ if eq .code $ed.code }} aria-current="true"{{ end }}>{{ .label }}</a>
+            </li>
+          {{ end }}
+        </ul>
       </nav>
     </div>
 
-    <nav class="py-6 text-center" aria-label="Available in">
-      <p class="mb-3 font-semibold text-xs uppercase tracking-wider text-muted dark:text-darkmode-muted">{{ i18n "available_in" | default "Available in" }}</p>
-      <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
-        {{ range $all }}
-          {{ $targetUrl := .prefix }}
-          {{ if .isGlobal }}
-            {{ $targetUrl = "/?edition=en" }}
-          {{ end }}
-          <li>
-            <a href="{{ $targetUrl }}"
-               hreflang="{{ .hreflang }}"
-               lang="{{ .locale }}"
-               class="underline underline-offset-4 text-text-light dark:text-darkmode-text-light hover:text-primary dark:hover:text-darkmode-primary transition-colors">
-              {{ .label }}
-            </a>
-          </li>
-        {{ end }}
-      </ul>
-    </nav>
-
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-muted dark:text-darkmode-muted">
+    <div class="cfc-footer__bottom">
       <p>{{ site.Params.copyright | default (printf "© %d CardápioFC. All rights reserved." now.Year) }}</p>
       {{ partial "site/hook.html" (dict "name" "footer-consent" "page" .) }}
+      <a href="#main" class="cfc-footer__top">{{ i18n "back_to_top" | default "Back to top" }} <span aria-hidden="true">↑</span></a>
     </div>
   </div>
 </footer>

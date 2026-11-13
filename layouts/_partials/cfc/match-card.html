@@ -7,14 +7,33 @@
 {{- $hl := .headingLevel | default 3 -}}
 {{- $loading := .loading | default "lazy" -}}
 {{- $edCode := site.Language.Lang -}}
-{{- $statusClass := printf "cfc-match-card--%s" ($m.status | default "scheduled") -}}
+{{- $status := $m.status | default "scheduled" -}}
+{{- $statusClass := printf "cfc-match-card--%s" $status -}}
+{{- $isLive := or (eq $status "live") (eq $status "halftime") -}}
+{{- $isFinished := eq $status "finished" -}}
+{{- $score := $m.score -}}
+{{- $hasScore := false -}}
+{{- if and (reflect.IsMap $score) (isset $score "home") (isset $score "away") -}}
+  {{- if and (ne (printf "%v" $score.home) "") (ne (printf "%v" $score.home) "<nil>") -}}{{- $hasScore = true -}}{{- end -}}
+{{- end -}}
 
 <a href="{{ $m.url }}" class="cfc-match-card {{ $statusClass }}" data-cfc-event="match_open" {{ with $m.slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ $edCode }}">
 {{- if and $showLeague $m.league -}}
-<div class="cfc-match-card__league"><span>{{ $m.league.name }}</span>{{ with $m.league.country }}{{ with .name }} - <span>{{ . }}</span>{{ end }}{{ end }}{{ with $m.round }} <span class="cfc-match-card__round">· {{ . }}</span>{{ end }}</div>
+<div class="cfc-match-card__league"><span class="cfc-match-card__league-name">{{ $m.league.name }}</span>{{ with $m.league.country }}{{ with .name }}<span class="cfc-match-card__league-country">{{ . }}</span>{{ end }}{{ end }}{{ with $m.round }}<span class="cfc-match-card__round">{{ . }}</span>{{ end }}</div>
 {{- end -}}
-<div class="cfc-match-card__main"><div class="cfc-match-card__teams"><div class="cfc-match-card__matchup"><div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.home.name }}</span></div><span class="cfc-match-card__vs">x</span><div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.away.name }}</span></div></div></div></div>
-<div class="cfc-match-card__status">{{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}</div>
+<div class="cfc-match-card__matchup">
+  <div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.home.name }}</span></div>
+  <div class="cfc-match-card__center">
+    {{- if and (or $isLive $isFinished) $hasScore -}}
+      <span class="cfc-match-card__score{{ if $isLive }} is-live{{ end }}"><span>{{ $score.home }}</span><span class="cfc-match-card__score-sep" aria-hidden="true"></span><span>{{ $score.away }}</span></span>
+      <span class="cfc-match-card__state{{ if $isLive }} is-live{{ end }}">{{ if $isLive }}<span class="cfc-live-dot" aria-hidden="true"></span>{{ end }}{{ i18n (printf "status_%s" $status) | default $status }}</span>
+    {{- else -}}
+      {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}
+      {{- if and (ne $status "scheduled") (ne $status "finished") -}}<span class="cfc-match-card__state is-{{ $status }}">{{ i18n (printf "status_%s" $status) | default $status }}</span>{{- end -}}
+    {{- end -}}
+  </div>
+  <div class="cfc-match-card__team">{{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "md" "decorative" true "loading" $loading) }}<span class="cfc-match-card__team-name">{{ $m.away.name }}</span></div>
+</div>
 
 <h{{ $hl }} class="sr-only">{{ $m.home.name }} {{ i18n "vs" }} {{ $m.away.name }}</h{{ $hl }}>
 {{- if $showChannels -}}

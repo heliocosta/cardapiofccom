@@ -1,0 +1,18 @@
+{{- /* cfc/section-head.html — consistent section heading: eyebrow, title, intro, optional action link. */ -}}
+{{- $eyebrow := .eyebrow | default "" -}}
+{{- $title := .title | default "" -}}
+{{- $intro := .intro | default "" -}}
+{{- $align := .align | default "center" -}}
+{{- $level := .level | default 2 -}}
+{{- $action := .action -}}
+{{- $id := .id | default "" -}}
+<div class="cfc-section-head cfc-section-head--{{ $align }}">
+  <div class="cfc-section-head__text">
+    {{- with $eyebrow -}}<p class="cfc-eyebrow">{{ . }}</p>{{- end -}}
+    <h{{ $level }} class="cfc-section-head__title"{{ with $id }} id="{{ . }}"{{ end }}>{{ $title }}</h{{ $level }}>
+    {{- with $intro -}}<p class="cfc-section-head__intro">{{ . }}</p>{{- end -}}
+  </div>
+  {{- with $action -}}
+    <a href="{{ .url }}" class="cfc-section-head__action">{{ .label }}<span aria-hidden="true" class="cfc-section-head__arrow">→</span></a>
+  {{- end -}}
+</div>

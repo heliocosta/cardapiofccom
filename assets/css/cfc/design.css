@@ -1,0 +1,675 @@
+/* ===== CardápioFC design system additions: tokens, buttons, cards, sections ===== */
+
+:root {
+  --cfc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cfc-shadow-sm: 0 1px 2px rgb(15 32 0 / 0.06), 0 1px 3px rgb(15 32 0 / 0.04);
+  --cfc-shadow-md: 0 10px 28px -10px rgb(15 32 0 / 0.22), 0 2px 6px -2px rgb(15 32 0 / 0.08);
+  --cfc-shadow-lg: 0 28px 56px -20px rgb(15 32 0 / 0.32);
+  --cfc-phone-shadow: 0 30px 60px -24px rgb(15 32 0 / 0.55);
+}
+.dark {
+  --cfc-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.2);
+  --cfc-shadow-md: 0 10px 28px -10px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --cfc-shadow-lg: 0 28px 56px -20px rgb(0 0 0 / 0.7);
+  --cfc-phone-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.8);
+}
+
+/* ---------- Sections ---------- */
+.cfc-section {
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
+}
+@media (min-width: 1024px) {
+  .cfc-section {
+    margin-top: 4.5rem;
+    margin-bottom: 4.5rem;
+  }
+}
+
+.cfc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.625rem;
+  font-family: var(--font-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.dark .cfc-eyebrow {
+  color: var(--color-darkmode-primary);
+}
+.cfc-eyebrow--on-dark {
+  color: var(--color-darkmode-primary);
+}
+.cfc-eyebrow--pill {
+  padding: 0.4rem 0.9rem 0.4rem 0.75rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  font-family: var(--font-primary);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.dark .cfc-eyebrow--pill {
+  background-color: color-mix(in srgb, var(--color-darkmode-primary) 12%, transparent);
+}
+.cfc-eyebrow__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.cfc-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.cfc-section-head--center {
+  align-items: center;
+  text-align: center;
+}
+.cfc-section-head--center .cfc-section-head__text {
+  max-width: 46rem;
+}
+.cfc-section-head--left {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.cfc-section-head__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 1.35rem + 1.7vw, 2.5rem);
+  line-height: 1.02;
+  color: var(--color-text-dark);
+  text-wrap: balance;
+}
+.dark .cfc-section-head__title {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-section-head__intro {
+  margin: 0.75rem auto 0;
+  max-width: 40rem;
+  color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.cfc-section-head--left .cfc-section-head__intro {
+  margin-left: 0;
+}
+.dark .cfc-section-head__intro {
+  color: var(--color-darkmode-muted);
+}
+.cfc-section-head__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.cfc-section-head__action:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+.cfc-section-head__arrow {
+  transition: transform 0.2s var(--cfc-ease);
+}
+.cfc-section-head__action:hover .cfc-section-head__arrow {
+  transform: translateX(3px);
+}
+.dark .cfc-section-head__action {
+  color: var(--color-darkmode-primary);
+  background-color: color-mix(in srgb, var(--color-darkmode-primary) 12%, transparent);
+}
+
+/* ---------- Buttons ---------- */
+.cfc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.875rem;
+  font-family: var(--font-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--cfc-ease), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.cfc-btn--lg {
+  padding: 0.95rem 1.5rem;
+  font-size: 1.0625rem;
+}
+.cfc-btn__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.cfc-btn--primary {
+  background-image: linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 65%, var(--color-accent)));
+  color: #ffffff;
+  box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+.cfc-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -12px color-mix(in srgb, var(--color-primary) 75%, transparent);
+}
+.dark .cfc-btn--primary {
+  background-image: linear-gradient(135deg, var(--color-darkmode-primary), color-mix(in srgb, var(--color-darkmode-primary) 70%, var(--color-darkmode-accent)));
+  color: var(--color-darkmode-body);
+  box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--color-darkmode-primary) 50%, transparent);
+}
+
+/* ---------- Store badges ---------- */
+.cfc-store-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+}
+.cfc-store-badge {
+  display: inline-block;
+  border-radius: 0.5rem;
+  transition: transform 0.2s var(--cfc-ease), opacity 0.2s ease;
+}
+.cfc-store-badge img {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+.cfc-store-badges--lg .cfc-store-badge img {
+  height: 46px;
+}
+.cfc-store-badges--sm .cfc-store-badge img {
+  height: 36px;
+}
+.cfc-store-badge:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+}
+
+/* ---------- Cards ---------- */
+.cfc-card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 6%, transparent);
+  box-shadow: var(--cfc-shadow-sm);
+  transition: translate 0.25s var(--cfc-ease), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.cfc-card:hover {
+  translate: 0 -3px;
+  box-shadow: var(--cfc-shadow-md);
+  border-color: color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+.dark .cfc-card {
+  background-color: var(--color-darkmode-surface);
+  border-color: color-mix(in srgb, var(--color-darkmode-primary) 10%, transparent);
+}
+.dark .cfc-card:hover {
+  border-color: color-mix(in srgb, var(--color-darkmode-primary) 24%, transparent);
+}
+.cfc-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: var(--color-text-dark);
+}
+.dark .cfc-card__title {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-icon-tile {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  border-radius: 0.875rem;
+  display: grid;
+  place-items: center;
+  color: var(--color-primary);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 14%, transparent), color-mix(in srgb, var(--color-accent) 10%, transparent));
+}
+.dark .cfc-icon-tile {
+  color: var(--color-darkmode-primary);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-darkmode-primary) 18%, transparent), color-mix(in srgb, var(--color-darkmode-accent) 12%, transparent));
+}
+.cfc-icon-tile__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.cfc-check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.dark .cfc-check-list {
+  color: var(--color-darkmode-muted);
+}
+.cfc-check-list li {
+  position: relative;
+  padding-left: 1.5rem;
+}
+.cfc-check-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.dark .cfc-check-list li::before {
+  color: var(--color-darkmode-primary);
+}
+.cfc-coverage {
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .cfc-coverage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.cfc-features-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.cfc-feature__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  line-height: 1.15;
+  color: var(--color-text-dark);
+}
+.dark .cfc-feature__title {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-feature__desc {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.dark .cfc-feature__desc {
+  color: var(--color-darkmode-muted);
+}
+
+/* ---------- How it works steps ---------- */
+.cfc-how {
+  padding: 2.5rem 1.25rem;
+  border-radius: 1.75rem;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 7%, var(--color-body)), var(--color-body));
+}
+.dark .cfc-how {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--color-darkmode-primary) 8%, var(--color-darkmode-body)), var(--color-darkmode-body));
+}
+@media (min-width: 768px) {
+  .cfc-how {
+    padding: 3rem 2rem;
+  }
+}
+.cfc-steps {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 768px) {
+  .cfc-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .cfc-steps::before {
+    content: "";
+    position: absolute;
+    top: 2.25rem;
+    left: 16.5%;
+    right: 16.5%;
+    border-top: 2px dashed color-mix(in srgb, var(--color-primary) 28%, transparent);
+  }
+  .dark .cfc-steps::before {
+    border-top-color: color-mix(in srgb, var(--color-darkmode-primary) 30%, transparent);
+  }
+}
+.cfc-step {
+  position: relative;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+.cfc-step__badge {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto 1.25rem;
+  border-radius: 1.25rem;
+  display: grid;
+  place-items: center;
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: var(--cfc-shadow-md);
+  rotate: -6deg;
+  transition: rotate 0.3s var(--cfc-ease);
+}
+.cfc-step:hover .cfc-step__badge {
+  rotate: 0deg;
+}
+.dark .cfc-step__badge {
+  color: var(--color-darkmode-primary);
+  background-color: var(--color-darkmode-surface);
+}
+.cfc-step__icon {
+  width: 2rem;
+  height: 2rem;
+}
+.cfc-step__num {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  rotate: 6deg;
+}
+.dark .cfc-step__num {
+  background-color: var(--color-darkmode-primary);
+  color: var(--color-darkmode-body);
+}
+.cfc-step__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--color-text-dark);
+}
+.dark .cfc-step__title {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-step__desc {
+  margin: 0 auto;
+  max-width: 20rem;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+.dark .cfc-step__desc {
+  color: var(--color-darkmode-muted);
+}
+
+/* ---------- Agenda: day header, league groups ---------- */
+.cfc-day-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+.dark .cfc-day-header {
+  border-bottom-color: color-mix(in srgb, var(--color-darkmode-primary) 14%, transparent);
+}
+.cfc-day-header__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.dark .cfc-day-header__badge {
+  background-color: var(--color-darkmode-primary);
+  color: var(--color-darkmode-body);
+}
+.cfc-day-header__date {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-text-dark);
+}
+.dark .cfc-day-header__date {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-day-header__count {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+.dark .cfc-day-header__count {
+  color: var(--color-darkmode-muted);
+}
+.cfc-leagues-list {
+  display: grid;
+  gap: 2.5rem;
+}
+.cfc-league-group__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.cfc-league-group__identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.cfc-league-group__logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--color-surface);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent);
+  box-shadow: var(--cfc-shadow-sm);
+}
+.dark .cfc-league-group__logo {
+  background-color: var(--color-darkmode-surface);
+}
+.cfc-league-group__logo img {
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+.cfc-league-group__text {
+  min-width: 0;
+}
+.cfc-league-group__name {
+  display: block;
+  font-family: var(--font-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+a.cfc-league-group__name:hover {
+  color: var(--color-primary);
+}
+.dark .cfc-league-group__name {
+  color: var(--color-darkmode-text-dark);
+}
+.dark a.cfc-league-group__name:hover {
+  color: var(--color-darkmode-primary);
+}
+.cfc-league-group__country {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+.dark .cfc-league-group__country {
+  color: var(--color-darkmode-muted);
+}
+.cfc-league-group__more {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cfc-league-group__more:hover {
+  text-decoration: underline;
+}
+.dark .cfc-league-group__more {
+  color: var(--color-darkmode-primary);
+}
+.cfc-card-grid {
+  display: grid;
+  gap: 0.875rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 640px) {
+  .cfc-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .cfc-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  .cfc-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Day tabs (matches / team pages) */
+.cfc-day-tab {
+  min-width: 4.75rem;
+  border-radius: 0.875rem;
+  line-height: 1.1;
+}
+.cfc-day-tab[aria-selected="true"] {
+  box-shadow: 0 10px 18px -10px color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+
+/* League directory cards (leagues page) */
+.cfc-league-card {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 6%, transparent);
+  transition: translate 0.2s var(--cfc-ease), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.cfc-league-card:hover {
+  translate: 0 -2px;
+  border-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+.dark .cfc-league-card {
+  border-color: color-mix(in srgb, var(--color-darkmode-primary) 10%, transparent);
+}
+
+/* Match hero (match page) */
+.cfc-match-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+  background-image: radial-gradient(40rem 18rem at 50% -8rem, color-mix(in srgb, var(--color-primary) 14%, transparent), transparent 70%);
+}
+.dark .cfc-match-hero {
+  border-color: color-mix(in srgb, var(--color-darkmode-primary) 12%, transparent);
+  background-image: radial-gradient(40rem 18rem at 50% -8rem, color-mix(in srgb, var(--color-darkmode-primary) 12%, transparent), transparent 70%);
+}
+.cfc-match-hero .cfc-kickoff-time__time {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1;
+  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+.dark .cfc-match-hero .cfc-kickoff-time__time {
+  background-color: var(--color-darkmode-primary);
+  color: var(--color-darkmode-body);
+}
+
+/* Freshness note */
+.cfc-freshness {
+  margin: 2rem 0;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+.dark .cfc-freshness {
+  color: var(--color-darkmode-muted);
+}
+
+/* Live dot */
+.cfc-live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--color-live);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-live) 25%, transparent);
+  animation: cfc-pulse 1.8s ease-in-out infinite;
+}
+.dark .cfc-live-dot {
+  background-color: var(--color-darkmode-live);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-darkmode-live) 30%, transparent);
+}
+@keyframes cfc-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-live) 25%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-live) 8%, transparent); }
+}
+
+/* Scroll-driven reveal (progressive enhancement, no JS) */
+@keyframes cfc-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cfc-card,
+    .cfc-match-card,
+    .cfc-step {
+      animation: cfc-rise 1s linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+}

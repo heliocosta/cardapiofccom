@@ -1,34 +1,31 @@
-{{/* cfc/app-download.html - Dual QR-code and app store badge cards for iOS & Android */}}
-{{- $links := partial "cfc/app-links.html" . -}}
+{{/* cfc/app-download.html - Download CTA banner with store badges, QR codes and a real app screen */}}
+{{- $p := .page | default . -}}
 {{- $title := .title | default (i18n "app_download_title" | default "Download CardápioFC") -}}
 {{- $subtitle := .subtitle | default (i18n "app_download_subtitle" | default "Free on iOS and Android. No ads, no piracy — just official TV & streaming schedules.") -}}
-{{- $compact := .compact | default false -}}
+{{- $screen := .screen | default "images/app_screens/android/pt/light_13_league_stats.png" -}}
+{{- $hl := .headingLevel | default 2 -}}
 
-<div class="cfc-app-download my-8 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-center">
-  {{- with $title -}}
-    <h3 class="text-xl md:text-2xl font-bold font-secondary text-primary dark:text-darkmode-primary mb-2">{{ . }}</h3>
-  {{- end -}}
-  {{- with $subtitle -}}
-    <p class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6 max-w-xl mx-auto">{{ . }}</p>
-  {{- end -}}
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-md mx-auto">
-    {{/* iOS Card */}}
-    <div class="flex flex-col items-center justify-between p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-      <img src="/images/qr/qr-ios.png" width="112" height="112" alt="QR code to download CardápioFC on App Store" class="mx-auto mb-3 rounded-md bg-white p-1" loading="lazy">
-      <div class="font-semibold text-sm mb-3 text-text-dark dark:text-darkmode-text-dark">CardápioFC — iOS</div>
-      <a href="{{ $links.ios }}" target="_blank" rel="noopener noreferrer" class="inline-block transition-opacity hover:opacity-85" aria-label="Download CardápioFC on the App Store">
-        <img src="/images/apple-badge-button.en.svg" width="135" height="40" alt="Download on the App Store" class="h-10 w-auto" loading="lazy">
-      </a>
-    </div>
-
-    {{/* Android Card */}}
-    <div class="flex flex-col items-center justify-between p-4 rounded-lg bg-surface dark:bg-darkmode-surface shadow-sm">
-      <img src="/images/qr/qr-android.png" width="112" height="112" alt="QR code to download CardápioFC on Google Play" class="mx-auto mb-3 rounded-md bg-white p-1" loading="lazy">
-      <div class="font-semibold text-sm mb-3 text-text-dark dark:text-darkmode-text-dark">CardápioFC — Android</div>
-      <a href="{{ $links.android }}" target="_blank" rel="noopener noreferrer" class="inline-block transition-opacity hover:opacity-85" aria-label="Get CardápioFC on Google Play">
-        <img src="/images/google-play-badge-button.en.svg" width="135" height="40" alt="Get it on Google Play" class="h-10 w-auto" loading="lazy">
-      </a>
+<section class="cfc-app-download" aria-label="{{ $title }}">
+  <div class="cfc-app-download__bg" aria-hidden="true"><span class="cfc-app-download__glow"></span></div>
+  <div class="cfc-app-download__body">
+    <h{{ $hl }} class="cfc-app-download__title">{{ $title }}</h{{ $hl }}>
+    {{- with $subtitle -}}<p class="cfc-app-download__subtitle">{{ . }}</p>{{- end -}}
+    {{ partial "cfc/store-badges.html" (dict "page" $p "size" "lg") }}
+    <div class="cfc-app-download__qrs">
+      <p class="cfc-app-download__scan">{{ i18n "scan_to_download" | default "Scan to download" }}</p>
+      <div class="cfc-qr">
+        <img src="/images/qr/qr-ios.png" width="88" height="88" alt="QR code to download CardápioFC on the App Store" loading="lazy" decoding="async" />
+        <span>iOS</span>
+      </div>
+      <div class="cfc-qr">
+        <img src="/images/qr/qr-android.png" width="88" height="88" alt="QR code to download CardápioFC on Google Play" loading="lazy" decoding="async" />
+        <span>Android</span>
+      </div>
     </div>
   </div>
-</div>
+  <div class="cfc-app-download__visual" aria-hidden="true">
+    <div class="cfc-phone cfc-phone--cta">
+      {{ partialCached "cfc/app-screen.html" (dict "src" $screen "alt" "" "width" 260 "sizes" "(min-width: 768px) 260px, 200px" "class" "cfc-phone__img") $screen }}
+    </div>
+  </div>
+</section>
