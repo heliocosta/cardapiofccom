@@ -2,41 +2,56 @@
   margin-bottom: 2rem;
 }
 
+.cfc-date-group__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.375rem 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.625rem;
+  border-bottom: var(--cfc-hairline);
+}
+
 .cfc-date-group__heading {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--color-text-dark, #000000);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.25rem;
-  border-bottom: none;
-  text-transform: uppercase;
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--color-text-dark);
+}
+
+.cfc-date-group__zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+.cfc-date-group__zone svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--cfc-ink);
 }
 
 .cfc-date-group__matches {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.875rem;
 }
-
 @media (min-width: 640px) {
   .cfc-date-group__matches {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .cfc-date-group__matches {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1024px) {
-  .cfc-date-group__matches {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
 .dark .cfc-date-group__heading {
-  color: var(--color-darkmode-text-dark, #FFFFFF);
-  border-bottom: none;
+  color: var(--color-darkmode-text-dark);
+}
+.dark .cfc-date-group__zone {
+  color: var(--color-darkmode-muted);
 }

@@ -1,0 +1,27 @@
+{{- /* cfc/scroller-script.html — initialises .cfc-scroller affordances (fade masks, prev/next buttons). Idempotent. */ -}}
+<script>
+(function(){
+  function init(el){
+    if (el.dataset.cfcInit) return;
+    el.dataset.cfcInit = '1';
+    var t = el.querySelector('.cfc-scroller__track');
+    if (!t) return;
+    function update(){
+      var over = t.scrollWidth > t.clientWidth + 4;
+      el.classList.toggle('is-overflowing', over);
+      el.classList.toggle('is-scrolled', t.scrollLeft > 4);
+      el.classList.toggle('is-at-end', t.scrollLeft + t.clientWidth >= t.scrollWidth - 4);
+    }
+    el.querySelectorAll('[data-cfc-scroll]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var dir = parseInt(b.getAttribute('data-cfc-scroll'), 10) || 1;
+        t.scrollBy({ left: dir * t.clientWidth * 0.7, behavior: 'smooth' });
+      });
+    });
+    t.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+  document.querySelectorAll('[data-cfc-scroller]').forEach(init);
+})();
+</script>

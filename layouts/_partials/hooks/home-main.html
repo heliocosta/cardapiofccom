@@ -141,6 +141,7 @@
           {{ if $isToday }}{{ i18n "today" | default "Today" }}{{ else if $isTomorrow }}{{ i18n "tomorrow" | default "Tomorrow" }}{{ else }}{{ i18n "upcoming" | default "Upcoming" }}{{ end }}
         </span>
         <h3 class="cfc-day-header__date"><time datetime="{{ $targetDay }}">{{ $formattedDate }}</time></h3>
+        {{ partial "cfc/zone-pill.html" (dict "class" "cfc-day-header__zone") }}
         <span class="cfc-day-header__count">{{ len $dayMatches }} {{ i18n "matches" | default "matches" }}</span>
       </div>
 

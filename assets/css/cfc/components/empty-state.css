@@ -5,14 +5,14 @@
   justify-content: center;
   padding: 3rem 1.5rem;
   text-align: center;
-  border: none;
-  border-radius: var(--radius-card, 0.5rem);
-  background-color: var(--color-light, #F3F4F6);
+  border: 1px dashed var(--cfc-border-color-hover);
+  border-radius: var(--cfc-radius-lg);
+  background-image: linear-gradient(180deg, var(--cfc-tint), transparent);
 }
 
 .cfc-empty-state__message {
-  font-size: 1.125rem;
-  color: var(--color-muted, #6B7280);
+  font-size: 1.0625rem;
+  color: var(--color-muted);
   margin-bottom: 1rem;
   max-width: 28rem;
 }
@@ -21,11 +21,6 @@
   margin-top: 0.5rem;
 }
 
-.dark .cfc-empty-state {
-  background-color: var(--color-darkmode-surface, #1A2E05);
-  border: none;
-}
-
 .dark .cfc-empty-state__message {
-  color: var(--color-darkmode-muted, #9CA3AF);
+  color: var(--color-darkmode-muted);
 }

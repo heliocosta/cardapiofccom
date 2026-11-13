@@ -1,5 +1,5 @@
 {{/* layouts/_partials/cfcpage/match-hero.html */}}
-{{/* Renders match hero section with teams, crests, kickoff/status/score, and venue. */}}
+{{/* Match hero: the two teams, kickoff time or score in the centre, status, and league / round / venue pills. */}}
 {{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
 {{/* Accepts MatchVM, dict with "match", or match slug string. */}}
 
@@ -19,47 +19,67 @@
 {{- end -}}
 
 {{- if $m -}}
-<section class="cfc-match-hero my-6 p-4 sm:p-6 md:p-8 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light">
-  {{- with $m.league -}}
-  <div class="cfc-match-hero__meta text-xs sm:text-sm text-muted dark:text-darkmode-muted mb-4 text-center sm:text-left">
-    <a href="{{ .url }}" class="hover:underline font-semibold text-text-dark dark:text-darkmode-text-dark">{{ .name }}</a>{{ with $m.round }}<span class="cfc-match-hero__round"> · {{ if or (strings.HasPrefix (lower .) "rodada") (strings.HasPrefix (lower .) "round") (strings.HasPrefix (lower .) "jornada") }}{{ . }}{{ else }}{{ i18n "round" }} {{ . }}{{ end }}</span>{{ end }}
-  </div>
+{{- $status := $m.status | default "scheduled" -}}
+{{- $isLive := or (eq $status "live") (eq $status "halftime") -}}
+{{- $isFinished := eq $status "finished" -}}
+{{- $score := $m.score -}}
+{{- $hasScore := false -}}
+{{- if and (reflect.IsMap $score) (isset $score "home") (isset $score "away") -}}
+  {{- if and (ne (printf "%v" $score.home) "") (ne (printf "%v" $score.home) "<nil>") -}}{{- $hasScore = true -}}{{- end -}}
+{{- end -}}
+{{- $roundLabel := "" -}}
+{{- with $m.round -}}
+  {{- $lr := lower . -}}
+  {{- if or (strings.HasPrefix $lr "rodada") (strings.HasPrefix $lr "round") (strings.HasPrefix $lr "jornada") (strings.HasPrefix $lr "regular") -}}
+    {{- $roundLabel = . -}}
+  {{- else -}}
+    {{- $roundLabel = printf "%s %s" (i18n "round" | default "Round") . -}}
   {{- end -}}
-
-  <div class="cfc-match-hero__main flex flex-row items-center justify-between gap-2 sm:gap-4 md:gap-6 w-full text-center">
-    {{/* Home Team (Left) */}}
-    <div class="cfc-match-hero__team cfc-match-hero__team--home flex flex-col items-center justify-center flex-1 min-w-0">
-      <a href="{{ $m.home.url }}" class="block mb-2 group">
-        {{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "lg" "decorative" false) }}
+{{- end -}}
+<section class="cfc-match-hero" aria-label="{{ $m.home.name }} {{ i18n "vs" }} {{ $m.away.name }}">
+  <div class="cfc-match-hero__main">
+    <div class="cfc-match-hero__team cfc-match-hero__team--home">
+      <a href="{{ $m.home.url }}" class="cfc-match-hero__crest" aria-hidden="true" tabindex="-1">
+        {{ partial "cfc/team-crest.html" (dict "name" $m.home.name "shortName" $m.home.shortName "src" $m.home.crest "size" "lg" "decorative" true "loading" "eager") }}
       </a>
-      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name text-sm sm:text-base md:text-xl font-bold hover:underline text-text-dark dark:text-darkmode-text-dark line-clamp-2 max-w-full">
-        {{ $m.home.name }}
-      </a>
+      <a href="{{ $m.home.url }}" class="cfc-match-hero__team-name">{{ $m.home.name }}</a>
     </div>
 
-    {{/* Center: VS / Kickoff Time */}}
-    <div class="cfc-match-hero__center flex flex-col items-center justify-center shrink-0 px-2 sm:px-4">
-      <span class="text-2xl sm:text-3xl md:text-4xl font-bold font-secondary text-primary dark:text-darkmode-primary leading-none mb-1">x</span>
-      {{ partial "cfc/kickoff-time.html" (dict "t" $m.kickoff "showZone" true "showOffset" false) }}
+    <div class="cfc-match-hero__center">
+      {{- if and (or $isLive $isFinished) $hasScore -}}
+        <span class="cfc-match-hero__score{{ if $isLive }} is-live{{ end }}"><span>{{ $score.home }}</span><span class="cfc-match-hero__score-sep" aria-hidden="true"></span><span>{{ $score.away }}</span></span>
+        <span class="cfc-match-hero__status{{ if $isLive }} is-live{{ end }}">{{ if $isLive }}<span class="cfc-live-dot" aria-hidden="true"></span>{{ end }}{{ i18n (printf "status_%s" $status) | default $status }}</span>
+      {{- else -}}
+        <span class="cfc-match-hero__vs">{{ i18n "vs" | default "vs" }}</span>
+        {{- $iso := partial "time/format.html" (dict "t" $m.kickoff "style" "iso") -}}
+        {{- $timeStr := partial "time/format.html" (dict "t" $m.kickoff "style" "time") -}}
+        <time datetime="{{ $iso }}" class="cfc-match-hero__time">{{ $timeStr }}</time>
+        {{- if and (ne $status "scheduled") (ne $status "finished") -}}
+          <span class="cfc-match-hero__status is-{{ $status }}">{{ i18n (printf "status_%s" $status) | default $status }}</span>
+        {{- end -}}
+      {{- end -}}
     </div>
 
-    {{/* Away Team (Right) */}}
-    <div class="cfc-match-hero__team cfc-match-hero__team--away flex flex-col items-center justify-center flex-1 min-w-0">
-      <a href="{{ $m.away.url }}" class="block mb-2 group">
-        {{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "lg" "decorative" false) }}
+    <div class="cfc-match-hero__team cfc-match-hero__team--away">
+      <a href="{{ $m.away.url }}" class="cfc-match-hero__crest" aria-hidden="true" tabindex="-1">
+        {{ partial "cfc/team-crest.html" (dict "name" $m.away.name "shortName" $m.away.shortName "src" $m.away.crest "size" "lg" "decorative" true "loading" "eager") }}
       </a>
-      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name text-sm sm:text-base md:text-xl font-bold hover:underline text-text-dark dark:text-darkmode-text-dark line-clamp-2 max-w-full">
-        {{ $m.away.name }}
-      </a>
+      <a href="{{ $m.away.url }}" class="cfc-match-hero__team-name">{{ $m.away.name }}</a>
     </div>
   </div>
 
-  {{- with $m.venue -}}
-    {{- if and (reflect.IsMap .) (ne (.name | default "") "") -}}
-    <div class="cfc-match-hero__venue text-xs sm:text-sm text-muted dark:text-darkmode-muted text-center mt-5">
-      <span class="font-medium">{{ i18n "venue" }}:</span> {{ .name }}{{ with .city }}, {{ . }}{{ end }}
-    </div>
+  <div class="cfc-match-hero__foot">
+    {{- with $m.league -}}
+      <a href="{{ .url }}" class="cfc-pill cfc-pill--solid">{{ partial "cfc/icon.html" (dict "name" "trophy" "class" "cfc-pill__icon") }}{{ .name }}</a>
     {{- end -}}
-  {{- end -}}
+    {{- with $roundLabel -}}
+      <span class="cfc-pill">{{ . }}</span>
+    {{- end -}}
+    {{- with $m.venue -}}
+      {{- if and (reflect.IsMap .) (ne (.name | default "") "") -}}
+        <span class="cfc-pill cfc-pill--muted">{{ partial "cfc/icon.html" (dict "name" "pin" "class" "cfc-pill__icon") }}{{ .name }}{{ with .city }}, {{ . }}{{ end }}</span>
+      {{- end -}}
+    {{- end -}}
+  </div>
 </section>
 {{- end -}}

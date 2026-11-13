@@ -18,10 +18,13 @@
     {{- $sorted = sort $matches "kickoff" "asc" -}}
   {{- end -}}
   <section class="cfc-date-group" aria-labelledby="{{ $sectionId }}">
-    <h{{ $hl }} id="{{ $sectionId }}" class="cfc-date-group__heading">
-      <time datetime="{{ $isoDate }}">{{ $dayHeading }}</time>
-    </h{{ $hl }}>
-    <div class="cfc-date-group__matches grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="cfc-date-group__head">
+      <h{{ $hl }} id="{{ $sectionId }}" class="cfc-date-group__heading">
+        <time datetime="{{ $isoDate }}">{{ $dayHeading }}</time>
+      </h{{ $hl }}>
+      {{ partial "cfc/zone-pill.html" (dict "class" "cfc-date-group__zone") }}
+    </div>
+    <div class="cfc-date-group__matches">
       {{- range $sorted -}}
         {{- $opts := merge (dict "match" . "headingLevel" (add $hl 1)) $cardOpts -}}
         {{- partial "cfc/match-card.html" $opts -}}

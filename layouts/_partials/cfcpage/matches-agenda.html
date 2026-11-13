@@ -54,7 +54,7 @@
   {{ partial "cfcpage/match-days.html" (dict "matches" $matchSlugs "popularFirst" true "headingLevel" 2 "showLeague" true) }}
   {{- if $truncated -}}
     <div class="cfc-home-more text-center my-6">
-      <a href="{{ $leagueDirUrl }}" class="btn btn-outline-primary">
+      <a href="{{ $leagueDirUrl }}" class="cfc-btn cfc-btn--secondary">
         {{ i18n "see_all_leagues" | default "See all leagues" }}
       </a>
     </div>

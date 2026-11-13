@@ -6,120 +6,79 @@
   {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
   {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $leaguesLabel "label" $leaguesLabel) -}}
 
+  {{- $popular := slice -}}
+  {{- range $leagues -}}
+    {{- if .popular -}}
+      {{- $popular = $popular | append . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $popularGroups := partial "cfc/league-country-groups.html" (dict "leagues" $popular) -}}
+  {{- $allGroups := partial "cfc/league-country-groups.html" (dict "leagues" $leagues) -}}
+
   <div class="cfc-container py-6">
     {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
 
-    <header class="text-center max-w-3xl mx-auto my-8">
-      <h1 class="text-3xl md:text-4xl font-bold font-secondary mb-3">{{ .Title | default (i18n "leagues_title" | default "Football Leagues & Cups | Where To Watch") }}</h1>
-      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg">{{ .Description | default (i18n "leagues_intro" | default "Browse major domestic championships, continental tournaments, and international cups.") }}</p>
-    </header>
-
-    {{/* App Download Banner */}}
-    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Leagues in CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Get live league standings, full tournament schedules, and kickoff alerts in the free mobile app.")) }}
-
-    {{- $popular := slice -}}
-    {{- $regular := slice -}}
-    {{- range $leagues -}}
-      {{- if .popular -}}
-        {{- $popular = $popular | append . -}}
-      {{- else -}}
-        {{- $regular = $regular | append . -}}
-      {{- end -}}
-    {{- end -}}
+    {{ partial "cfc/page-hero.html" (dict
+      "eyebrow" (i18n "section_competitions_eyebrow" | default "Competitions")
+      "title" (.Title | default (i18n "leagues_title" | default "Football Leagues & Cups | Where To Watch"))
+      "intro" (.Description | default (i18n "leagues_intro" | default "Browse major domestic championships, continental tournaments, and international cups."))
+    ) }}
 
     {{- if gt (len $popular) 0 -}}
-      <section class="cfc-league-directory__popular my-8">
-        <h2 class="text-2xl font-bold font-secondary mb-4">{{ i18n "popular_leagues" | default "Popular Leagues" }}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {{- range $popular -}}
-            {{- $leagueName := .name -}}
-            <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
-              {{- with .logo -}}
-                <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" decoding="async" onerror="this.hidden=true" />
-              {{- end -}}
-              <div class="min-w-0">
-                <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
-                {{- $meta := slice -}}
-                {{- with .country -}}
-                  {{- with .name -}}
-                    {{- $meta = $meta | append . -}}
-                  {{- end -}}
-                {{- end -}}
-                {{- with .season -}}
-                  {{- $meta = $meta | append . -}}
-                {{- end -}}
-                {{- $metaStr := delimit $meta " · " -}}
-                {{- with $metaStr -}}
-                  <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
-                {{- end -}}
-              </div>
-            </a>
-          {{- end -}}
-        </div>
-      </section>
-    {{- end -}}
-
-    {{- /* Group all leagues by Country */ -}}
-    {{- $countriesMap := dict -}}
-    {{- $countriesOrder := slice -}}
-    {{- range $leagues -}}
-      {{- $countryName := i18n "international" | default "International" -}}
-      {{- with .country -}}
-        {{- with .name -}}
-          {{- if ne . "" }}{{ $countryName = . }}{{ end -}}
-        {{- end -}}
-      {{- end -}}
-      {{- $existing := index $countriesMap $countryName | default slice -}}
-      {{- $countriesMap = merge $countriesMap (dict $countryName ($existing | append .)) -}}
-      {{- if not (in $countriesOrder $countryName) -}}
-        {{- $countriesOrder = $countriesOrder | append $countryName -}}
-      {{- end -}}
-    {{- end -}}
-    {{- $sortedCountries := sort $countriesOrder -}}
-
-    <section class="cfc-league-directory__all my-8">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold font-secondary">{{ i18n "all_leagues" | default "Leagues by Country" }}</h2>
-        <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $leagues }} {{ i18n "leagues" | default "leagues" }} · {{ len $sortedCountries }} {{ i18n "countries" | default "countries" }}</span>
-      </div>
-
-      {{/* Quick-jump Country Bar */}}
-      <nav class="cfc-country-quicknav flex gap-2 overflow-x-auto py-2.5 mb-8 scrollbar-none shadow-xs rounded-xl bg-body/80 dark:bg-darkmode-body/80 backdrop-blur-md px-2" aria-label="Jump to Country">
-        {{- range $sortedCountries -}}
-          <a href="#country-{{ . | urlize }}" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs">
-            {{ . }} <span class="opacity-70 text-[10px]">({{ len (index $countriesMap .) }})</span>
-          </a>
-        {{- end -}}
-      </nav>
-
-      {{/* Country Sections */}}
-      <div class="space-y-10">
-        {{- range $countryName := $sortedCountries -}}
-          {{- $countryLeagues := index $countriesMap $countryName -}}
-          <div id="country-{{ $countryName | urlize }}" class="scroll-mt-24">
-            <div class="flex items-center gap-3 mb-4 pb-2">
-              <h3 class="text-lg md:text-xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark">{{ $countryName }}</h3>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-theme-light dark:bg-darkmode-theme-light text-muted dark:text-darkmode-muted font-medium">{{ len $countryLeagues }}</span>
+      {{/* Popular leagues, grouped by country (no index) */}}
+      <section class="cfc-section--tight cfc-league-directory__popular" aria-labelledby="cfc-popular-title">
+        {{ partial "cfc/section-head.html" (dict
+          "align" "left"
+          "title" (i18n "popular_leagues" | default "Popular Leagues")
+          "id" "cfc-popular-title"
+        ) }}
+        {{- range $popularGroups -}}
+          <div class="cfc-country-group">
+            <div class="cfc-country-group__head">
+              <h3 class="cfc-country-group__title">{{ .name }}</h3>
+              <span class="cfc-pill cfc-pill--muted">{{ len .leagues }}</span>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {{- range $countryLeagues -}}
-                {{- $leagueName := .name -}}
-                <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
-                  {{- with .logo -}}
-                    <img src="{{ . }}" alt="{{ $leagueName }}" width="36" height="36" class="cfc-league-card__logo w-9 h-9 object-contain shrink-0" loading="lazy" decoding="async" onerror="this.hidden=true" />
-                  {{- end -}}
-                  <div class="min-w-0">
-                    <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
-                    {{- with .season -}}
-                      <span class="cfc-league-card__meta text-xs text-muted dark:text-darkmode-muted block">{{ . }}</span>
-                    {{- end -}}
-                  </div>
-                </a>
+            <div class="cfc-dir-grid">
+              {{- range .leagues -}}
+                {{ partial "cfc/league-card.html" (dict "league" .) }}
               {{- end -}}
             </div>
           </div>
         {{- end -}}
-      </div>
+      </section>
+    {{- end -}}
+
+    {{/* App Download Banner */}}
+    {{ partial "cfc/app-download.html" (dict "page" . "title" (i18n "app_download_title" | default "Follow Leagues in CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Get live league standings, full tournament schedules, and kickoff alerts in the free mobile app.")) }}
+
+    {{/* All leagues by country, with a scrollable country strip */}}
+    <section class="cfc-section cfc-league-directory__all" aria-labelledby="cfc-all-leagues-title">
+      {{ partial "cfc/section-head.html" (dict
+        "align" "left"
+        "title" (i18n "all_leagues" | default "All Leagues")
+        "meta" (printf "%d %s · %d %s" (len $leagues) (lower (i18n "leagues" | default "leagues")) (len $allGroups) (lower (i18n "countries" | default "countries")))
+        "id" "cfc-all-leagues-title"
+      ) }}
+
+      {{- $strip := "" -}}
+      {{- range $allGroups -}}
+        {{- $strip = printf `%s<a href="#country-%s" class="cfc-pill">%s <span class="cfc-pill__count">%d</span></a>` $strip .id (htmlEscape .name) (len .leagues) -}}
+      {{- end -}}
+      {{ partial "cfc/scroller.html" (dict "content" (safeHTML $strip) "label" (i18n "jump_to_country" | default "Jump to a country") "class" "cfc-country-strip") }}
+
+      {{- range $allGroups -}}
+        <div id="country-{{ .id }}" class="cfc-country-group">
+          <div class="cfc-country-group__head">
+            <h3 class="cfc-country-group__title">{{ .name }}</h3>
+            <span class="cfc-pill cfc-pill--muted">{{ len .leagues }}</span>
+          </div>
+          <div class="cfc-dir-grid">
+            {{- range .leagues -}}
+              {{ partial "cfc/league-card.html" (dict "league" .) }}
+            {{- end -}}
+          </div>
+        </div>
+      {{- end -}}
     </section>
 
     {{/* App Features Section */}}

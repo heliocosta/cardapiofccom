@@ -35,6 +35,51 @@
   max-width: 48rem;
 }
 
+/* Entity header (league / team pages): logo + title + meta in a row */
+.cfc-entity-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+.cfc-entity-header__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--cfc-radius-md);
+  background-color: var(--color-surface);
+  border: var(--cfc-border);
+  box-shadow: var(--cfc-shadow-sm);
+}
+.dark .cfc-entity-header__logo {
+  background-color: var(--color-darkmode-surface);
+}
+.cfc-entity-header__logo img {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+.cfc-entity-header__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  line-height: 1;
+  color: var(--color-text-dark);
+}
+.dark .cfc-entity-header__title {
+  color: var(--color-darkmode-text-dark);
+}
+.cfc-entity-header__meta {
+  margin: 0.375rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+.dark .cfc-entity-header__meta {
+  color: var(--color-darkmode-muted);
+}
+
 .cfc-breadcrumb {
   margin-bottom: 0.75rem;
 }

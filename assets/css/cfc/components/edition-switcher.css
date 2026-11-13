@@ -9,14 +9,17 @@
   gap: 0.375rem;
   padding: 0.375rem 0.625rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--radius-card, 0.375rem);
-  border: none;
-  background-color: var(--color-light, #F3F4F6);
-  color: var(--color-text, #1F2937);
+  font-weight: 600;
+  border-radius: var(--cfc-radius-sm);
+  background-color: var(--cfc-tint);
+  color: var(--color-text);
   cursor: pointer;
   user-select: none;
   list-style: none;
+  transition: background-color 0.2s ease;
+}
+.cfc-switcher__summary:hover {
+  background-color: var(--cfc-tint-strong);
 }
 
 .cfc-switcher__summary::-webkit-details-marker {
@@ -36,14 +39,14 @@
 
 .cfc-switcher__dropdown {
   position: absolute;
-  top: calc(100% + 0.25rem);
+  top: calc(100% + 0.375rem);
   right: 0;
   min-width: 12rem;
-  padding: 0.375rem 0;
-  background-color: var(--color-surface, #ffffff);
-  border: none;
-  border-radius: var(--radius-card, 0.375rem);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  padding: 0.375rem;
+  background-color: var(--color-surface);
+  border: var(--cfc-border);
+  border-radius: var(--cfc-radius-md);
+  box-shadow: var(--cfc-shadow-md);
   z-index: 50;
   list-style: none;
   margin: 0;
@@ -55,43 +58,32 @@
 
 .cfc-switcher__link {
   display: block;
-  padding: 0.375rem 0.875rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--cfc-radius-xs);
   font-size: 0.875rem;
-  color: var(--color-text, #1F2937);
+  color: var(--color-text);
   text-decoration: none;
   transition: background-color 0.1s ease;
 }
 
 .cfc-switcher__link:hover {
-  background-color: var(--color-light, #F3F4F6);
+  background-color: var(--cfc-tint);
 }
 
 .cfc-switcher__link.is-current {
   font-weight: 700;
-  color: var(--color-primary);
-  background-color: var(--color-light, #F3F4F6);
+  color: var(--cfc-ink);
+  background-color: var(--cfc-tint);
 }
 
 .dark .cfc-switcher__summary {
-  background-color: var(--color-darkmode-dark, #344E17);
-  border: none;
-  color: var(--color-darkmode-text, #E5E7EB);
+  color: var(--color-darkmode-text);
 }
 
 .dark .cfc-switcher__dropdown {
-  background-color: var(--color-darkmode-surface, #1A2E05);
-  border: none;
+  background-color: var(--color-darkmode-surface);
 }
 
 .dark .cfc-switcher__link {
-  color: var(--color-darkmode-text, #E5E7EB);
-}
-
-.dark .cfc-switcher__link:hover {
-  background-color: var(--color-darkmode-light, #1A2E05);
-}
-
-.dark .cfc-switcher__link.is-current {
-  color: var(--color-darkmode-primary, #CDEDA4);
-  background-color: var(--color-darkmode-light, #1A2E05);
+  color: var(--color-darkmode-text);
 }

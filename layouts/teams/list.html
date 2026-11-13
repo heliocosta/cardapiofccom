@@ -9,10 +9,11 @@
   <div class="cfc-container py-6">
     {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
 
-    <header class="text-center max-w-3xl mx-auto my-8">
-      <h1 class="text-3xl md:text-4xl font-bold font-secondary mb-3">{{ .Title | default (i18n "teams_title" | default "Football Teams | Where To Watch") }}</h1>
-      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg">{{ .Description | default (i18n "teams_intro" | default "Find upcoming match schedules and official TV channels for your favourite football clubs.") }}</p>
-    </header>
+    {{ partial "cfc/page-hero.html" (dict
+      "eyebrow" (i18n "teams" | default "Teams")
+      "title" (.Title | default (i18n "teams_title" | default "Football Teams | Where To Watch"))
+      "intro" (.Description | default (i18n "teams_intro" | default "Find upcoming match schedules and official TV channels for your favourite football clubs."))
+    ) }}
 
     {{/* App Download Banner */}}
     {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Your Favourite Teams in CardápioFC") "subtitle" (i18n "app_download_subtitle" | default "Bookmark clubs to receive match alerts, official TV channels, and streaming notifications.")) }}
@@ -51,43 +52,40 @@
       {{- $teamsByLetter = merge $teamsByLetter (dict $ch ($existing | append .)) -}}
     {{- end -}}
 
-    <section class="my-8">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold font-secondary">{{ i18n "all_teams" | default "All Teams A-Z" }}</h2>
-        <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $teamList }} {{ i18n "teams" | default "teams" }}</span>
-      </div>
+    <section class="cfc-section" aria-labelledby="cfc-all-teams-title">
+      {{ partial "cfc/section-head.html" (dict "align" "left" "title" (i18n "all_teams" | default "All Teams A-Z") "meta" (printf "%d %s" (len $teamList) (lower (i18n "teams" | default "teams"))) "id" "cfc-all-teams-title") }}
 
       {{/* Alphabetical Index Tab Navigation Bar */}}
-      <nav class="cfc-teams-index-nav sticky top-16 z-20 py-2.5 my-4 bg-body/90 dark:bg-darkmode-body/90 backdrop-blur-md shadow-xs rounded-xl overflow-x-auto scrollbar-none flex items-center justify-center gap-1 sm:gap-1.5 px-2" aria-label="Alphabetical index">
+      <nav class="cfc-teams-index-nav cfc-letter-nav" aria-label="Alphabetical index">
         {{- range $alphabet -}}
           {{- $letterTeams := index $teamsByLetter . | default slice -}}
           {{- if gt (len $letterTeams) 0 -}}
             <a 
               href="#letter-{{ . }}" 
-              class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold bg-surface dark:bg-darkmode-surface hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition shadow-2xs"
+              class="cfc-letter"
               title="{{ . }} ({{ len $letterTeams }})"
             >{{ . }}</a>
           {{- else -}}
-            <span class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium text-muted/30 dark:text-darkmode-muted/30 cursor-default select-none">{{ . }}</span>
+            <span class="cfc-letter cfc-letter--empty">{{ . }}</span>
           {{- end -}}
         {{- end -}}
       </nav>
 
       {{/* Letter Sections */}}
-      <div class="space-y-10 my-8">
+      <div class="my-8">
         {{- range $alphabet -}}
           {{- $letterTeams := index $teamsByLetter . | default slice -}}
           {{- if gt (len $letterTeams) 0 -}}
-            <div id="letter-{{ . }}" class="scroll-mt-32">
-              <div class="flex items-center gap-3 mb-4 pb-2">
-                <span class="w-8 h-8 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center shadow-xs">{{ . }}</span>
-                <span class="text-xs text-muted dark:text-darkmode-muted font-medium">{{ len $letterTeams }} {{ i18n "teams" | default "teams" }}</span>
+            <div id="letter-{{ . }}" class="cfc-country-group">
+              <div class="cfc-country-group__head">
+                <h3 class="cfc-country-group__title"><span class="cfc-letter cfc-letter--badge" aria-hidden="true">{{ . }}</span><span class="sr-only">{{ . }}</span></h3>
+                <span class="cfc-pill cfc-pill--muted">{{ len $letterTeams }} {{ i18n "teams" | default "teams" }}</span>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+              <div class="cfc-dir-grid">
                 {{- range $letterTeams -}}
-                  <a href="{{ .url }}" class="flex items-center gap-3 p-3.5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group">
+                  <a href="{{ .url }}" class="cfc-card cfc-card--row">
                     {{ partial "cfc/team-crest.html" (dict "name" .name "shortName" .shortName "src" .crest "size" "md" "decorative" true) }}
-                    <span class="font-medium text-sm truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ .name }}</span>
+                    <span class="cfc-card__name">{{ .name }}</span>
                   </a>
                 {{- end -}}
               </div>

@@ -1,7 +1,6 @@
 {{/* layouts/_partials/cfcpage/channels.html */}}
-{{/* Renders broadcasters for a match, grouped by country (Global) or single local group (Regional). */}}
-{{/* Lineups are completely OUT OF SCOPE per user instruction. */}}
-{{/* High-converting Where-to-Watch CTA: Option 1 (1-Tap Stream hook) + Option 2 (Primary App CTA & Teaser Broadcasters). */}}
+{{/* Broadcast guide for a match: one panel listing broadcasters (grouped by country on the Global edition), */}}
+{{/* a single open-in-app call to action, and trust tags. Lineups are completely OUT OF SCOPE per user instruction. */}}
 
 {{- $slug := "" -}}
 {{- if reflect.IsMap . -}}
@@ -22,201 +21,88 @@
 {{- $groups := partial "cfcdata/channels.html" (dict "slug" $slug) -}}
 {{- $edition := partialCached "edition/current.html" . site.Language.Lang -}}
 {{- $appLinks := partial "cfc/app-links.html" . -}}
+{{- $countryIn := partial "cfc/country-in.html" . -}}
 
-{{- if $edition.isGlobal -}}
-  {{- if eq (len $groups) 0 -}}
-    <div class="cfc-channels my-6">
-      {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
+{{- /* Only keep groups that actually have channels */ -}}
+{{- $filled := slice -}}
+{{- range $groups -}}
+  {{- if gt (len .channels) 0 -}}{{- $filled = $filled | append . -}}{{- end -}}
+{{- end -}}
+{{- if not $edition.isGlobal -}}
+  {{- if gt (len $filled) 0 -}}{{- $filled = first 1 $filled -}}{{- end -}}
+{{- end -}}
+
+<section class="cfc-broadcast cfc-panel" aria-labelledby="cfc-broadcast-title">
+  <div class="cfc-broadcast__head">
+    <div>
+      <p class="cfc-eyebrow">{{ partial "cfc/icon.html" (dict "name" "tv" "class" "cfc-pill__icon") }}{{ i18n "official_broadcast_guide" | default "Official broadcast guide" }}</p>
+      <h2 id="cfc-broadcast-title" class="cfc-broadcast__title">
+        {{- if $edition.isGlobal -}}
+          {{ i18n "where_to_watch" | default "Where to watch" }}
+        {{- else -}}
+          {{ i18n "where_to_watch_phrase" (dict "In" $countryIn) | default (i18n "where_to_watch") }}
+        {{- end -}}
+      </h2>
     </div>
-  {{- else -}}
-    <div class="cfc-channels my-6 space-y-6">
-      {{- range $groups -}}
+    {{- if gt (len $filled) 0 -}}
+      <span class="cfc-pill cfc-pill--muted">{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-pill__icon") }}{{ i18n "confirmed_channels_title" | default "Confirmed TV & streaming" }}</span>
+    {{- end -}}
+  </div>
+
+  {{- if eq (len $filled) 0 -}}
+    {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
+  {{- else if $edition.isGlobal -}}
+    <div class="cfc-broadcast__list">
+      {{- range $filled -}}
         {{- $cName := i18n (printf "country_%s" (lower .country)) | default .countryName -}}
-        <section class="cfc-channels__group cfc-watch-cta p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
-          {{/* Header with Badge, Title, and Quick Store Links */}}
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-            <div>
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light mb-2">
-                {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-4 h-4") }}
-                <span>{{ i18n "official_broadcast_guide" | default "Official Broadcast Guide" }}</span>
-              </div>
-              <h2 class="cfc-channels__heading text-xl md:text-2xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark">
-                {{ i18n "where_to_watch_in" (dict "Country" $cName) }}
-              </h2>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:opacity-85 text-text-dark dark:text-darkmode-text-dark font-semibold text-xs transition-opacity" aria-label="Download CardápioFC on the App Store">
-                {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-4 h-4") }}
-                <span class="hidden sm:inline">App Store</span>
-              </a>
-              <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:opacity-85 text-text-dark dark:text-darkmode-text-dark font-semibold text-xs transition-opacity" aria-label="Get CardápioFC on Google Play">
-                {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "w-4 h-4") }}
-                <span class="hidden sm:inline">Google Play</span>
-              </a>
-            </div>
-          </div>
-
-          {{/* Option 2: Primary App Call to Action Banner */}}
-          <div class="p-4 rounded-xl bg-theme-light dark:bg-darkmode-theme-light mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-surface dark:bg-darkmode-surface flex items-center justify-center text-primary dark:text-darkmode-primary shrink-0">
-                {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-6 h-6") }}
-              </div>
-              <div>
-                <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark">
-                  {{ i18n "watch_on_app_title" | default "1-Tap Stream Launcher & Alarms" }}
-                </div>
-                <div class="text-xs text-muted dark:text-darkmode-muted">
-                  {{ i18n "watch_on_app_sub" | default "Tap any channel in the CardápioFC app to jump straight into the live broadcast." }}
-                </div>
-              </div>
-            </div>
-            <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary text-xs font-bold px-4 py-2.5 rounded-xl whitespace-nowrap self-start sm:self-auto shadow-sm flex items-center gap-1.5">
-              <span>{{ i18n "open_stream_in_app" | default "Open Channel Link" }}</span>
-              {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-4 h-4") }}
-            </a>
-          </div>
-
-          {{/* Option 1: Confirmed Channels with 1-Tap Stream Launcher Hooks */}}
-          <div class="space-y-3">
-            <div class="text-xs font-semibold uppercase tracking-wider text-muted dark:text-darkmode-muted">
-              {{ i18n "confirmed_channels_title" | default "Confirmed TV & Streaming Networks" }}:
-            </div>
-            <div class="cfc-channels__list flex flex-wrap gap-2.5 items-center">
-              {{- range .channels -}}
-                <div class="cfc-channel-card">
-                  <span class="cfc-channel-badge__name font-bold text-sm text-text-dark dark:text-darkmode-text-dark">{{ .name }}</span>
-                  {{ with .type }}
-                    <span class="cfc-channel-badge__type text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-surface dark:bg-darkmode-surface text-muted dark:text-darkmode-muted">
-                      {{ i18n (printf "channel_type_%s" .) | default . }}
-                    </span>
-                  {{ end }}
-                  <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" title="{{ i18n "open_stream_in_app" | default "Open Channel Link" }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}" {{ with $slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ site.Language.Lang }}">
-                    {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-3.5 h-3.5") }}
-                    <span>{{ i18n "stream_in_app" | default "Open Channel" }}</span>
-                  </a>
-                </div>
-              {{- end -}}
-            </div>
-          </div>
-
-          {{/* Value proposition trust tags */}}
-          <div class="mt-5 pt-3 flex flex-wrap items-center gap-4 text-xs text-muted dark:text-darkmode-muted">
-            <span class="flex items-center gap-1.5">
-              {{ partial "cfc/icon.html" (dict "name" "check" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-              {{ i18n "benefit_official_broadcasters" | default "100% legal official channels" }}
-            </span>
-            <span class="flex items-center gap-1.5">
-              {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-              {{ i18n "benefit_kickoff_alarms" | default "Pre-match push alarms" }}
-            </span>
-            <span class="flex items-center gap-1.5">
-              {{ partial "cfc/icon.html" (dict "name" "star" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-              {{ i18n "benefit_custom_filter" | default "Filter your subscriptions" }}
-            </span>
-          </div>
-        </section>
+        <div class="cfc-broadcast__group">
+          <h3 class="cfc-broadcast__country"><span class="cfc-broadcast__country-code" aria-hidden="true">{{ upper .country }}</span>{{ $cName }}</h3>
+          <ul class="cfc-broadcast__channels">
+            {{- range .channels -}}
+              <li class="cfc-channel-card">
+                <span class="cfc-channel-card__name">{{ .name }}</span>
+                {{- with .type -}}<span class="cfc-channel-card__type">{{ i18n (printf "channel_type_%s" .) | default . }}</span>{{- end -}}
+                <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" aria-label="{{ i18n "stream_in_app" | default "Open channel" }}: {{ .name }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}"{{ with $slug }} data-cfc-match="{{ . }}"{{ end }} data-cfc-edition="{{ site.Language.Lang }}">{{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-i") }}<span>{{ i18n "stream_in_app" | default "Open channel" }}</span></a>
+              </li>
+            {{- end -}}
+          </ul>
+        </div>
       {{- end -}}
     </div>
-  {{- end -}}
-{{- else -}}
-  {{- $hasChannels := false -}}
-  {{- if and (gt (len $groups) 0) (gt (len (index $groups 0).channels) 0) -}}
-    {{- $hasChannels = true -}}
-  {{- end -}}
-  {{- if not $hasChannels -}}
-    <div class="cfc-channels my-6">
-      {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
-    </div>
   {{- else -}}
-    {{- $grp := index $groups 0 -}}
-    {{- $cName := i18n (printf "country_%s" (lower $edition.country)) | default $edition.label -}}
-    <div class="cfc-channels cfc-watch-cta p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm my-6">
-      {{/* Header with Badge, Title, and Quick Store Links */}}
-      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light mb-2">
-            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-4 h-4") }}
-            <span>{{ i18n "official_broadcast_guide" | default "Official Broadcast Guide" }}</span>
-          </div>
-          <h2 class="cfc-channels__heading text-xl md:text-2xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark">
-            {{ i18n "where_to_watch_in" (dict "Country" $cName) }}
-          </h2>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:opacity-85 text-text-dark dark:text-darkmode-text-dark font-semibold text-xs transition-opacity" aria-label="Download CardápioFC on the App Store">
-            {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-4 h-4") }}
-            <span class="hidden sm:inline">App Store</span>
-          </a>
-          <a href="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:opacity-85 text-text-dark dark:text-darkmode-text-dark font-semibold text-xs transition-opacity" aria-label="Get CardápioFC on Google Play">
-            {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "w-4 h-4") }}
-            <span class="hidden sm:inline">Google Play</span>
-          </a>
-        </div>
-      </div>
+    {{- $grp := index $filled 0 -}}
+    <ul class="cfc-broadcast__channels">
+      {{- range $grp.channels -}}
+        <li class="cfc-channel-card">
+          <span class="cfc-channel-card__name">{{ .name }}</span>
+          {{- with .type -}}<span class="cfc-channel-card__type">{{ i18n (printf "channel_type_%s" .) | default . }}</span>{{- end -}}
+          <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" aria-label="{{ i18n "stream_in_app" | default "Open channel" }}: {{ .name }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}"{{ with $slug }} data-cfc-match="{{ . }}"{{ end }} data-cfc-edition="{{ site.Language.Lang }}">{{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-i") }}<span>{{ i18n "stream_in_app" | default "Open channel" }}</span></a>
+        </li>
+      {{- end -}}
+    </ul>
+  {{- end -}}
 
-      {{/* Option 2: Primary App Call to Action Banner */}}
-      <div class="p-4 rounded-xl bg-theme-light dark:bg-darkmode-theme-light mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-surface dark:bg-darkmode-surface flex items-center justify-center text-primary dark:text-darkmode-primary shrink-0">
-            {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-6 h-6") }}
-          </div>
-          <div>
-            <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark">
-              {{ i18n "watch_on_app_title" | default "1-Tap Channel Launcher & Alarms" }}
-            </div>
-            <div class="text-xs text-muted dark:text-darkmode-muted">
-              {{ i18n "watch_on_app_sub" | default "Tap any channel in the CardápioFC app to open the broadcast link in the official platform." }}
-            </div>
-          </div>
-        </div>
-        <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary text-xs font-bold px-4 py-2.5 rounded-xl whitespace-nowrap self-start sm:self-auto shadow-sm flex items-center gap-1.5">
-          <span>{{ i18n "open_stream_in_app" | default "Open Channel Link" }}</span>
-          {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-4 h-4") }}
-        </a>
-      </div>
-
-      {{/* Option 1: Confirmed Channels with 1-Tap Stream Hooks */}}
-      <div class="space-y-3">
-        <div class="text-xs font-semibold uppercase tracking-wider text-muted dark:text-darkmode-muted">
-          {{ i18n "confirmed_channels_title" | default "Confirmed TV & Streaming Networks" }}:
-        </div>
-        <div class="cfc-channels__list flex flex-wrap gap-2.5 items-center">
-          {{- range $grp.channels -}}
-            <div class="cfc-channel-card">
-              <span class="cfc-channel-badge__name font-bold text-sm text-text-dark dark:text-darkmode-text-dark">{{ .name }}</span>
-              {{ with .type }}
-                <span class="cfc-channel-badge__type text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-surface dark:bg-darkmode-surface text-muted dark:text-darkmode-muted">
-                  {{ i18n (printf "channel_type_%s" .) | default . }}
-                </span>
-              {{ end }}
-              <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" title="{{ i18n "open_stream_in_app" | default "Open Channel Link" }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}" {{ with $slug }}data-cfc-match="{{ . }}" {{ end }}data-cfc-edition="{{ site.Language.Lang }}">
-                {{ partial "cfc/icon.html" (dict "name" "stream" "class" "w-3.5 h-3.5") }}
-                <span>{{ i18n "stream_in_app" | default "Open Channel" }}</span>
-              </a>
-            </div>
-          {{- end -}}
-        </div>
-      </div>
-
-      {{/* Value proposition trust tags */}}
-      <div class="mt-5 pt-3 flex flex-wrap items-center gap-4 text-xs text-muted dark:text-darkmode-muted">
-        <span class="flex items-center gap-1.5">
-          {{ partial "cfc/icon.html" (dict "name" "check" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-          {{ i18n "benefit_official_broadcasters" | default "100% canais e streams legais" }}
-        </span>
-        <span class="flex items-center gap-1.5">
-          {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-          {{ i18n "benefit_kickoff_alarms" | default "Alarmes pré-jogo no celular" }}
-        </span>
-        <span class="flex items-center gap-1.5">
-          {{ partial "cfc/icon.html" (dict "name" "star" "class" "w-4 h-4 text-primary dark:text-darkmode-primary") }}
-          {{ i18n "benefit_custom_filter" | default "Filtre por canais que você assina" }}
-        </span>
+  {{/* One app call to action for the whole guide */}}
+  <div class="cfc-broadcast__cta">
+    <div class="cfc-broadcast__cta-text">
+      <div class="cfc-icon-tile cfc-icon-tile--sm">{{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-icon-tile__icon") }}</div>
+      <div>
+        <h3 class="cfc-broadcast__cta-title">{{ i18n "watch_on_app_title" | default "One-tap channel launcher & alarms" }}</h3>
+        <p class="cfc-broadcast__cta-desc">{{ i18n "watch_on_app_sub" | default "Tap any channel in the CardápioFC app to open the broadcast on the official platform." }}</p>
       </div>
     </div>
-  {{- end -}}
-{{- end -}}
+    <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-btn cfc-btn--primary cfc-btn--sm" data-cfc-event="store_open" data-cfc-store="smart">
+      <span>{{ i18n "open_stream_in_app" | default "Open in the app" }}</span>
+      {{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-btn__icon") }}
+    </a>
+  </div>
+
+  <ul class="cfc-broadcast__trust">
+    <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-i") }}{{ i18n "benefit_official_broadcasters" | default "100% legal official channels" }}</li>
+    <li>{{ partial "cfc/icon.html" (dict "name" "bell" "class" "cfc-i") }}{{ i18n "benefit_kickoff_alarms" | default "Pre-match push alarms" }}</li>
+    <li>{{ partial "cfc/icon.html" (dict "name" "star" "class" "cfc-i") }}{{ i18n "benefit_custom_filter" | default "Filter your subscriptions" }}</li>
+  </ul>
+</section>
 
 <script>
 (function(){

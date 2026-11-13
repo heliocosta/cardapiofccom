@@ -68,7 +68,7 @@
   <section id="cfc-404-default" class="cfc-container py-16 text-center">
     <h1 class="text-4xl md:text-5xl font-bold font-secondary mb-4">{{ i18n "not_found_title" }}</h1>
     <p class="text-muted mb-8 max-w-md mx-auto">{{ i18n "not_found_text" }}</p>
-    <a href="{{ $ed.prefix }}" class="btn btn-primary inline-flex items-center">
+    <a href="{{ $ed.prefix }}" class="cfc-btn cfc-btn--primary">
       {{ i18n "back_home" }}
     </a>
   </section>
@@ -76,8 +76,8 @@
   {{/* Smart Match Deep-Link Fallback View (shown when /match/... is not in the static web dataset) */}}
   <section id="cfc-404-match" class="cfc-container py-8 hidden" aria-live="polite">
     <div class="max-w-3xl mx-auto">
-      <div class="p-6 md:p-8 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light text-center mb-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-surface dark:bg-darkmode-surface mb-4">
+      <div class="cfc-panel cfc-panel--tint text-center mb-8">
+        <div class="cfc-pill cfc-pill--label mb-4">
           {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-4 h-4") }}
           <span id="cfc-dl-match-league">CardápioFC Match Guide</span>
         </div>
@@ -88,7 +88,7 @@
 
         <p id="cfc-dl-match-date" class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6"></p>
 
-        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm max-w-xl mx-auto mb-6">
+        <div class="cfc-card cfc-card--static max-w-xl mx-auto mb-6">
           <p class="text-sm md:text-base text-text-dark dark:text-darkmode-text-dark font-medium mb-4">
             {{ i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, official TV & streaming channels, and smart notifications directly on your phone." }}
           </p>
@@ -97,11 +97,11 @@
                href="cardapiofc://home"
                data-ios-url="{{ $links.ios }}"
                data-android-url="{{ $links.android }}"
-               class="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm w-full sm:w-auto">
+               class="cfc-btn cfc-btn--primary w-full sm:w-auto">
               {{ partial "cfc/icon.html" (dict "name" "play" "class" "w-5 h-5") }}
               <span>{{ i18n "app_download_match_title" | default "Open Match in the CardápioFC App" }}</span>
             </a>
-            <a href="{{ $matchesUrl }}" class="btn inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm bg-theme-light dark:bg-darkmode-theme-light text-text-dark dark:text-darkmode-text-dark hover:opacity-85 transition-opacity w-full sm:w-auto">
+            <a href="{{ $matchesUrl }}" class="cfc-btn cfc-btn--secondary w-full sm:w-auto">
               <span>{{ i18n "matches" | default "Matches" }}</span>
             </a>
           </div>
