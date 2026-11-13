@@ -1,0 +1,52 @@
+{{- /* cfc/hero.html — Home hero: copy + floating app screens. Params: page, heading, intro */ -}}
+{{- $p := .page -}}
+{{- $heading := .heading -}}
+{{- $intro := .intro -}}
+{{- $mainScreen := "images/app_screens/android/en/dark_01_home_feed.png" -}}
+{{- $backScreen := "images/app_screens/android/pt/dark_11_league_standings.png" -}}
+<section class="cfc-hero" aria-labelledby="cfc-hero-title">
+  <div class="cfc-hero__bg" aria-hidden="true">
+    <span class="cfc-hero__glow cfc-hero__glow--a"></span>
+    <span class="cfc-hero__glow cfc-hero__glow--b"></span>
+    <span class="cfc-hero__pitch"></span>
+  </div>
+  <div class="cfc-container cfc-hero__inner">
+    <div class="cfc-hero__copy">
+      <p class="cfc-eyebrow cfc-eyebrow--pill">
+        <span class="cfc-eyebrow__dot" aria-hidden="true"></span>
+        {{ i18n "hero_eyebrow" | default "Free app · iOS & Android · 100% official channels" }}
+      </p>
+      <h1 id="cfc-hero-title" class="cfc-hero__title">{{ $heading }}</h1>
+      <p class="cfc-hero__intro">{{ $intro }}</p>
+      <div class="cfc-hero__actions">
+        <a href="#cfc-agenda" class="cfc-btn cfc-btn--primary cfc-btn--lg">
+          {{ partial "cfc/icon.html" (dict "name" "calendar" "class" "cfc-btn__icon") }}
+          <span>{{ i18n "hero_cta_matches" | default "See today's matches" }}</span>
+        </a>
+        {{ partial "cfc/store-badges.html" (dict "page" $p "size" "md") }}
+      </div>
+      <ul class="cfc-hero__stats" role="list">
+        <li>{{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-hero__stat-icon") }}<span>{{ i18n "hero_stat_competitions" | default "200+ competitions" }}</span></li>
+        <li>{{ partial "cfc/icon.html" (dict "name" "tv" "class" "cfc-hero__stat-icon") }}<span>{{ i18n "hero_stat_editions" | default "6 country editions" }}</span></li>
+        <li>{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-hero__stat-icon") }}<span>{{ i18n "hero_stat_noads" | default "No ads, no piracy" }}</span></li>
+      </ul>
+    </div>
+
+    <div class="cfc-hero__visual">
+      <div class="cfc-phone cfc-phone--back">
+        {{ partialCached "cfc/app-screen.html" (dict "src" $backScreen "alt" "" "width" 220 "sizes" "(min-width: 1024px) 220px, 160px" "loading" "lazy" "class" "cfc-phone__img") $backScreen }}
+      </div>
+      <div class="cfc-phone cfc-phone--main">
+        {{ partialCached "cfc/app-screen.html" (dict "src" $mainScreen "alt" (i18n "hero_screen_alt" | default "CardápioFC app home screen") "width" 300 "sizes" "(min-width: 1024px) 300px, 230px" "loading" "eager" "priority" true "class" "cfc-phone__img") $mainScreen site.Language.Lang }}
+      </div>
+      <div class="cfc-hero__chip cfc-hero__chip--reminder" aria-hidden="true">
+        {{ partial "cfc/icon.html" (dict "name" "bell" "class" "cfc-hero__chip-icon") }}
+        <span>{{ i18n "hero_chip_reminder" | default "Kick-off reminder · 15 min" }}</span>
+      </div>
+      <div class="cfc-hero__chip cfc-hero__chip--live" aria-hidden="true">
+        <span class="cfc-live-dot"></span>
+        <span>{{ i18n "hero_chip_live" | default "Live scores in the app" }}</span>
+      </div>
+    </div>
+  </div>
+</section>

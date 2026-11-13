@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.cardapiofutebol",
+      "sha256_cert_fingerprints": [
+        "67:1C:5A:E1:99:E7:AE:C7:29:89:33:84:D2:28:91:29:DE:A3:C4:FD:4F:D9:27:8A:B8:C7:DB:30:B5:9E:20:57",
+        "38:8F:72:42:F2:C0:EB:A5:A8:12:F3:D5:75:A0:68:57:4E:93:33:9A:89:15:37:D5:E8:2C:9D:C3:68:F1:C7:E2"
+      ]
+    }
+  }
+]

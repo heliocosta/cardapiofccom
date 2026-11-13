@@ -1,5 +1,5 @@
 .cfc-kickoff-time {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
@@ -7,14 +7,29 @@
 }
 
 .cfc-kickoff-time__time {
+  font-size: 1rem;
   font-weight: 700;
+  font-family: var(--font-secondary);
   line-height: 1.2;
+  color: var(--color-primary, #1D5E18);
+}
+
+@media (min-width: 640px) {
+  .cfc-kickoff-time__time {
+    font-size: 1.125rem;
+  }
 }
 
 .cfc-kickoff-time__zone {
+  display: block;
+  margin-top: 0.125rem;
   font-size: 0.75rem;
   color: var(--color-muted, #6B7280);
   line-height: 1.2;
+}
+
+.dark .cfc-kickoff-time__time {
+  color: var(--color-darkmode-primary, #5DD62C);
 }
 
 .dark .cfc-kickoff-time__zone {

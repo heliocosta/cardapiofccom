@@ -1,0 +1,121 @@
+{{/* layouts/_partials/cfcdata/app-share-slugs.html */}}
+{{/* Generates mobile app share slug(s) in the format:
+     {Mon}_{DD}_{YYYY}_{hh}_{mm}_{AM/PM}_{League}_{Home}_x_{Away}
+     e.g. Nov_12_2026_05_00_PM_UEFA_Nations_League_Turkey_x_Belgium
+     Signature: partial "cfcdata/app-share-slugs.html" (dict "match" $m "dataset"? $dataset)
+*/}}
+
+{{ $rawMatch := .match | default . }}
+{{ $dataset := .dataset }}
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{ $slugs := slice }}
+
+{{ if and (reflect.IsMap $rawMatch) $rawMatch.kickoff }}
+  {{ $t := (time.AsTime $rawMatch.kickoff).UTC }}
+  {{ $monthNames := slice "Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec" }}
+  {{ $monthIndex := sub (int (time.Format "1" $t)) 1 }}
+  {{ $month := time.Format "Jan" $t }}
+  {{ if and (ge $monthIndex 0) (lt $monthIndex (len $monthNames)) }}
+    {{ $month = index $monthNames $monthIndex }}
+  {{ end }}
+  {{ $dateStamp := printf "%s_%s_%s_%s_%s_%s"
+      $month
+      (time.Format "02" $t)
+      (time.Format "2006" $t)
+      (time.Format "03" $t)
+      (time.Format "04" $t)
+      (time.Format "PM" $t)
+  }}
+
+  {{ $homeTeam := index $dataset.teams $rawMatch.homeSlug }}
+  {{ $awayTeam := index $dataset.teams $rawMatch.awaySlug }}
+  {{ $league := index $dataset.leagues $rawMatch.leagueSlug }}
+
+  {{ $homeName := "" }}
+  {{ with $homeTeam }}{{ with .names }}{{ $homeName = index . "en" | default "" }}{{ end }}{{ end }}
+  {{ if not $homeName }}{{ $homeName = $rawMatch.homeSlug }}{{ end }}
+
+  {{ $awayName := "" }}
+  {{ with $awayTeam }}{{ with .names }}{{ $awayName = index . "en" | default "" }}{{ end }}{{ end }}
+  {{ if not $awayName }}{{ $awayName = $rawMatch.awaySlug }}{{ end }}
+
+  {{ $leagueName := "" }}
+  {{ with $league }}{{ with .names }}{{ $leagueName = index . "en" | default "" }}{{ end }}{{ end }}
+  {{ if not $leagueName }}{{ $leagueName = $rawMatch.leagueSlug }}{{ end }}
+
+  {{ $cleanHome := $homeName
+      | replaceRE "[áàâãäåą]" "a" | replaceRE "[éèêëę]" "e" | replaceRE "[íìîïı]" "i"
+      | replaceRE "[óòôõöø]" "o" | replaceRE "[úùûü]" "u" | replaceRE "[çćč]" "c"
+      | replaceRE "[ñńņ]" "n" | replaceRE "[ł]" "l" | replaceRE "[šśş]" "s"
+      | replaceRE "[žźż]" "z" | replaceRE "[ğ]" "g" | replaceRE "[ýÿ]" "y"
+      | replaceRE "[ÁÀÂÃÄÅĄ]" "A" | replaceRE "[ÉÈÊËĘ]" "E" | replaceRE "[ÍÌÎÏİ]" "I"
+      | replaceRE "[ÓÒÔÕÖØ]" "O" | replaceRE "[ÚÙÛÜ]" "U" | replaceRE "[ÇĆČ]" "C"
+      | replaceRE "[ÑŃŅ]" "N" | replaceRE "[Ł]" "L" | replaceRE "[ŠŚŞ]" "S"
+      | replaceRE "[ŽŹŻ]" "Z" | replaceRE "[Ğ]" "G" | replaceRE "[ÝŸ]" "Y"
+      | replaceRE "[ß]" "ss"
+      | replaceRE "[-\\s]+" "_"
+      | replaceRE "[^A-Za-z0-9_]" ""
+  }}
+
+  {{ $cleanAway := $awayName
+      | replaceRE "[áàâãäåą]" "a" | replaceRE "[éèêëę]" "e" | replaceRE "[íìîïı]" "i"
+      | replaceRE "[óòôõöø]" "o" | replaceRE "[úùûü]" "u" | replaceRE "[çćč]" "c"
+      | replaceRE "[ñńņ]" "n" | replaceRE "[ł]" "l" | replaceRE "[šśş]" "s"
+      | replaceRE "[žźż]" "z" | replaceRE "[ğ]" "g" | replaceRE "[ýÿ]" "y"
+      | replaceRE "[ÁÀÂÃÄÅĄ]" "A" | replaceRE "[ÉÈÊËĘ]" "E" | replaceRE "[ÍÌÎÏİ]" "I"
+      | replaceRE "[ÓÒÔÕÖØ]" "O" | replaceRE "[ÚÙÛÜ]" "U" | replaceRE "[ÇĆČ]" "C"
+      | replaceRE "[ÑŃŅ]" "N" | replaceRE "[Ł]" "L" | replaceRE "[ŠŚŞ]" "S"
+      | replaceRE "[ŽŹŻ]" "Z" | replaceRE "[Ğ]" "G" | replaceRE "[ÝŸ]" "Y"
+      | replaceRE "[ß]" "ss"
+      | replaceRE "[-\\s]+" "_"
+      | replaceRE "[^A-Za-z0-9_]" ""
+  }}
+
+  {{ $cleanLeague := $leagueName
+      | replaceRE "[áàâãäåą]" "a" | replaceRE "[éèêëę]" "e" | replaceRE "[íìîïı]" "i"
+      | replaceRE "[óòôõöø]" "o" | replaceRE "[úùûü]" "u" | replaceRE "[çćč]" "c"
+      | replaceRE "[ñńņ]" "n" | replaceRE "[ł]" "l" | replaceRE "[šśş]" "s"
+      | replaceRE "[žźż]" "z" | replaceRE "[ğ]" "g" | replaceRE "[ýÿ]" "y"
+      | replaceRE "[ÁÀÂÃÄÅĄ]" "A" | replaceRE "[ÉÈÊËĘ]" "E" | replaceRE "[ÍÌÎÏİ]" "I"
+      | replaceRE "[ÓÒÔÕÖØ]" "O" | replaceRE "[ÚÙÛÜ]" "U" | replaceRE "[ÇĆČ]" "C"
+      | replaceRE "[ÑŃŅ]" "N" | replaceRE "[Ł]" "L" | replaceRE "[ŠŚŞ]" "S"
+      | replaceRE "[ŽŹŻ]" "Z" | replaceRE "[Ğ]" "G" | replaceRE "[ÝŸ]" "Y"
+      | replaceRE "[ß]" "SS"
+      | replaceRE "[^a-zA-Z0-9\\s-]" ""
+      | replaceRE "[-\\s]+" "_"
+      | replaceRE "[^A-Za-z0-9_]" ""
+  }}
+
+  {{ $primary := printf "%s_%s_%s_x_%s" $dateStamp $cleanLeague $cleanHome $cleanAway }}
+  {{ $slugs = $slugs | append $primary }}
+
+  {{/* Common English alias variants used by mobile app */}}
+  {{ $synonyms := dict
+      "Turkiye" "Turkey"
+      "Turkey" "Turkiye"
+      "Turkiye_U21" "Turkey_U21"
+      "Turkiye_U19" "Turkey_U19"
+      "Turkiye_U17" "Turkey_U17"
+      "Czechia" "Czech_Republic"
+      "Czech_Republic" "Czechia"
+      "Republic_Ireland" "Ireland"
+      "Republic_of_Ireland" "Ireland"
+      "Cabo_Verde" "Cape_Verde"
+      "Cote_dIvoire" "Ivory_Coast"
+      "South_Korea" "Korea_Republic"
+  }}
+
+  {{ $altHome := index $synonyms $cleanHome | default $cleanHome }}
+  {{ $altAway := index $synonyms $cleanAway | default $cleanAway }}
+  {{ if or (ne $altHome $cleanHome) (ne $altAway $cleanAway) }}
+    {{ $altSlug := printf "%s_%s_%s_x_%s" $dateStamp $cleanLeague $altHome $altAway }}
+    {{ if not (in $slugs $altSlug) }}
+      {{ $slugs = $slugs | append $altSlug }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return $slugs }}

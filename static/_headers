@@ -1,0 +1,15 @@
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/.well-known/apple-app-site-association.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/apple-app-site-association.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400

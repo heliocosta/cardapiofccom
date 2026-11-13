@@ -8,7 +8,7 @@
 {{- $all := partialCached "edition/all.html" $p -}}
 
 <details class="cfc-switcher">
-  <summary class="cfc-switcher__summary" aria-label="{{ i18n "edition_switcher" | default "Edition switcher" }}">
+  <summary class="cfc-switcher__summary" aria-label="{{ i18n "edition_switcher" | default "Edition switcher" }}: {{ $curr.label }}">
     {{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-switcher__globe") }}
     <span class="cfc-switcher__label">{{ $curr.label }}</span>
     {{ partial "cfc/icon.html" (dict "name" "chevron-down" "class" "cfc-switcher__arrow") }}

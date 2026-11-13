@@ -123,12 +123,22 @@ ordered = true
 [mediaTypes."application/manifest+json"]
 suffixes = ["webmanifest"]
 
+[mediaTypes."text/netlify"]
+delimiter = ""
+suffixes = [""]
+
 
 ########################### Output Format ##########################
 [outputFormats]
 [outputFormats.WebAppManifest]
 mediaType = "application/manifest+json"
 rel = "manifest"
+
+[outputFormats.Redirects]
+baseName = "_redirects"
+isPlainText = true
+mediaType = "text/netlify"
+notAlternative = true
 
 
 ############################# Plugins ##############################

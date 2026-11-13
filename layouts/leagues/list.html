@@ -35,7 +35,7 @@
             {{- $leagueName := .name -}}
             <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
               {{- with .logo -}}
-                <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" />
+                <img src="{{ . }}" alt="{{ $leagueName }}" width="40" height="40" class="cfc-league-card__logo w-10 h-10 object-contain shrink-0" loading="lazy" decoding="async" onerror="this.hidden=true" />
               {{- end -}}
               <div class="min-w-0">
                 <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>
@@ -106,7 +106,7 @@
                 {{- $leagueName := .name -}}
                 <a href="{{ .url }}" class="cfc-league-card flex items-center gap-3 p-4 rounded-xl bg-surface dark:bg-darkmode-surface shadow-xs hover:shadow-md transition group" data-cfc-league="{{ .slug }}">
                   {{- with .logo -}}
-                    <img src="{{ . }}" alt="{{ $leagueName }}" width="36" height="36" class="cfc-league-card__logo w-9 h-9 object-contain shrink-0" loading="lazy" />
+                    <img src="{{ . }}" alt="{{ $leagueName }}" width="36" height="36" class="cfc-league-card__logo w-9 h-9 object-contain shrink-0" loading="lazy" decoding="async" onerror="this.hidden=true" />
                   {{- end -}}
                   <div class="min-w-0">
                     <span class="cfc-league-card__name font-medium block truncate text-text-dark dark:text-darkmode-text-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ $leagueName }}</span>

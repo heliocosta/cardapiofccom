@@ -1,10 +1,373 @@
 {{ define "main" }}
   {{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
-  <section class="cfc-container py-16 text-center">
+  {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+  {{- $links := partial "cfc/app-links.html" . -}}
+  {{- $matchesUrl := "matches/" | relLangURL -}}
+
+  {{- /* Build lightweight match lookup directory for Option A & fuzzy deep-link resolution */ -}}
+  {{- $matchLookup := slice -}}
+  {{- $leagueNamesList := slice -}}
+  {{- if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.leagues) -}}
+    {{- range $lSlug, $l := $dataset.leagues -}}
+      {{- with $l.names -}}
+        {{- range $k, $v := . -}}
+          {{- $cleanL := $v
+              | replaceRE "[áàâãäåą]" "a" | replaceRE "[éèêëę]" "e" | replaceRE "[íìîïı]" "i"
+              | replaceRE "[óòôõöø]" "o" | replaceRE "[úùûü]" "u" | replaceRE "[çćč]" "c"
+              | replaceRE "[ñńņ]" "n" | replaceRE "[ł]" "l" | replaceRE "[šśş]" "s"
+              | replaceRE "[žźż]" "z" | replaceRE "[ğ]" "g" | replaceRE "[ýÿ]" "y"
+              | replaceRE "[ÁÀÂÃÄÅĄ]" "A" | replaceRE "[ÉÈÊËĘ]" "E" | replaceRE "[ÍÌÎÏİ]" "I"
+              | replaceRE "[ÓÒÔÕÖØ]" "O" | replaceRE "[ÚÙÛÜ]" "U" | replaceRE "[ÇĆČ]" "C"
+              | replaceRE "[ÑŃŅ]" "N" | replaceRE "[Ł]" "L" | replaceRE "[ŠŚŞ]" "S"
+              | replaceRE "[ŽŹŻ]" "Z" | replaceRE "[Ğ]" "G" | replaceRE "[ÝŸ]" "Y"
+              | replaceRE "[ß]" "SS"
+              | replaceRE "[^a-zA-Z0-9\\s-]" ""
+              | replaceRE "[-\\s]+" "_"
+              | replaceRE "[^A-Za-z0-9_]" ""
+          -}}
+          {{- if and (ne $cleanL "") (not (in $leagueNamesList $cleanL)) -}}
+            {{- $leagueNamesList = $leagueNamesList | append $cleanL -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.matches) -}}
+    {{- range $slug := $dataset.order -}}
+      {{- $m := index $dataset.matches $slug -}}
+      {{- if $m -}}
+        {{- $targetUrl := partial "cfcdata/url.html" (dict "kind" "match" "slug" $slug "edition" $ed) -}}
+        {{- $appSlugs := partial "cfcdata/app-share-slugs.html" (dict "match" $m "dataset" $dataset) -}}
+        {{- $dateStr := "" -}}
+        {{- with $m.kickoff -}}
+          {{- $dateStr = time.Format "2006-01-02" (time.AsTime .).UTC -}}
+        {{- end -}}
+        {{- $homeTeam := index $dataset.teams $m.homeSlug -}}
+        {{- $awayTeam := index $dataset.teams $m.awaySlug -}}
+        {{- $homeEn := $m.homeSlug -}}
+        {{- with $homeTeam }}{{ with .names }}{{ $homeEn = index . "en" | default $m.homeSlug }}{{ end }}{{ end -}}
+        {{- $awayEn := $m.awaySlug -}}
+        {{- with $awayTeam }}{{ with .names }}{{ $awayEn = index . "en" | default $m.awaySlug }}{{ end }}{{ end -}}
+        {{- $matchLookup = $matchLookup | append (dict
+            "s" $slug
+            "u" $targetUrl
+            "d" $dateStr
+            "h" $m.homeSlug
+            "hn" $homeEn
+            "a" $m.awaySlug
+            "an" $awayEn
+            "l" $m.leagueSlug
+            "as" $appSlugs
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{/* Standard 404 View (shown for non-match 404s) */}}
+  <section id="cfc-404-default" class="cfc-container py-16 text-center">
     <h1 class="text-4xl md:text-5xl font-bold font-secondary mb-4">{{ i18n "not_found_title" }}</h1>
     <p class="text-muted mb-8 max-w-md mx-auto">{{ i18n "not_found_text" }}</p>
     <a href="{{ $ed.prefix }}" class="btn btn-primary inline-flex items-center">
       {{ i18n "back_home" }}
     </a>
   </section>
+
+  {{/* Smart Match Deep-Link Fallback View (shown when /match/... is not in the static web dataset) */}}
+  <section id="cfc-404-match" class="cfc-container py-8 hidden" aria-live="polite">
+    <div class="max-w-3xl mx-auto">
+      <div class="p-6 md:p-8 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light text-center mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-surface dark:bg-darkmode-surface mb-4">
+          {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-4 h-4") }}
+          <span id="cfc-dl-match-league">CardápioFC Match Guide</span>
+        </div>
+
+        <h1 id="cfc-dl-match-title" class="text-2xl sm:text-3xl md:text-4xl font-bold font-secondary text-text-dark dark:text-darkmode-text-dark mb-2">
+          Live Football Match
+        </h1>
+
+        <p id="cfc-dl-match-date" class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6"></p>
+
+        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm max-w-xl mx-auto mb-6">
+          <p class="text-sm md:text-base text-text-dark dark:text-darkmode-text-dark font-medium mb-4">
+            {{ i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, official TV & streaming channels, and smart notifications directly on your phone." }}
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a id="cfc-dl-open-app"
+               href="cardapiofc://home"
+               data-ios-url="{{ $links.ios }}"
+               data-android-url="{{ $links.android }}"
+               class="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm w-full sm:w-auto">
+              {{ partial "cfc/icon.html" (dict "name" "play" "class" "w-5 h-5") }}
+              <span>{{ i18n "app_download_match_title" | default "Open Match in the CardápioFC App" }}</span>
+            </a>
+            <a href="{{ $matchesUrl }}" class="btn inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm bg-theme-light dark:bg-darkmode-theme-light text-text-dark dark:text-darkmode-text-dark hover:opacity-85 transition-opacity w-full sm:w-auto">
+              <span>{{ i18n "matches" | default "Matches" }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_match_title" | default "Follow This Match in the CardápioFC App") "subtitle" (i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, official TV & streaming channels, and smart notifications directly on your phone.")) }}
+    </div>
+  </section>
+
+  <script id="cfc-match-directory" type="application/json">{{ dict "matches" $matchLookup "leagues" $leagueNamesList | jsonify | safeJS }}</script>
+  <script>
+  (function () {
+    var path = window.location.pathname || "";
+    var matchRoute = path.match(/^(?:\/(en-gb|en-ie|pt-br|pt-pt|es-ar))?\/match(?:es)?\/([^\/]+)\/?$/i);
+    if (!matchRoute) return;
+
+    var rawSlug = "";
+    try {
+      rawSlug = decodeURIComponent(matchRoute[2] || "").trim();
+    } catch (e) {
+      rawSlug = (matchRoute[2] || "").trim();
+    }
+    if (!rawSlug || rawSlug.toLowerCase() === "index.html") return;
+
+    function norm(s) {
+      return String(s || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    var synonyms = {
+      turkey: "turkiye",
+      turkiye: "turkiye",
+      turkey_u21: "turkiye_u21",
+      turkey_u19: "turkiye_u19",
+      turkey_u17: "turkiye_u17",
+      czech_republic: "czechia",
+      czechia: "czechia",
+      ireland: "republic_ireland",
+      republic_of_ireland: "republic_ireland",
+      cape_verde: "cabo_verde",
+      ivory_coast: "cote_divoire",
+      south_korea: "korea_republic"
+    };
+
+    function canonTeam(s) {
+      var n = norm(s);
+      return synonyms[n] || n;
+    }
+
+    function teamMatches(a, b) {
+      var ca = canonTeam(a);
+      var cb = canonTeam(b);
+      if (!ca || !cb) return false;
+      if (ca === cb) return true;
+      var na = norm(a);
+      var nb = norm(b);
+      return na === nb;
+    }
+
+    function dayDiff(d1, d2) {
+      if (!d1 || !d2) return 999;
+      var t1 = Date.parse(d1 + "T00:00:00Z");
+      var t2 = Date.parse(d2 + "T00:00:00Z");
+      if (isNaN(t1) || isNaN(t2)) return 999;
+      return Math.abs(Math.round((t1 - t2) / 86400000));
+    }
+
+    var dirEl = document.getElementById("cfc-match-directory");
+    var dir = { matches: [], leagues: [] };
+    if (dirEl && dirEl.textContent) {
+      try {
+        dir = JSON.parse(dirEl.textContent);
+      } catch (e) {}
+    }
+    var matches = dir.matches || [];
+    var knownLeagues = (dir.leagues || []).slice().sort(function (a, b) {
+      return b.length - a.length;
+    });
+
+    var lowerRaw = rawSlug.toLowerCase();
+
+    // 1. Exact canonical slug or precomputed app-share slug match
+    for (var i = 0; i < matches.length; i++) {
+      var m = matches[i];
+      if (m.s && m.s.toLowerCase() === lowerRaw) {
+        window.location.replace(m.u + window.location.search + window.location.hash);
+        return;
+      }
+      if (m.as && m.as.length) {
+        for (var j = 0; j < m.as.length; j++) {
+          if (String(m.as[j]).toLowerCase() === lowerRaw) {
+            window.location.replace(m.u + window.location.search + window.location.hash);
+            return;
+          }
+        }
+      }
+    }
+
+    // 2. Parse app-share format: {Mon}_{DD}_{YYYY}_{hh}_{mm}_{AM/PM}_{League}_{Home}_x_{Away}
+    var months = {
+      jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06",
+      jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12"
+    };
+    var appPattern = /^([A-Za-z]{3})_(\d{1,2})_(\d{4})_(\d{1,2})_(\d{2})_(AM|PM)_(.+)_x_(.+)$/i;
+    var webPattern = /^([a-z0-9-]+)-vs-([a-z0-9-]+)-(\d{4}-\d{2}-\d{2})$/i;
+
+    var parsed = null;
+    var appMatch = rawSlug.match(appPattern);
+    if (appMatch) {
+      var monKey = appMatch[1].toLowerCase();
+      var mm = months[monKey] || "01";
+      var dd = appMatch[2].length === 1 ? "0" + appMatch[2] : appMatch[2];
+      var yyyy = appMatch[3];
+      var hh = appMatch[4];
+      var min = appMatch[5];
+      var ampm = appMatch[6].toUpperCase();
+      var leagueAndHome = appMatch[7];
+      var awayPart = appMatch[8];
+
+      var splitLeague = "";
+      var splitHome = leagueAndHome;
+
+      // Try known leagues from dataset + common competitions
+      var commonLeagues = [
+        "UEFA_Nations_League", "UEFA_Champions_League", "UEFA_Europa_League",
+        "UEFA_Conference_League", "Premier_League", "La_Liga", "Serie_A",
+        "Bundesliga", "Ligue_1", "Brasileirao_Serie_A", "Brasileirao_Serie_B",
+        "Copa_Libertadores", "Copa_Sudamericana", "Copa_do_Brasil",
+        "FA_Cup", "EFL_Cup", "Copa_del_Rey", "Primeira_Liga", "Liga_Profesional",
+        "World_Cup_Qualification", "World_Cup", "Friendlies", "Club_Friendlies"
+      ];
+      var allLeagues = knownLeagues.concat(commonLeagues).sort(function (a, b) {
+        return b.length - a.length;
+      });
+
+      var lowerLH = leagueAndHome.toLowerCase();
+      for (var k = 0; k < allLeagues.length; k++) {
+        var lk = String(allLeagues[k]).toLowerCase();
+        if ( lk && lowerLH.indexOf(lk + "_") === 0 && leagueAndHome.length > lk.length + 1 ) {
+          splitLeague = leagueAndHome.slice(0, lk.length);
+          splitHome = leagueAndHome.slice(lk.length + 1);
+          break;
+        }
+      }
+
+      parsed = {
+        dateIso: yyyy + "-" + mm + "-" + dd,
+        dateDisplay: appMatch[1] + " " + dd + ", " + yyyy + " · " + hh + ":" + min + " " + ampm + " UTC",
+        leagueRaw: splitLeague,
+        homeRaw: splitHome,
+        awayRaw: awayPart,
+        leagueAndHomeRaw: leagueAndHome
+      };
+    } else {
+      var webMatch = rawSlug.match(webPattern);
+      if (webMatch) {
+        parsed = {
+          dateIso: webMatch[3],
+          dateDisplay: webMatch[3],
+          leagueRaw: "",
+          homeRaw: webMatch[1],
+          awayRaw: webMatch[2],
+          leagueAndHomeRaw: webMatch[1]
+        };
+      }
+    }
+
+    // 3. Fuzzy match against dataset (handles timezone differences ±1 day & team synonyms like Turkey/Turkiye)
+    if (parsed) {
+      var bestMatch = null;
+      var normLH = norm(parsed.leagueAndHomeRaw);
+
+      for (var idx = 0; idx < matches.length; idx++) {
+        var cand = matches[idx];
+        if (dayDiff(parsed.dateIso, cand.d) > 1) continue;
+
+        var awayOk = teamMatches(parsed.awayRaw, cand.a) || teamMatches(parsed.awayRaw, cand.an);
+        var homeOk =
+          teamMatches(parsed.homeRaw, cand.h) ||
+          teamMatches(parsed.homeRaw, cand.hn) ||
+          normLH.slice(-norm(cand.h).length) === norm(cand.h) ||
+          normLH.slice(-norm(cand.hn).length) === norm(cand.hn) ||
+          normLH.slice(-canonTeam(cand.h).length) === canonTeam(cand.h);
+
+        if (homeOk && awayOk) {
+          bestMatch = cand;
+          if (parsed.dateIso === cand.d) break;
+        }
+      }
+
+      if (bestMatch && bestMatch.u) {
+        window.location.replace(bestMatch.u + window.location.search + window.location.hash);
+        return;
+      }
+    }
+
+    // 4. Match is NOT in the static web dataset: show the Smart Match Deep-Link Fallback UI
+    var defaultSec = document.getElementById("cfc-404-default");
+    var matchSec = document.getElementById("cfc-404-match");
+    if (defaultSec && matchSec) {
+      defaultSec.classList.add("hidden");
+      matchSec.classList.remove("hidden");
+    }
+
+    function humanize(s) {
+      return String(s || "")
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    var titleEl = document.getElementById("cfc-dl-match-title");
+    var leagueEl = document.getElementById("cfc-dl-match-league");
+    var dateEl = document.getElementById("cfc-dl-match-date");
+    var openBtn = document.getElementById("cfc-dl-open-app");
+    var smartBanner = document.getElementById("cfc-ios-smart-banner");
+
+    var schemeUrl = "cardapiofc://match/" + rawSlug;
+    if (smartBanner) {
+      smartBanner.setAttribute("content", "app-id=6745226833, app-argument=" + schemeUrl);
+    }
+
+    if (parsed) {
+      var homeTitle = humanize(parsed.homeRaw);
+      var awayTitle = humanize(parsed.awayRaw);
+      var leagueTitle = humanize(parsed.leagueRaw);
+      if (titleEl && homeTitle && awayTitle) {
+        titleEl.textContent = homeTitle + " vs " + awayTitle;
+        document.title = homeTitle + " vs " + awayTitle + " · CardápioFC";
+      }
+      if (leagueEl && leagueTitle) {
+        leagueEl.textContent = leagueTitle;
+      }
+      if (dateEl && parsed.dateDisplay) {
+        dateEl.textContent = parsed.dateDisplay;
+      }
+    } else if (titleEl) {
+      titleEl.textContent = humanize(rawSlug);
+    }
+
+    if (openBtn) {
+      openBtn.setAttribute("href", schemeUrl);
+      openBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var ua = navigator.userAgent || "";
+        var isIOS = /\b(iPad|iPhone|iPod)\b/i.test(ua) || (/\bMac OS X\b/.test(ua) && "ontouchend" in document);
+        var isAndroid = /Android/i.test(ua);
+        var storeUrl = isAndroid
+          ? openBtn.getAttribute("data-android-url")
+          : openBtn.getAttribute("data-ios-url");
+
+        window.location.href = schemeUrl;
+        if (storeUrl && (isIOS || isAndroid)) {
+          setTimeout(function () {
+            if (document.visibilityState === "visible") {
+              window.location.href = storeUrl;
+            }
+          }, 1500);
+        }
+      });
+    }
+  })();
+  </script>
 {{ end }}

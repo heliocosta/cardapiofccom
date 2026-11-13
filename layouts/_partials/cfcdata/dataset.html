@@ -29,7 +29,7 @@
   {{ with $settings.webhookKey }}
     {{ $headers = merge $headers (dict "X-Workflow-Api-Key" .) }}
   {{ end }}
-  {{ $opts := dict "method" "post" "headers" $headers "key" (printf "cfc-webhook#%d" now.Unix) }}
+  {{ $opts := dict "method" "post" "headers" $headers "key" "cfc-webhook-data" }}
   {{ $resTry := try (resources.GetRemote $settings.webhookURL $opts) }}
   {{ if $resTry.Err }}
     {{ errorf "data-pages: webhook fetch failed: %v" $resTry.Err }}

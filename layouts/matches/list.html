@@ -17,9 +17,9 @@
     {{/* App Download Banner */}}
     {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_title" | default "Follow Football on the CardápioFC App") "subtitle" (i18n "app_download_subtitle" | default "Get pre-match kickoff alarms, TV & streaming channels, and smart notifications on iOS & Android.")) }}
 
-    {{/* Matches grouped by day */}}
+    {{/* Matches grouped by day with day tabs */}}
     <div class="my-8">
-      {{ partial "site/hook.html" (dict "name" "home-main" "page" . "fallback" "cfc/empty-state.html" "fallbackArgs" (dict "message" (i18n "home_empty" | default "No matches scheduled."))) }}
+      {{ partial "cfcpage/matches-agenda.html" . }}
     </div>
 
     {{/* Why CardápioFC is #1 Section */}}

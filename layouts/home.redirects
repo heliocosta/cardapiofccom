@@ -1,0 +1,49 @@
+{{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+# Deep-link alias redirects
+/favorites /favourites 301
+/favorites/ /favourites 301
+/reminder /my_agenda 301
+/reminder/ /my_agenda 301
+/:ed/favorites /:ed/favourites 301
+/:ed/favorites/ /:ed/favourites 301
+/:ed/reminder /:ed/my_agenda 301
+/:ed/reminder/ /:ed/my_agenda 301
+
+# Mobile app shared match URL redirects (Option A: {Mon}_{DD}_{YYYY}_{hh}_{mm}_{AM/PM}_{League}_{Home}_x_{Away} -> /match/{slug}/)
+{{- if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.matches) }}
+{{- range $slug := $dataset.order }}
+  {{- $m := index $dataset.matches $slug }}
+  {{- if $m }}
+    {{- $appSlugs := partial "cfcdata/app-share-slugs.html" (dict "match" $m "dataset" $dataset) }}
+    {{- range $appSlug := $appSlugs }}
+/match/{{ $appSlug }} /match/{{ $slug }}/ 301
+/match/{{ $appSlug }}/ /match/{{ $slug }}/ 301
+/:ed/match/{{ $appSlug }} /:ed/match/{{ $slug }}/ 301
+/:ed/match/{{ $appSlug }}/ /:ed/match/{{ $slug }}/ 301
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+# Legacy route redirects
+/pt/jogos/* /pt-br/ 301
+/pt/times/* /pt-br/ 301
+/pt/campeonatos/* /pt-br/leagues/ 301
+/pt/* /pt-br/ 301
+/en/matches/* / 301
+/en/teams/* / 301
+/en/leagues/* /leagues/ 301
+/en/* / 301
+/es/* /es-ar/ 301
+/fr/* / 301
+/zh/* / 301
+/hi/* / 301
+/ar/* / 301
+
+# Fallback 404
+/en-gb/* /en-gb/404.html 404
+/en-ie/* /en-ie/404.html 404
+/pt-br/* /pt-br/404.html 404
+/pt-pt/* /pt-pt/404.html 404
+/es-ar/* /es-ar/404.html 404
+/* /404.html 404

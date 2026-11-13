@@ -1,0 +1,256 @@
+/* ---------- Home hero ---------- */
+.cfc-hero {
+  position: relative;
+  overflow: clip;
+  padding: 2.5rem 0 3rem;
+}
+@media (min-width: 1024px) {
+  .cfc-hero {
+    padding: 4rem 0 4.5rem;
+  }
+}
+.cfc-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.cfc-hero__glow {
+  position: absolute;
+  border-radius: 50%;
+}
+.cfc-hero__glow--a {
+  width: 48rem;
+  height: 48rem;
+  left: -16rem;
+  top: -22rem;
+  background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-primary) 20%, transparent), transparent);
+}
+.cfc-hero__glow--b {
+  width: 42rem;
+  height: 42rem;
+  right: -12rem;
+  top: -8rem;
+  background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent);
+}
+.dark .cfc-hero__glow--a {
+  background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-darkmode-primary) 14%, transparent), transparent);
+}
+.dark .cfc-hero__glow--b {
+  background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-darkmode-accent) 12%, transparent), transparent);
+}
+.cfc-hero__pitch {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-primary) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 9%, transparent) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  -webkit-mask-image: radial-gradient(60% 70% at 72% 45%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(60% 70% at 72% 45%, #000 10%, transparent 75%);
+}
+.dark .cfc-hero__pitch {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-darkmode-primary) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-darkmode-primary) 9%, transparent) 1px, transparent 1px);
+}
+
+.cfc-hero__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .cfc-hero__inner {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3rem;
+  }
+}
+.cfc-hero__title {
+  margin: 0.75rem 0 1rem;
+  font-size: clamp(2.6rem, 1.9rem + 3.4vw, 4.75rem);
+  line-height: 0.95;
+  text-wrap: balance;
+  color: var(--color-primary);
+  background-image: linear-gradient(120deg, var(--color-primary) 20%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .cfc-hero__title {
+  color: var(--color-darkmode-primary);
+  background-image: linear-gradient(120deg, var(--color-darkmode-primary) 20%, var(--color-darkmode-accent) 100%);
+}
+.cfc-hero__intro {
+  margin: 0;
+  max-width: 36rem;
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-text-light);
+}
+.dark .cfc-hero__intro {
+  color: var(--color-darkmode-text-light);
+}
+.cfc-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.75rem;
+}
+.cfc-hero__stats {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+.dark .cfc-hero__stats {
+  color: var(--color-darkmode-text-light);
+}
+.cfc-hero__stats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.cfc-hero__stat-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--color-primary);
+}
+.dark .cfc-hero__stat-icon {
+  color: var(--color-darkmode-primary);
+}
+
+/* Phones */
+.cfc-phone {
+  position: relative;
+  border-radius: 13.5% / 6.25%;
+  box-shadow: var(--cfc-phone-shadow);
+}
+.cfc-phone__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+.cfc-hero__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 19rem;
+  overflow: hidden;
+  padding: 1rem 0 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+}
+.cfc-phone--main {
+  width: 230px;
+  z-index: 2;
+  rotate: -3deg;
+}
+.cfc-phone--back {
+  display: none;
+  position: absolute;
+  width: 160px;
+  right: 8%;
+  top: 8%;
+  z-index: 1;
+  rotate: 9deg;
+  opacity: 0.96;
+}
+@media (min-width: 640px) {
+  .cfc-phone--back {
+    display: block;
+  }
+  .cfc-hero__visual {
+    height: auto;
+    min-height: 26rem;
+    overflow: visible;
+    align-items: center;
+    padding: 1rem 0 1.5rem;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+@media (min-width: 1024px) {
+  .cfc-phone--main {
+    width: 300px;
+  }
+  .cfc-phone--back {
+    width: 220px;
+    right: 4%;
+    top: 4%;
+  }
+  .cfc-hero__visual {
+    min-height: 32rem;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .cfc-phone--main {
+    animation: cfc-float 9s ease-in-out infinite;
+  }
+}
+@keyframes cfc-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
+/* Floating chips */
+.cfc-hero__chip {
+  position: absolute;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background-color: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  box-shadow: var(--cfc-shadow-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+}
+.dark .cfc-hero__chip {
+  background-color: var(--color-darkmode-surface);
+  border-color: color-mix(in srgb, var(--color-darkmode-primary) 16%, transparent);
+  color: var(--color-darkmode-text-dark);
+}
+@media (min-width: 640px) {
+  .cfc-hero__chip {
+    display: inline-flex;
+  }
+}
+.cfc-hero__chip--reminder {
+  left: 0;
+  top: 22%;
+}
+.cfc-hero__chip--live {
+  right: 0;
+  bottom: 16%;
+}
+@media (min-width: 1024px) {
+  .cfc-hero__chip--reminder {
+    left: -1rem;
+  }
+  .cfc-hero__chip--live {
+    right: -0.5rem;
+  }
+}
+.cfc-hero__chip-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--color-primary);
+}
+.dark .cfc-hero__chip-icon {
+  color: var(--color-darkmode-primary);
+}
