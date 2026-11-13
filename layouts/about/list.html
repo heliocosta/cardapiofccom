@@ -8,17 +8,11 @@
   <div class="cfc-container py-6">
     {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
 
-    <header class="text-center max-w-3xl mx-auto my-8">
-      <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light rounded-full mb-3">
-        {{ i18n "about_badge" | default "About CardápioFC" }}
-      </span>
-      <h1 class="text-3xl md:text-5xl font-bold font-secondary uppercase mb-4 text-text-dark dark:text-darkmode-text-dark">
-        {{ i18n "about_title" | default "Your Football Menu: Where to Watch Football Legally" }}
-      </h1>
-      <p class="text-muted dark:text-darkmode-muted text-base md:text-lg max-w-2xl mx-auto">
-        {{ i18n "about_intro" | default "CardápioFC was born out of a simple passion: helping football fans discover exactly which channel or official streaming service is broadcasting their favourite teams, with zero spam, zero piracy, and absolute clarity." }}
-      </p>
-    </header>
+    {{ partial "cfc/page-hero.html" (dict
+      "eyebrow" (i18n "about_badge" | default "About CardápioFC")
+      "title" (i18n "about_title" | default "Your Football Menu: Where to Watch Football Legally")
+      "intro" (i18n "about_intro" | default "CardápioFC was born out of a simple passion: helping football fans discover exactly which channel or official streaming service is broadcasting their favourite teams, with zero spam, zero piracy, and absolute clarity.")
+    ) }}
 
     {{/* App Download Banner */}}
     <div class="mb-10">
@@ -27,7 +21,7 @@
 
     {{/* Mission & Story Card */}}
     <section class="max-w-4xl mx-auto my-8">
-      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+      <div class="cfc-panel">
         <h2 class="text-2xl md:text-3xl font-bold font-secondary uppercase text-primary dark:text-darkmode-primary mb-4">
           {{ i18n "about_story_title" | default "Why CardápioFC?" }}
         </h2>
@@ -53,10 +47,10 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {{/* Pillar 1 */}}
-        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+        <div class="cfc-card cfc-card--static flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
-              <span class="material-symbols-outlined text-3xl">verified</span>
+            <div class="cfc-icon-tile">
+              {{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-icon-tile__icon") }}
             </div>
             <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
               {{ i18n "about_pillar1_title" | default "100% Official Broadcasters Only" }}
@@ -68,10 +62,10 @@
         </div>
 
         {{/* Pillar 2 */}}
-        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+        <div class="cfc-card cfc-card--static flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
-              <span class="material-symbols-outlined text-3xl">speed</span>
+            <div class="cfc-icon-tile">
+              {{ partial "cfc/icon.html" (dict "name" "clock" "class" "cfc-icon-tile__icon") }}
             </div>
             <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
               {{ i18n "about_pillar2_title" | default "Zero-Ad, Lightning Fast Experience" }}
@@ -83,10 +77,10 @@
         </div>
 
         {{/* Pillar 3 */}}
-        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+        <div class="cfc-card cfc-card--static flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
-              <span class="material-symbols-outlined text-3xl">public</span>
+            <div class="cfc-icon-tile">
+              {{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-icon-tile__icon") }}
             </div>
             <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
               {{ i18n "about_pillar3_title" | default "Country-Tailored Schedules" }}
@@ -98,10 +92,10 @@
         </div>
 
         {{/* Pillar 4 */}}
-        <div class="p-6 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm flex flex-col justify-between">
+        <div class="cfc-card cfc-card--static flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-4">
-              <span class="material-symbols-outlined text-3xl">shield</span>
+            <div class="cfc-icon-tile">
+              {{ partial "cfc/icon.html" (dict "name" "star" "class" "cfc-icon-tile__icon") }}
             </div>
             <h3 class="text-xl font-bold font-secondary uppercase mb-2 text-text-dark dark:text-darkmode-text-dark">
               {{ i18n "about_pillar4_title" | default "Supporting the Beautiful Game" }}
@@ -116,9 +110,9 @@
 
     {{/* App Capabilities Grid */}}
     <section class="max-w-4xl mx-auto my-12">
-      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+      <div class="cfc-panel">
         <div class="text-center max-w-2xl mx-auto mb-8">
-          <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light rounded-full mb-2">
+          <span class="cfc-eyebrow cfc-eyebrow--pill">
             {{ i18n "about_app_badge" | default "Mobile App Powers" }}
           </span>
           <h2 class="text-2xl md:text-4xl font-bold font-secondary uppercase text-text-dark dark:text-darkmode-text-dark mb-3">
@@ -131,55 +125,55 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {{/* Feature 1 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">timer</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_live_scores_title" | default "Real-Time Live Scores" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_live_scores_title" | default "Real-Time Live Scores" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_live_scores_desc" | default "Follow elapsed minutes, halftime/fulltime scores, and penalty shootouts live." }}</p>
             </div>
           </div>
 
           {{/* Feature 2 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">alarm</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_reminders_title" | default "Pre-Match Reminders" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_reminders_title" | default "Pre-Match Reminders" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_reminders_desc" | default "Custom alerts 15 or 30 minutes before kick-off for your teams." }}</p>
             </div>
           </div>
 
           {{/* Feature 3 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">open_in_new</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_one_tap_title" | default "One-Tap Launchers" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_one_tap_title" | default "One-Tap Launchers" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_one_tap_desc" | default "Jump straight into official streaming apps (Globoplay, Disney+, Max) with one tap." }}</p>
             </div>
           </div>
 
           {{/* Feature 4 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">radio</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_radio_title" | default "Live Radio Streams" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_radio_title" | default "Live Radio Streams" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_radio_desc" | default "Listen to live radio commentary directly inside the app when on the go." }}</p>
             </div>
           </div>
 
           {{/* Feature 5 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">filter_list</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "search" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_filter_subs_title" | default "Subscription Filters" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_filter_subs_title" | default "Subscription Filters" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_filter_subs_desc" | default "Filter matches to only show games airing on channels you subscribe to." }}</p>
             </div>
           </div>
 
           {{/* Feature 6 */}}
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-theme-light/40 dark:bg-darkmode-theme-light/40">
-            <span class="material-symbols-outlined text-2xl text-primary dark:text-darkmode-primary shrink-0 mt-0.5">leaderboard</span>
+          <div class="cfc-tinted flex items-start gap-3 p-3">
+            {{ partial "cfc/icon.html" (dict "name" "trophy" "class" "cfc-icon-tile__icon shrink-0 mt-0.5 text-primary dark:text-darkmode-primary") }}
             <div>
-              <h4 class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">{{ i18n "feature_tables_title" | default "Standings & Brackets" }}</h4>
+              <h3 class="cfc-benefit__title">{{ i18n "feature_tables_title" | default "Standings & Brackets" }}</h3>
               <p class="text-xs text-muted dark:text-darkmode-muted">{{ i18n "feature_tables_desc" | default "Follow up-to-date league tables and visual tournament knockout brackets." }}</p>
             </div>
           </div>
@@ -189,7 +183,7 @@
 
     {{/* Contact & Transparency */}}
     <section class="max-w-4xl mx-auto my-10 text-center">
-      <div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-darkmode-surface shadow-sm">
+      <div class="cfc-panel">
         <h2 class="text-2xl font-bold font-secondary uppercase text-text-dark dark:text-darkmode-text-dark mb-3">
           {{ i18n "about_contact_title" | default "Questions, Partnerships & Feedback" }}
         </h2>
@@ -197,12 +191,12 @@
           {{ i18n "about_contact_desc" | default "Are you a broadcaster, football club, or supporter with suggestions? We are continually refining our coverage and would love to hear from you." }}
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-          <a href="{{ "/faq/" | relLangURL }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light hover:opacity-90 transition-opacity">
-            <span class="material-symbols-outlined text-lg">help_outline</span>
+          <a href="{{ "/faq/" | relLangURL }}" class="cfc-btn cfc-btn--ghost cfc-btn--sm">
+            {{ partial "cfc/icon.html" (dict "name" "search" "class" "cfc-btn__icon") }}
             {{ i18n "about_btn_faq" | default "Visit FAQ" }}
           </a>
-          <a href="mailto:contato@cardapiofc.com" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-primary dark:bg-darkmode-primary dark:text-darkmode-body hover:opacity-90 transition-opacity">
-            <span class="material-symbols-outlined text-lg">mail</span>
+          <a href="mailto:contato@cardapiofc.com" class="cfc-btn cfc-btn--primary cfc-btn--sm">
+            
             {{ i18n "about_btn_contact" | default "Contact Us" }}
           </a>
         </div>

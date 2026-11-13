@@ -5,7 +5,7 @@
   <p class="cfc-empty-state__message">{{ $message }}</p>
   {{- with $action -}}
     <div class="cfc-empty-state__action-wrapper">
-      <a href="{{ .url }}" class="cfc-empty-state__action btn btn-primary">{{ .label }}</a>
+      <a href="{{ .url }}" class="cfc-empty-state__action cfc-btn cfc-btn--primary cfc-btn--sm">{{ .label }}</a>
     </div>
   {{- end -}}
 </div>

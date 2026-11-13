@@ -19,3 +19,29 @@
 @import "./cfc/components/hero.css";
 @import "./cfc/components/showcase.css";
 @import "./cfc/components/app-download.css";
+@import "./cfc/components/match-page.css";
+
+/* Metric-matched local fallbacks so the Google Fonts swap does not shift layout (CLS).
+   Measured against Arial: Saira Condensed 700 is 68% as wide; Inter 400 is 107.6% as wide. */
+@font-face {
+  font-family: "Saira Condensed Fallback";
+  src: local("Arial"), local("Roboto"), local("Helvetica Neue");
+  font-weight: 100 900;
+  size-adjust: 68%;
+  ascent-override: 166%;
+  descent-override: 65%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Roboto"), local("Helvetica Neue");
+  font-weight: 100 900;
+  size-adjust: 107.6%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+@theme {
+  --font-primary: Inter, "Inter Fallback", sans-serif;
+  --font-secondary: "Saira Condensed", "Saira Condensed Fallback", sans-serif;
+}

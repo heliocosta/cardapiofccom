@@ -1,0 +1,6 @@
+{{- /* cfc/zone-pill.html — the edition's time zone label with a clock icon (shown once per day header). */ -}}
+{{- $class := .class | default "cfc-day-header__zone" -}}
+{{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+{{- $label := $ed.zoneLabel -}}
+{{- if $ed.isGlobal }}{{ $label = "UTC" }}{{ end -}}
+<span class="{{ $class }}">{{ partial "cfc/icon.html" (dict "name" "clock" "class" "cfc-i") }}<span>{{ $label }}</span></span>

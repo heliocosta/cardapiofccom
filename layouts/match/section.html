@@ -34,66 +34,59 @@
   {{- end -}}
   {{- $breadcrumbs = $breadcrumbs | append (dict "name" $title "label" $title) -}}
 
-
-  {{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
-  {{- $countryName := "" -}}
-  {{- with $ed.country -}}
-    {{- $countryKey := printf "country_%s" (lower .) -}}
-    {{- $countryName = i18n $countryKey | default . -}}
-  {{- end -}}
-  {{- if not $countryName }}{{ $countryName = $ed.label }}{{ end -}}
-
+  {{- $countryIn := partial "cfc/country-in.html" . -}}
   {{- $intro := "" -}}
   {{- if and $m $m.home $m.away $m.league -}}
-    {{- $intro = printf "Find where to watch %s x %s (%s) live on TV and streaming in %s." $m.home.name $m.away.name $m.league.name $countryName -}}
+    {{- $intro = i18n "match_intro" (dict "Home" $m.home.name "Away" $m.away.name "League" $m.league.name "In" $countryIn) -}}
   {{- else -}}
-    {{- $intro = printf "Find where to watch live football on TV and streaming in %s." $countryName -}}
+    {{- $intro = i18n "match_intro_generic" (dict "In" $countryIn) -}}
+  {{- end -}}
+
+  {{- $roundLabel := "" -}}
+  {{- with $m -}}
+    {{- with .round -}}
+      {{- $lr := lower . -}}
+      {{- if or (strings.HasPrefix $lr "rodada") (strings.HasPrefix $lr "round") (strings.HasPrefix $lr "jornada") (strings.HasPrefix $lr "regular") -}}
+        {{- $roundLabel = . -}}
+      {{- else -}}
+        {{- $roundLabel = printf "%s %s" (i18n "round" | default "Round") . -}}
+      {{- end -}}
+    {{- end -}}
   {{- end -}}
 
   <div class="cfc-container py-6">
-    {{ partial "cfc/page-header.html" (dict "title" $title "heading" $title "intro" $intro "breadcrumbs" $breadcrumbs "breadcrumb" $breadcrumbs) }}
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    <header class="cfc-match-head">
+      {{- with $m -}}
+        {{- with .league -}}
+          <p class="cfc-eyebrow">{{ .name }}{{ with $roundLabel }} · {{ . }}{{ end }}</p>
+        {{- end -}}
+      {{- end -}}
+      <h1 class="cfc-match-head__title">{{ $title }}</h1>
+      {{- with $m -}}
+        {{- with .kickoff -}}
+          {{- $iso := partial "time/format.html" (dict "t" . "style" "iso") -}}
+          {{- $dayHeading := partial "time/format.html" (dict "t" . "style" "dayHeading") -}}
+          {{- $timeStr := partial "time/format.html" (dict "t" . "style" "time") -}}
+          {{- $zone := partial "time/zone.html" (dict "t" .) -}}
+          <p class="cfc-match-head__when">
+            <time datetime="{{ $iso }}">{{ $dayHeading }}</time>
+            <span class="cfc-match-head__when-sep" aria-hidden="true">·</span>
+            <span class="cfc-match-head__time">{{ $timeStr }}</span>
+            <span class="cfc-match-head__zone">{{ partial "cfc/icon.html" (dict "name" "clock" "class" "cfc-i") }}<span>{{ $zone.label }}{{ with $zone.offset }} ({{ . }}){{ end }}</span></span>
+          </p>
+        {{- end -}}
+      {{- end -}}
+      <p class="cfc-match-head__intro">{{ $intro }}</p>
+    </header>
+
     {{ partial "cfcpage/match-hero.html" (dict "match" $m) }}
     {{ partial "cfcpage/channels.html" (dict "match" $m) }}
     {{ partial "cfcpage/edition-links.html" (dict "match" $m) }}
-    {{ partial "cfc/app-download.html" (dict "title" (i18n "app_download_match_title" | default "Follow This Match in the CardápioFC App") "subtitle" (i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, official TV & streaming channels, and smart notifications directly on your phone.")) }}
+    {{ partial "cfc/app-download.html" (dict "page" . "title" (i18n "app_download_match_title" | default "Follow this match in the CardápioFC app") "subtitle" (i18n "app_download_match_subtitle" | default "Get pre-match kickoff alarms, official TV & streaming channels, and smart notifications directly on your phone.")) }}
     {{ partial "cfcpage/faq-section.html" (dict "match" $m "page" .) }}
-
-    {{/* Why CardápioFC is #1 Box */}}
-    <section class="my-10 p-6 md:p-8 rounded-xl bg-theme-light dark:bg-darkmode-theme-light">
-      <h2 class="text-2xl font-bold font-secondary mb-2 text-text-dark dark:text-darkmode-text-dark">{{ i18n "why_cardapiofc_title" | default "Why CardápioFC is #1 for Live Matches" }}</h2>
-      <p class="text-sm md:text-base text-muted dark:text-darkmode-muted mb-6">Everything you need to watch this match and follow 200+ competitions with confidence.</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
-            {{ partial "cfc/icon.html" (dict "name" "clock" "class" "w-6 h-6") }}
-          </div>
-          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Real-Time Schedule</div>
-          <p class="text-xs text-muted dark:text-darkmode-muted">Instant kickoff time updates in your local timezone.</p>
-        </div>
-        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
-            {{ partial "cfc/icon.html" (dict "name" "tv" "class" "w-6 h-6") }}
-          </div>
-          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">100% Official Channels</div>
-          <p class="text-xs text-muted dark:text-darkmode-muted">Only legal TV networks and official streaming platforms.</p>
-        </div>
-        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
-            {{ partial "cfc/icon.html" (dict "name" "bell" "class" "w-6 h-6") }}
-          </div>
-          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">Kick-off Reminders</div>
-          <p class="text-xs text-muted dark:text-darkmode-muted">Push notification alarms 5, 15, or 30 minutes before kick-off.</p>
-        </div>
-        <div class="p-5 rounded-xl bg-surface dark:bg-darkmode-surface shadow-sm">
-          <div class="w-10 h-10 rounded-lg bg-theme-light dark:bg-darkmode-theme-light flex items-center justify-center text-primary dark:text-darkmode-primary mb-3">
-            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "w-6 h-6") }}
-          </div>
-          <div class="font-bold text-sm text-text-dark dark:text-darkmode-text-dark mb-1">200+ Competitions</div>
-          <p class="text-xs text-muted dark:text-darkmode-muted">From local state championships to continental finals.</p>
-        </div>
-      </div>
-    </section>
-
+    {{ partial "cfc/benefits.html" (dict "page" .) }}
     {{ partial "cfcpage/freshness.html" . }}
   </div>
 {{ end }}

@@ -1,0 +1,22 @@
+{{- /* cfc/league-country-groups.html — groups league view-models by localized country name. */ -}}
+{{- /* Params: leagues (slice). Returns slice of dicts {name, id, leagues}, sorted by country name. */ -}}
+{{- $leagues := .leagues | default slice -}}
+{{- $intl := i18n "international" | default "International" -}}
+{{- $map := dict -}}
+{{- $order := slice -}}
+{{- range $leagues -}}
+  {{- $c := $intl -}}
+  {{- with .country -}}
+    {{- with .name -}}
+      {{- if ne . "" }}{{ $c = . }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $existing := index $map $c | default slice -}}
+  {{- $map = merge $map (dict $c ($existing | append .)) -}}
+  {{- if not (in $order $c) }}{{ $order = $order | append $c }}{{ end -}}
+{{- end -}}
+{{- $result := slice -}}
+{{- range sort $order -}}
+  {{- $result = $result | append (dict "name" . "id" (. | urlize) "leagues" (index $map .)) -}}
+{{- end -}}
+{{- return $result -}}

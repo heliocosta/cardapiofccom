@@ -6,8 +6,8 @@
   padding: 0.875rem 1rem 1rem;
   overflow: hidden;
   background-color: var(--color-surface);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 6%, transparent);
-  border-radius: 1rem;
+  border: var(--cfc-border);
+  border-radius: var(--cfc-radius-md);
   box-shadow: var(--cfc-shadow-sm);
   text-decoration: none;
   color: inherit;
@@ -27,7 +27,7 @@
 .cfc-match-card:hover {
   translate: 0 -3px;
   box-shadow: var(--cfc-shadow-md);
-  border-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: var(--cfc-border-color-hover);
 }
 .cfc-match-card:hover::before {
   opacity: 1;
@@ -101,26 +101,27 @@
   display: inline-block;
   min-width: 3.75rem;
   padding: 0.35rem 0.6rem;
-  border-radius: 0.6rem;
-  background-color: var(--color-primary);
-  color: #ffffff;
+  border-radius: var(--cfc-radius-xs);
+  background-color: var(--cfc-ink);
+  color: var(--cfc-on-ink);
   font-size: 1.0625rem;
   line-height: 1;
   letter-spacing: 0.02em;
   text-align: center;
-  box-shadow: 0 8px 16px -10px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  box-shadow: var(--cfc-shadow-ink);
 }
+/* Time zone is shown once per day header, not on every card */
 .cfc-match-card__center .cfc-kickoff-time__zone {
-  font-size: 0.6875rem;
+  display: none;
 }
 .cfc-match-card__score {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   padding: 0.3rem 0.7rem;
-  border-radius: 0.6rem;
-  background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
-  color: var(--color-primary);
+  border-radius: var(--cfc-radius-xs);
+  background-color: var(--cfc-tint-strong);
+  color: var(--cfc-ink);
   font-family: var(--font-secondary);
   font-weight: 700;
   font-size: 1.3rem;
@@ -130,7 +131,7 @@
 .cfc-match-card__score-sep {
   width: 1px;
   height: 1rem;
-  background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  background-color: color-mix(in srgb, var(--cfc-ink) 30%, transparent);
 }
 .cfc-match-card__score.is-live {
   background-color: color-mix(in srgb, var(--color-live) 10%, var(--color-surface));
@@ -175,11 +176,7 @@
 /* Dark mode */
 .dark .cfc-match-card {
   background-color: var(--color-darkmode-surface);
-  border-color: color-mix(in srgb, var(--color-darkmode-primary) 10%, transparent);
   color: var(--color-darkmode-text);
-}
-.dark .cfc-match-card:hover {
-  border-color: color-mix(in srgb, var(--color-darkmode-primary) 28%, transparent);
 }
 .dark .cfc-match-card::before {
   background-image: linear-gradient(180deg, var(--color-darkmode-primary), var(--color-darkmode-accent));
@@ -194,15 +191,6 @@
 }
 .dark .cfc-match-card__team-name {
   color: var(--color-darkmode-text-dark);
-}
-.dark .cfc-match-card__center .cfc-kickoff-time__time {
-  background-color: var(--color-darkmode-primary);
-  color: var(--color-darkmode-body);
-  box-shadow: none;
-}
-.dark .cfc-match-card__score {
-  background-color: color-mix(in srgb, var(--color-darkmode-primary) 14%, var(--color-darkmode-surface));
-  color: var(--color-darkmode-primary);
 }
 .dark .cfc-match-card__score.is-live,
 .dark .cfc-match-card__state.is-live {

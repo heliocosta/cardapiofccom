@@ -1,0 +1,16 @@
+{{- /* cfc/scroller.html — horizontal strip with visible scroll affordance (fade masks + prev/next buttons). */ -}}
+{{- /* Params: content (pre-rendered HTML of the items), label (aria-label), tag ("nav" default, or "div"), role, class (extra classes). */ -}}
+{{- $label := .label | default "" -}}
+{{- $class := .class | default "" -}}
+{{- $tag := .tag | default "nav" -}}
+{{- $role := .role | default "" -}}
+<div class="cfc-scroller{{ with $class }} {{ . }}{{ end }}" data-cfc-scroller>
+  <button type="button" class="cfc-scroller__btn cfc-scroller__btn--prev" aria-label="{{ i18n "scroll_left" | default "Scroll left" }}" data-cfc-scroll="-1">{{ partial "cfc/icon.html" (dict "name" "chevron-left" "class" "cfc-i") }}</button>
+  {{- if eq $tag "div" -}}
+    <div class="cfc-scroller__track"{{ with $label }} aria-label="{{ . }}"{{ end }}{{ with $role }} role="{{ . }}"{{ end }}>{{ .content }}</div>
+  {{- else -}}
+    <nav class="cfc-scroller__track"{{ with $label }} aria-label="{{ . }}"{{ end }}{{ with $role }} role="{{ . }}"{{ end }}>{{ .content }}</nav>
+  {{- end -}}
+  <button type="button" class="cfc-scroller__btn cfc-scroller__btn--next" aria-label="{{ i18n "scroll_right" | default "Scroll right" }}" data-cfc-scroll="1">{{ partial "cfc/icon.html" (dict "name" "chevron-right" "class" "cfc-i") }}</button>
+</div>
+{{ partial "cfc/scroller-script.html" . }}

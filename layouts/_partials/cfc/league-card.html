@@ -1,0 +1,17 @@
+{{- /* cfc/league-card.html — compact row card for a league (directory pages). Params: league, showCountry. */ -}}
+{{- $l := .league -}}
+{{- $showCountry := .showCountry | default false -}}
+{{- $meta := slice -}}
+{{- if $showCountry -}}
+  {{- with $l.country }}{{ with .name }}{{ $meta = $meta | append . }}{{ end }}{{ end -}}
+{{- end -}}
+{{- with $l.season }}{{ $meta = $meta | append . }}{{ end -}}
+<a href="{{ $l.url }}" class="cfc-card cfc-card--row cfc-league-card" data-cfc-league="{{ $l.slug }}">
+  {{- with $l.logo -}}
+    <img src="{{ . }}" alt="" width="40" height="40" class="cfc-card__logo" loading="lazy" decoding="async" onerror="this.hidden=true" />
+  {{- end -}}
+  <span class="cfc-card__text">
+    <span class="cfc-card__name">{{ $l.name }}</span>
+    {{- with (delimit $meta " · ") -}}<span class="cfc-card__meta">{{ . }}</span>{{- end -}}
+  </span>
+</a>

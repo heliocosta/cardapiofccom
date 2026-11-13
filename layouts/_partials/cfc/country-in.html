@@ -1,0 +1,9 @@
+{{- /* cfc/country-in.html — localized "in <country>" phrase for the current edition ("no Brasil", "in the UK", "around the world"). */ -}}
+{{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+{{- $phrase := i18n "worldwide" | default "around the world" -}}
+{{- if not $ed.isGlobal -}}
+  {{- $code := lower $ed.country -}}
+  {{- $name := i18n (printf "country_%s" $code) | default $ed.label -}}
+  {{- $phrase = i18n (printf "country_in_%s" $code) | default (printf "in %s" $name) -}}
+{{- end -}}
+{{- return $phrase -}}

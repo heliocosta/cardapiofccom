@@ -1,0 +1,9 @@
+{{- /* cfc/page-hero.html — centred page title block for list pages: eyebrow pill, h1, intro. */ -}}
+{{- $eyebrow := .eyebrow | default "" -}}
+{{- $title := .title | default "" -}}
+{{- $intro := .intro | default "" -}}
+<header class="cfc-page-hero">
+  {{- with $eyebrow -}}<p class="cfc-eyebrow cfc-eyebrow--pill">{{ . }}</p>{{- end -}}
+  <h1 class="cfc-page-hero__title">{{ $title }}</h1>
+  {{- with $intro -}}<p class="cfc-page-hero__intro">{{ . }}</p>{{- end -}}
+</header>

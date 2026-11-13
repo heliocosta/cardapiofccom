@@ -1,0 +1,25 @@
+{{- /* cfc/benefits.html — localized "Why CardápioFC" panel with four benefit cards. */ -}}
+{{- /* Params: title, subtitle, id (optional). */ -}}
+{{- $title := .title | default (i18n "why_cardapiofc_title" | default "Why CardápioFC is #1 for Football Matches") -}}
+{{- $subtitle := .subtitle | default (i18n "why_cardapiofc_subtitle" | default "Everything you need to never miss a match on TV or official streaming.") -}}
+{{- $id := .id | default "cfc-why-title" -}}
+{{- $items := slice
+  (dict "icon" "clock" "title" (i18n "benefit_realtime_title" | default "Real-Time Schedule") "desc" (i18n "benefit_realtime_desc" | default "Up-to-date kick-off times and broadcast changes across TV and streaming platforms."))
+  (dict "icon" "tv" "title" (i18n "benefit_official_title" | default "100% Official Channels") "desc" (i18n "benefit_official_desc" | default "Only legitimate, licensed broadcasters and streaming services. Strictly no piracy."))
+  (dict "icon" "bell" "title" (i18n "benefit_reminders_title" | default "Smart Kick-off Reminders") "desc" (i18n "benefit_reminders_desc" | default "Receive push notifications 5, 15, or 30 minutes before kick-off so you never miss a game."))
+  (dict "icon" "globe" "title" (i18n "benefit_competitions_title" | default "200+ Competitions") "desc" (i18n "benefit_competitions_desc" | default "From domestic leagues and state championships to continental cups and World Cup qualifiers."))
+-}}
+<section class="cfc-section cfc-panel cfc-panel--tint cfc-why" aria-labelledby="{{ $id }}">
+  <p class="cfc-eyebrow">{{ i18n "why_eyebrow" | default "Why CardápioFC" }}</p>
+  <h2 id="{{ $id }}" class="cfc-panel__title">{{ $title }}</h2>
+  <p class="cfc-panel__intro">{{ $subtitle }}</p>
+  <div class="cfc-benefits">
+    {{- range $items -}}
+      <div class="cfc-card cfc-card--compact cfc-card--static cfc-benefit">
+        <div class="cfc-icon-tile cfc-icon-tile--sm">{{ partial "cfc/icon.html" (dict "name" .icon "class" "cfc-icon-tile__icon") }}</div>
+        <h3 class="cfc-benefit__title">{{ .title }}</h3>
+        <p class="cfc-benefit__desc">{{ .desc }}</p>
+      </div>
+    {{- end -}}
+  </div>
+</section>

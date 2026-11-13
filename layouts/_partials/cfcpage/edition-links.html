@@ -34,14 +34,14 @@
   {{- end -}}
 
   {{- if gt (len $crossLinks) 0 -}}
-    <aside class="cfc-edition-links my-6 p-4 rounded-lg bg-theme-light dark:bg-darkmode-theme-light border border-border">
-      <h3 class="cfc-edition-links__heading text-sm font-semibold text-muted mb-3">{{ i18n "watch_in_other_countries" }}</h3>
-      <div class="cfc-edition-links__list flex flex-wrap gap-2">
+    <aside class="cfc-edition-links" aria-labelledby="cfc-edition-links-title">
+      <h3 id="cfc-edition-links-title" class="cfc-edition-links__heading">{{ i18n "watch_in_other_countries" }}</h3>
+      <ul class="cfc-chip-list">
         {{- range $crossLinks -}}
           {{- $cName := i18n (printf "country_%s" (lower .country)) | default .edition.label -}}
-          <a href="{{ .url }}" hreflang="{{ .edition.code }}" lang="{{ .edition.code }}" class="btn btn-outline-primary btn-sm text-xs">{{ $cName }}</a>
+          <li><a href="{{ .url }}" hreflang="{{ .edition.code }}" lang="{{ .edition.code }}" class="cfc-chip">{{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-pill__icon") }}{{ $cName }}</a></li>
         {{- end -}}
-      </div>
+      </ul>
     </aside>
   {{- end -}}
 {{- end -}}
