@@ -1,5 +1,5 @@
 @theme {
-  --radius-card: 1rem;
+  --radius-card: 0;
   --shadow-card: 0 1px 2px 0 rgb(15 32 0 / 0.06), 0 1px 3px 0 rgb(15 32 0 / 0.04);
   --container-max: 1200px;
 }
@@ -44,4 +44,32 @@
 @theme {
   --font-primary: Inter, "Inter Fallback", sans-serif;
   --font-secondary: "Saira Condensed", "Saira Condensed Fallback", sans-serif;
+  /* Sharp corners everywhere: zero every Tailwind radius token */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
+}
+/* Utilities and theme components that carry a literal radius instead of a token */
+[class*="rounded"],
+.btn,
+.form-input,
+.nav-dropdown-list,
+.table-of-content,
+.share-icons .share-link,
+.fediverse-input-wrapper,
+.fediverse-input-wrapper input,
+.fediverse-input-wrapper button,
+.theme-switcher span,
+input[type="radio"],
+.content img,
+.content pre,
+.content kbd,
+.prose pre,
+.prose kbd {
+  border-radius: 0;
 }

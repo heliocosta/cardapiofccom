@@ -39,7 +39,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  border-radius: 9999px;
+  border-radius: 0;
   background-color: var(--color-light, #F3F4F6);
   text-transform: uppercase;
 }

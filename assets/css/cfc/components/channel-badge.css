@@ -6,7 +6,7 @@
   padding: 0.125rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
-  border-radius: 999px;
+  border-radius: 0;
   background-color: var(--cfc-tint);
   color: var(--color-text);
   text-decoration: none;
@@ -40,7 +40,7 @@ a.cfc-channel-badge:hover {
   align-items: center;
   gap: 0.625rem;
   padding: 0.4rem 0.4rem 0.4rem 0.875rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: var(--cfc-border);
   background-color: var(--color-surface);
   color: var(--color-text-dark);
@@ -63,7 +63,7 @@ a.cfc-channel-badge:hover {
 }
 .cfc-channel-card__type {
   padding: 0.15rem 0.45rem;
-  border-radius: 999px;
+  border-radius: 0;
   background-color: var(--cfc-tint);
   color: var(--color-muted);
   font-size: 0.625rem;
@@ -80,7 +80,7 @@ a.cfc-channel-badge:hover {
   align-items: center;
   gap: 0.3rem;
   padding: 0.4rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 0;
   background-color: var(--cfc-ink);
   color: var(--cfc-on-ink);
   font-size: 0.75rem;

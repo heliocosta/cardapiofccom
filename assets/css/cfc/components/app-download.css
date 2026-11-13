@@ -33,7 +33,7 @@
   height: 36rem;
   right: -10rem;
   top: -16rem;
-  border-radius: 50%;
+  border-radius: 0;
   background-image: radial-gradient(closest-side, rgb(255 255 255 / 0.18), transparent);
 }
 .cfc-app-download__body {

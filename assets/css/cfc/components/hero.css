@@ -17,7 +17,7 @@
 }
 .cfc-hero__glow {
   position: absolute;
-  border-radius: 50%;
+  border-radius: 0;
 }
 .cfc-hero__glow--a {
   width: 48rem;
@@ -131,7 +131,7 @@
 /* Phones */
 .cfc-phone {
   position: relative;
-  border-radius: 13.5% / 6.25%;
+  border-radius: 0;
   box-shadow: var(--cfc-phone-shadow);
 }
 .cfc-phone__img {
@@ -211,7 +211,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 0.9rem;
-  border-radius: 999px;
+  border-radius: 0;
   background-color: var(--color-surface);
   border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
   box-shadow: var(--cfc-shadow-md);

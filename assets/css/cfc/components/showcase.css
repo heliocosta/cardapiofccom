@@ -29,7 +29,7 @@
   height: 44rem;
   right: -14rem;
   top: -12rem;
-  border-radius: 50%;
+  border-radius: 0;
   background-image: radial-gradient(closest-side, color-mix(in srgb, var(--color-darkmode-primary) 22%, transparent), transparent);
 }
 .cfc-showcase__grid {
