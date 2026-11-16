@@ -1,0 +1,20 @@
+{{/* seo/jsonld.html - one unified @graph per page. Args: Page, ctx */}}
+{{ $graph := slice }}
+{{ $a := dict "page" .page "ctx" .ctx }}
+{{ if eq .ctx.kind "match" }}
+  {{ $graph = $graph | append (partial "seo/jsonld-match.html" $a) }}
+  {{ $graph = $graph | append (partial "seo/jsonld-faq.html" (partial "cfcpage/faq-items.html" .ctx.entity.match)) }}
+{{ else if eq .ctx.kind "team" }}
+  {{ $graph = $graph | append (partial "seo/jsonld-team.html" $a) }}
+{{ else if eq .ctx.kind "league" }}
+  {{ $graph = $graph | append (partial "seo/jsonld-league.html" $a) }}
+{{ end }}
+{{ if not .page.IsHome }}
+  {{ $graph = $graph | append (partial "seo/jsonld-breadcrumb.html" $a) }}
+{{ else }}
+  {{ $graph = $graph | append (partial "seo/jsonld-website.html" $a) }}
+  {{ $graph = $graph | append (partial "seo/jsonld-organization.html" $a) }}
+  {{ $graph = $graph | append (dict "@type" "MobileApplication" "name" "CardápioFC" "operatingSystem" "iOS" "applicationCategory" "SportsApplication" "url" "https://apps.apple.com/app/id6745226833") }}
+  {{ $graph = $graph | append (dict "@type" "MobileApplication" "name" "CardápioFC" "operatingSystem" "Android" "applicationCategory" "SportsApplication" "url" "https://play.google.com/store/apps/details?id=br.com.cardapiofutebol") }}
+{{ end }}
+{{ partial "seo/jsonld-render.html" (dict "@context" "https://schema.org" "@graph" $graph) }}

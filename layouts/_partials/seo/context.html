@@ -1,0 +1,32 @@
+{{/* seo/context.html - shared SEO view-model for a page: title, description, indexable, entity, ed.
+     Use: partial "seo/context.html" . (Page) */}}
+{{ $p := . }}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $entity := partial "cfcdata/page-entity.html" . }}
+{{ $title := $ed.title }}
+{{ $desc := $p.Description | default $p.Params.description | default $ed.description }}
+{{ $noindex := or $p.Params.noindex (eq $p.Kind "404") }}
+{{ $in := partial "cfc/country-in.html" . }}
+{{ if and $p.Title (not $p.IsHome) }}{{ $title = printf "%s · %s" $p.Title $ed.title }}{{ end }}
+{{ $kind := "" }}
+{{ with $entity }}{{ $kind = .kind }}{{ end }}
+{{ if eq $kind "match" }}
+  {{ $m := $entity.match }}
+  {{ $zone := partial "time/zone.html" $m.kickoff }}
+  {{ $zoneTxt := $zone.label }}
+  {{ if $zone.offset }}{{ $zoneTxt = printf "%s (%s)" $zone.label $zone.offset }}{{ end }}
+  {{ $names := slice }}
+  {{ range $entity.channels }}{{ range .channels }}{{ $names = $names | append .name }}{{ end }}{{ end }}
+  {{ $chText := i18n "seo_channels_pending" }}
+  {{ if $names }}{{ $chText = i18n "seo_channels_known" (dict "List" (delimit (first 4 (uniq $names)) ", ")) }}{{ end }}
+  {{ $args := dict "Home" $m.home.name "Away" $m.away.name "League" $m.league.name "In" $in "Date" (partial "time/format.html" (dict "t" $m.kickoff "style" "dayHeading")) "Time" (partial "time/format.html" (dict "t" $m.kickoff "style" "time")) "Zone" $zoneTxt "Channels" $chText }}
+  {{ $title = i18n "seo_match_title" $args }}
+  {{ $desc = i18n "seo_match_desc" $args }}
+{{ else if eq $kind "team" }}
+  {{ $title = i18n "seo_team_title" (dict "Team" $entity.team.name) }}
+  {{ $desc = i18n "seo_team_desc" (dict "Team" $entity.team.name "In" $in) }}
+{{ else if eq $kind "league" }}
+  {{ $title = i18n "seo_league_title" (dict "League" $entity.league.name) }}
+  {{ $desc = i18n "seo_league_desc" (dict "League" $entity.league.name "In" $in) }}
+{{ end }}
+{{ return (dict "title" $title "desc" $desc "noindex" $noindex "entity" $entity "kind" $kind "ed" $ed) }}

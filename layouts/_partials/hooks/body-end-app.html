@@ -1,0 +1,7 @@
+{{/* hooks/body-end-app.html - deferred app runtime and search client scripts */}}
+{{- $rt := resources.Get "js/cfc-app-runtime.js" | js.Build (dict "minify" true "target" "es2019" "format" "iife" "targetPath" "js/cfc-app-runtime.js") | fingerprint -}}
+<script defer src="{{ $rt.RelPermalink }}" integrity="{{ $rt.Data.Integrity }}" crossorigin="anonymous"></script>
+{{- if eq .Section "search" -}}
+  {{- $sr := resources.Get "js/cfc-search.js" | js.Build (dict "minify" true "target" "es2019" "format" "iife" "targetPath" "js/cfc-search.js") | fingerprint -}}
+<script defer src="{{ $sr.RelPermalink }}" integrity="{{ $sr.Data.Integrity }}" crossorigin="anonymous"></script>
+{{- end -}}

@@ -1,0 +1,47 @@
+# Product event vocabulary (contract consumed by the client runtime, downstream specs and check-analytics).
+# attr: name of the data-cfc-<attr> attribute the value is read from.
+match_open:
+  trigger: click
+  params:
+    match_slug: { attr: match, max: 100 }
+channel_click:
+  trigger: click
+  params:
+    channel_id: { attr: channel, max: 60 }
+    channel_type: { attr: channel-type, enum: [tv, streaming, free_tv] }
+    match_slug: { attr: match, max: 100 }
+  derived: [link_domain]
+edition_switch:
+  trigger: click
+  params:
+    to_edition: { attr: target-edition, max: 10 }
+  derived: [from_edition]
+app_open:
+  trigger: click_or_api
+  params:
+    app_target: { attr: app-target, enum: [scheme, universal_link] }
+    placement: { attr: placement, enum: [smart_banner, app_landing, entity, footer] }
+    app_path: { attr: app-path, max: 100 }
+  derived: [platform]
+store_click:
+  trigger: click
+  params:
+    store: { attr: store, enum: [app_store, play_store] }
+    placement: { attr: placement, enum: [smart_banner, app_landing, entity, footer] }
+  derived: [platform]
+share:
+  trigger: click
+  params:
+    method: { attr: share-method, enum: [native, whatsapp, x, facebook, telegram, email, copy_link] }
+    content_type: { attr: content-type, enum: [match, team, league, page] }
+    item_id: { attr: item, max: 100 }
+search:
+  trigger: api
+  params:
+    search_term: { sanitize: query, max: 100 }
+    results_count: { type: int, min: 0 }
+geo_landing:
+  trigger: load
+  params:
+    geo_country: { max: 2 }
+  derived: [landing_path]

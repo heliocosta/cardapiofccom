@@ -1,0 +1,58 @@
+/* App landing pages, search UI, Android smart banner, and footer promo */
+.cfc-android-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: var(--color-theme-light, #f5f5f5);
+  border-bottom: 1px solid var(--color-border, #e5e5e5);
+}
+.cfc-android-banner.hidden { display: none; }
+.cfc-android-banner__close {
+  background: none;
+  border: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+.cfc-android-banner__info { flex: 1; min-width: 0; }
+.cfc-android-banner__title { font-weight: 700; margin: 0; font-size: 0.875rem; }
+.cfc-android-banner__sub { margin: 0; font-size: 0.75rem; opacity: 0.8; }
+
+.cfc-footer-app {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border, #e5e5e5);
+}
+.cfc-footer-app__title { font-weight: 700; margin: 0; }
+.cfc-footer-app__sub { margin: 0.25rem 0 0; font-size: 0.875rem; opacity: 0.8; }
+
+.cfc-app-landing { text-align: center; max-width: 38rem; margin: 0 auto; }
+.cfc-app-landing__title { margin-bottom: 0.75rem; }
+.cfc-app-landing__desc { margin-bottom: 1.5rem; }
+.cfc-app-landing__cta { margin-bottom: 2rem; }
+.cfc-app-landing__stores-label { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; }
+.cfc-app-landing .cfc-store-badges { justify-content: center; }
+
+.cfc-search-form { margin-bottom: 1rem; }
+.cfc-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-border, #d4d4d4);
+  background: var(--color-body, #fff);
+  color: var(--color-text, #111);
+  font: inherit;
+}
+.cfc-search-status { font-size: 0.875rem; margin-bottom: 1rem; opacity: 0.8; }
+.cfc-search-group { margin-bottom: 1.5rem; }
+.cfc-search-group__title { font-size: 1rem; margin-bottom: 0.5rem; }
+.cfc-search-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+.cfc-search-item { display: flex; align-items: center; gap: 0.75rem; }
+.cfc-search-item__name { font-weight: 600; flex: 1; }
+.cfc-search-item__meta { font-size: 0.8125rem; opacity: 0.75; }

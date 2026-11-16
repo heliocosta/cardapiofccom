@@ -1,0 +1,18 @@
+{{/* analytics/banner.html - hidden, localised consent bottom sheet */}}
+{{- $privacy := "privacy/" | relLangURL -}}
+<section id="cfc-consent" class="cfc-consent" role="region" aria-labelledby="cfc-consent-title" hidden>
+  <div class="cfc-consent__inner">
+    <p id="cfc-consent-title" class="cfc-consent__title" tabindex="-1">{{ i18n "consent_title" }}</p>
+    <p class="cfc-consent__text">{{ i18n "consent_text" }} <a href="{{ $privacy }}">{{ i18n "consent_privacy_link" }}</a></p>
+    <div class="cfc-consent__layer2" data-cfc-layer2 hidden>
+      <label class="cfc-consent__opt"><input type="checkbox" data-cfc-check-analytics> <span><strong>{{ i18n "consent_analytics_label" }}</strong> {{ i18n "consent_analytics_desc" }}</span></label>
+      <label class="cfc-consent__opt"><input type="checkbox" disabled> <span><strong>{{ i18n "consent_ads_label" }}</strong> {{ i18n "consent_ads_desc" }}</span></label>
+      <button type="button" class="cfc-consent__btn" data-cfc-act="save">{{ i18n "consent_save" }}</button>
+    </div>
+    <div class="cfc-consent__actions">
+      <button type="button" class="cfc-consent__btn" data-cfc-act="reject">{{ i18n "consent_reject_all" }}</button>
+      <button type="button" class="cfc-consent__btn" data-cfc-act="accept">{{ i18n "consent_accept_all" }}</button>
+      <button type="button" class="cfc-consent__link" data-cfc-act="customise">{{ i18n "consent_customise" }}</button>
+    </div>
+  </div>
+</section>

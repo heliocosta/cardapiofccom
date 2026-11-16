@@ -1,0 +1,7 @@
+{{/* analytics/head-inline.html - synchronous consent bootstrap (first script in head) */}}
+{{- $page := . -}}
+{{- partialCached "analytics/validate.html" . site.Language.Lang -}}
+{{- $s := partialCached "analytics/settings.html" . site.Language.Lang -}}
+{{- $cfg := dict "region" $s.consent.region "outside" $s.consent.outside "tz" $s.consent.timezones "pv" $s.consent.policyVersion "days" $s.consent.retentionDays "wait" $s.consent.waitMs "inRegion" $s.editionInRegion "global" $s.edition.isGlobal -}}
+{{- $js := resources.Get "js/analytics/head.js" | js.Build (dict "minify" true "target" "es2019" "format" "iife") -}}
+<script data-cfc-consent-defaults>window.__cfcCfg={{ $cfg | jsonify | safeJS }};{{ $js.Content | safeJS }}</script>

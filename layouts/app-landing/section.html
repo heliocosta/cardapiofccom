@@ -1,0 +1,32 @@
+{{ define "main" }}
+{{- $feat := .Params.app_feature | default "favourites" -}}
+{{- $scheme := partial "cfcapp/scheme-url.html" (dict "kind" $feat) -}}
+{{- $ios := partial "cfcapp/store-url.html" (dict "store" "ios" "medium" "deeplink" "campaign" $feat) -}}
+{{- $android := partial "cfcapp/store-url.html" (dict "store" "android" "medium" "deeplink" "campaign" $feat) -}}
+{{- $titleKey := printf "app_landing_%s_title" $feat -}}
+{{- $descKey := printf "app_landing_%s_desc" $feat -}}
+<section class="cfc-section">
+  <div class="cfc-container">
+    <div class="cfc-panel cfc-app-landing">
+      <h1 class="cfc-app-landing__title">{{ i18n $titleKey | default .Title }}</h1>
+      <p class="cfc-app-landing__desc">{{ i18n $descKey | default .Description }}</p>
+      <div class="cfc-app-landing__cta">
+        <a href="{{ $scheme }}"
+           class="cfc-btn cfc-btn--primary cfc-btn--lg"
+           data-cfc-event="app_open"
+           data-cfc-app-target="scheme"
+           data-cfc-placement="app_landing"
+           data-cfc-app-path="/{{ $feat }}"
+           data-ios-url="{{ $ios }}"
+           data-android-url="{{ $android }}">
+          {{ i18n "app_open_in_app" }}
+        </a>
+      </div>
+      <div class="cfc-app-landing__stores">
+        <p class="cfc-app-landing__stores-label">{{ i18n "store_download_heading" }}</p>
+        {{ partial "cfcapp/store-badges.html" (dict "page" . "placement" "app_landing" "campaign" $feat) }}
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}

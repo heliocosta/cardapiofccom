@@ -1,0 +1,77 @@
+{
+  "phase": "http_request_dynamic_redirect",
+  "kind": "zone",
+  "name": "cardapiofc geo-routing",
+  "rules": [
+    {
+      "description": "Geo-route GB to /en-gb/",
+      "expression": "(ip.src.country eq \"GB\") and not cf.client.bot and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": false,
+          "target_url": {
+            "expression": "concat(\"/en-gb\", http.request.uri.path, if(http.request.uri.query ne \"\", concat(\"?\", http.request.uri.query, \"&cfc_geo=GB\"), \"?cfc_geo=GB\"))"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route IE to /en-ie/",
+      "expression": "(ip.src.country eq \"IE\") and not cf.client.bot and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": false,
+          "target_url": {
+            "expression": "concat(\"/en-ie\", http.request.uri.path, if(http.request.uri.query ne \"\", concat(\"?\", http.request.uri.query, \"&cfc_geo=IE\"), \"?cfc_geo=IE\"))"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route BR to /pt-br/",
+      "expression": "(ip.src.country eq \"BR\") and not cf.client.bot and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": false,
+          "target_url": {
+            "expression": "concat(\"/pt-br\", http.request.uri.path, if(http.request.uri.query ne \"\", concat(\"?\", http.request.uri.query, \"&cfc_geo=BR\"), \"?cfc_geo=BR\"))"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route PT to /pt-pt/",
+      "expression": "(ip.src.country eq \"PT\") and not cf.client.bot and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": false,
+          "target_url": {
+            "expression": "concat(\"/pt-pt\", http.request.uri.path, if(http.request.uri.query ne \"\", concat(\"?\", http.request.uri.query, \"&cfc_geo=PT\"), \"?cfc_geo=PT\"))"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route AR to /es-ar/",
+      "expression": "(ip.src.country eq \"AR\") and not cf.client.bot and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": false,
+          "target_url": {
+            "expression": "concat(\"/es-ar\", http.request.uri.path, if(http.request.uri.query ne \"\", concat(\"?\", http.request.uri.query, \"&cfc_geo=AR\"), \"?cfc_geo=AR\"))"
+          }
+        }
+      }
+    }
+  ]
+}

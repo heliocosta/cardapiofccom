@@ -18,12 +18,16 @@ navbar_fixed = true
 theme_switcher = true
 theme_default = "system" # available options [light/dark/system]
 # google tag manager, see https://developers.google.com/tag-manager/
-google_tag_manager = "G-4PSY14GVNT" # example: G-XXXXXXXXXX
-google_adsense = "ca-pub-3291953828047935"     # example: ca-pub-xxxxxxxxxxxxxxxx
+google_tag_manager = "" # must stay empty (GA4 is configured in [analytics]; no GTM container is delivered)
+google_adsense = "" # must stay empty: CardápioFC contains zero ads
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>"
 custom_script = ""
 # copyright
 copyright = "© 2026 CardápioFC. All rights reserved."
+
+# Resize remote crests/logos through Cloudflare Image Transformations (/cdn-cgi/image/).
+# Leave false locally; CI sets HUGOxPARAMSxCFC_IMAGE_RESIZE=true once enabled on the zone.
+cfc_image_resize = false
 
 # LLMs Configuration
 # LLMs module: https://github.com/gethugothemes/hugo-modules/tree/master/llms-txt
@@ -71,3 +75,23 @@ enable = false
 expire_days = 60
 content = "This site uses cookies. By continuing to use this website, you agree to their use."
 button = "I Accept"
+
+
+########################## analytics-consent ########################
+# All measurement and consent settings (ads are completely disabled).
+[analytics]
+ga4_id = "G-667SFTMKPH"      # single GA4 measurement ID for all editions; empty disables GA4
+cf_web_analytics = "off"     # "embedded" (beacon + token) | "zone" (automatic injection at Cloudflare) | "off"
+cf_beacon_token = ""         # Cloudflare Web Analytics token (32 hex chars), required for "embedded"
+
+[analytics.consent]
+policy_version = 1
+retention_days = 180
+outside_region_default = "granted"   # "granted" | "denied" (pending legal review for BR/AR)
+wait_for_update_ms = 500
+region = ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","IS","LI","NO","GB","CH"]
+timezones = ["Europe/","Atlantic/Canary","Atlantic/Madeira","Atlantic/Azores","Atlantic/Reykjavik","Atlantic/Faroe","Arctic/Longyearbyen"]
+
+[analytics.privacy]
+controller = "CardapioFC"
+contact_email = "contato@cardapiofc.com"

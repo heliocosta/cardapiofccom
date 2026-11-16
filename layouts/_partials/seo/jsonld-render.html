@@ -1,0 +1,2 @@
+{{/* seo/jsonld-render.html - renders a dict/slice as a single JSON-LD script (no double encoding) */}}
+<script type="application/ld+json">{{ jsonify (dict "indent" "  ") . | safeJS }}</script>

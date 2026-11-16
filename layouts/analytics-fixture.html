@@ -1,0 +1,13 @@
+{{ define "main" }}
+<div class="cfc-container">
+  <h1>Analytics fixture (development only)</h1>
+  <p>Click the elements below and watch the console for <code>[cfc-analytics]</code> lines.</p>
+  <p>
+    <a href="cardapiofc://home" data-cfc-event="app_open" data-cfc-app-target="scheme" data-cfc-placement="footer" data-cfc-app-path="/home?x=1">Open app</a> |
+    <a href="https://apps.apple.com/" data-cfc-event="store_click" data-cfc-store="app_store" data-cfc-placement="footer">App Store</a> |
+    <a href="#share" data-cfc-event="share" data-cfc-share-method="whatsapp" data-cfc-content-type="match" data-cfc-item="demo-slug">Share</a>
+  </p>
+  <button type="button" onclick="cfcq.push(['search', {search_term: ' Flamengo ', results_count: 3}])">Search "Flamengo"</button>
+  <button type="button" onclick="cfcq.push(['search', {search_term: 'me@example.com', results_count: 0}])">Search email (dropped)</button>
+</div>
+{{ end }}

@@ -1,0 +1,3 @@
+{{ $ed := .ctx.ed }}
+{{ return (dict "@type" "WebSite" "@id" (printf "%s#website" site.Home.Permalink) "url" site.Home.Permalink "name" $ed.title "inLanguage" (site.Language.Locale | default site.Language.Lang)
+  "potentialAction" (dict "@type" "SearchAction" "target" (dict "@type" "EntryPoint" "urlTemplate" (printf "%ssearch/?q={search_term_string}" site.Home.Permalink)) "query-input" "required name=search_term_string")) }}

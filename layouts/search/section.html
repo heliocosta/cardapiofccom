@@ -1,0 +1,26 @@
+{{ define "main" }}
+{{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+{{- $idx := .OutputFormats.Get "SearchIndex" -}}
+{{- $idxUrl := cond (ne $idx nil) $idx.RelPermalink (printf "%ssearch/search-index.json" $ed.prefix) -}}
+<section class="cfc-section">
+  <div class="cfc-container">
+    {{ partial "cfc/page-header.html" (dict "title" (i18n "search_title") "intro" (i18n "search_empty_hint")) }}
+
+    <form class="cfc-search-form" role="search" action="{{ .RelPermalink }}" method="get" data-cfc-search-form data-index-url="{{ $idxUrl }}"
+      data-label-leagues="{{ i18n "search_section_leagues" }}"
+      data-label-teams="{{ i18n "search_section_teams" }}"
+      data-label-matches="{{ i18n "search_section_matches" }}"
+      data-label-empty="{{ i18n "search_no_results" }}"
+      data-label-loading="{{ i18n "search_loading" }}"
+      data-label-error="{{ i18n "search_load_error" }}"
+      data-label-count="{{ i18n "search_results_count" (dict "Count" "{count}") }}"
+      data-edition-tz="{{ $ed.timeZone }}">
+      <label class="sr-only" for="cfc-search-input">{{ i18n "search_title" }}</label>
+      <input id="cfc-search-input" class="cfc-search-input" type="search" name="q" autocomplete="off" placeholder="{{ i18n "search_placeholder" }}" />
+    </form>
+
+    <div id="cfc-search-status" class="cfc-search-status" role="status" aria-live="polite"></div>
+    <div id="cfc-search-results" class="cfc-search-results" role="region" aria-label="{{ i18n "search_title" }}"></div>
+  </div>
+</section>
+{{ end }}

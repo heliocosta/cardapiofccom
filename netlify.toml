@@ -1,3 +1,5 @@
+# Deprecated host: production deploys via Cloudflare (.github/workflows/deploy.yml).
+# Versions are mirrored in .tool-versions and config/build.json; keep all three in sync.
 [build]
 publish = "public"
 command = "pnpm project-setup; pip3 install -r requirements.txt && python3 scripts/generate_og_images.py; pnpm build"

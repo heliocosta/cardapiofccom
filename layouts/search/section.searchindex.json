@@ -1,0 +1,1 @@
+{{- partialCached "cfcdata/entity-list.html" . site.Language.Lang | jsonify -}}

@@ -1,0 +1,6 @@
+{{/* seo/twitter.html. Args: Page, ctx */}}
+{{ $img := partial "seo/og-image.html" . }}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ .ctx.title }}" />
+<meta name="twitter:description" content="{{ .ctx.desc }}" />
+<meta name="twitter:image" content="{{ $img.url }}" />

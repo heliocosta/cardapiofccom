@@ -8,7 +8,7 @@
 {{- with $l.season }}{{ $meta = $meta | append . }}{{ end -}}
 <a href="{{ $l.url }}" class="cfc-card cfc-card--row cfc-league-card" data-cfc-league="{{ $l.slug }}">
   {{- with $l.logo -}}
-    <img src="{{ . }}" alt="" width="40" height="40" class="cfc-card__logo" loading="lazy" decoding="async" onerror="this.hidden=true" />
+    <img src="{{ partial "cfc/img-src.html" (dict "src" . "width" 40) }}" alt="" width="40" height="40" class="cfc-card__logo" loading="lazy" decoding="async" onerror="this.hidden=true" />
   {{- end -}}
   <span class="cfc-card__text">
     <span class="cfc-card__name">{{ $l.name }}</span>

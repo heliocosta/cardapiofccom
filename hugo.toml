@@ -18,11 +18,12 @@ defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 disableDefaultLanguageRedirect = true
 disableKinds = ["taxonomy", "term", "RSS"]
+enableRobotsTXT = true
 
 ########################### Services #############################
 [services]
 [services.googleAnalytics]
-ID = 'G-MEASUREMENT_ID' # see https://gohugo.io/templates/internal/#configure-google-analytics
+ID = '' # unused: GA4 is configured in params.analytics.ga4_id
 
 ########################## Permalinks ############################
 [permalinks.page]
@@ -133,6 +134,12 @@ suffixes = [""]
 [outputFormats.WebAppManifest]
 mediaType = "application/manifest+json"
 rel = "manifest"
+
+[outputFormats.SearchIndex]
+mediaType = "application/json"
+baseName = "search-index"
+isPlainText = true
+notAlternative = true
 
 [outputFormats.Redirects]
 baseName = "_redirects"

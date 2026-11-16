@@ -1,0 +1,8 @@
+{{/* hooks/footer-app.html - footer app download promotion */}}
+<div class="cfc-footer-app">
+  <div class="cfc-footer-app__copy">
+    <p class="cfc-footer-app__title">{{ i18n "store_download_heading" }}</p>
+    <p class="cfc-footer-app__sub">{{ i18n "store_download_sub" }}</p>
+  </div>
+  {{ partial "cfcapp/store-badges.html" (dict "page" . "placement" "footer" "size" "sm") }}
+</div>

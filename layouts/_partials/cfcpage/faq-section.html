@@ -1,39 +1,6 @@
 {{/* layouts/_partials/cfcpage/faq-section.html */}}
 {{/* Contextual FAQ (match / league / generic). Every string comes from i18n so a page never mixes languages. */}}
-{{- $countryIn := partial "cfc/country-in.html" . -}}
-
-{{- $m := . -}}
-{{- if reflect.IsMap . -}}
-  {{- if isset . "match" -}}
-    {{- $m = .match -}}
-  {{- end -}}
-{{- end -}}
-
-{{- $homeTeam := "" -}}
-{{- $awayTeam := "" -}}
-{{- $leagueName := "" -}}
-{{- with $m -}}
-  {{- with .home }}{{ $homeTeam = .name }}{{ end -}}
-  {{- with .away }}{{ $awayTeam = .name }}{{ end -}}
-  {{- with .league }}{{ $leagueName = .name }}{{ end -}}
-{{- end -}}
-
-{{- $items := slice -}}
-{{- if and $homeTeam $awayTeam -}}
-  {{- $args := dict "Home" $homeTeam "Away" $awayTeam "In" $countryIn -}}
-  {{- $items = $items | append (dict "q" (i18n "faq_match_q_where" $args) "a" (i18n "faq_match_a_where" $args)) -}}
-{{- else -}}
-  {{- $items = $items | append (dict "q" (i18n "faq_q1") "a" (i18n "faq_a1")) -}}
-{{- end -}}
-{{- if $leagueName -}}
-  {{- $args := dict "League" $leagueName "In" $countryIn -}}
-  {{- $items = $items | append (dict "q" (i18n "faq_league_q_channels" $args) "a" (i18n "faq_league_a_channels" $args)) -}}
-{{- else -}}
-  {{- $items = $items | append (dict "q" (i18n "faq_q3") "a" (i18n "faq_a3")) -}}
-{{- end -}}
-{{- $items = $items | append (dict "q" (i18n "faq_q4") "a" (i18n "faq_a4")) -}}
-{{- $items = $items | append (dict "q" (i18n "faq_q2") "a" (i18n "faq_a2")) -}}
-{{- $items = $items | append (dict "q" (i18n "faq_q11") "a" (i18n "faq_a11")) -}}
+{{- $items := partial "cfcpage/faq-items.html" . -}}
 
 <section class="cfc-section cfc-faq-section" aria-labelledby="cfc-faq-title">
   {{ partial "cfc/section-head.html" (dict

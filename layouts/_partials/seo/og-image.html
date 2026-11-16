@@ -1,0 +1,17 @@
+{{/* seo/og-image.html - returns dict url,width,height,alt. Cascade: per-entity card -> edition card -> global card. Args: Page, ctx */}}
+{{ $p := .page }}{{ $ctx := .ctx }}
+{{ $ed := $ctx.ed }}
+{{ $url := "" }}
+{{ $slug := "" }}
+{{ with $p.Params.cfc }}{{ $slug = .slug | default "" }}{{ end }}
+{{ $dir := dict "match" "matches" "team" "teams" "league" "leagues" }}
+{{ with index $dir $ctx.kind }}
+  {{ $local := printf "og/%s/%s.png" . $slug }}
+  {{ if and $slug (fileExists (printf "static/%s" $local)) }}{{ $url = $local | absURL }}{{ end }}
+{{ end }}
+{{ if not $url }}
+  {{ $card := printf "og/editions/og-%s.png" (cond $ed.isGlobal "global" $ed.code) }}
+  {{ if not (fileExists (printf "static/%s" $card)) }}{{ $card = "og/editions/og-global.png" }}{{ end }}
+  {{ $url = $card | absURL }}
+{{ end }}
+{{ return (dict "url" $url "width" 1200 "height" 630 "alt" (i18n "seo_og_alt" (dict "Title" $ctx.title))) }}

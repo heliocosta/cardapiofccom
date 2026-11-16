@@ -1,0 +1,4 @@
+{{- $s := partialCached "analytics/settings.html" . site.Language.Lang -}}
+{{- if and hugo.IsProduction (eq $s.cf.mode "embedded") $s.cf.token -}}
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"{{ $s.cf.token }}"}'></script>
+{{- end -}}

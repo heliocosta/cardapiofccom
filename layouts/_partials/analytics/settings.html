@@ -1,0 +1,24 @@
+{{/* analytics/settings.html - validated per-edition analytics view-model.
+     Use: partialCached "analytics/settings.html" . site.Language.Lang */}}
+{{ $a := site.Params.analytics | default dict }}
+{{ $c := $a.consent | default dict }}
+{{ $pr := $a.privacy | default dict }}
+{{ $ed := partialCached "edition/current.html" . site.Language.Lang }}
+{{ $region := $c.region | default slice }}
+{{ $country := upper $ed.country }}
+{{ $s := dict
+  "env" (cond hugo.IsProduction "production" "development")
+  "ga4" ($a.ga4_id | default "")
+  "cf" (dict "mode" ($a.cf_web_analytics | default "off") "token" ($a.cf_beacon_token | default ""))
+  "consent" (dict
+    "region" $region
+    "outside" ($c.outside_region_default | default "granted")
+    "timezones" ($c.timezones | default slice)
+    "policyVersion" ($c.policy_version | default 1)
+    "retentionDays" ($c.retention_days | default 180)
+    "waitMs" ($c.wait_for_update_ms | default 500))
+  "privacy" (dict "controller" ($pr.controller | default "") "contactEmail" ($pr.contact_email | default ""))
+  "edition" (dict "code" $ed.code "country" $country "isGlobal" $ed.isGlobal)
+  "editionInRegion" (and (ne $country "") (in $region $country))
+}}
+{{ return $s }}

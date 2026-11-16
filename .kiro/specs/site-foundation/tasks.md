@@ -2,35 +2,35 @@
 
 > Conventions: run every command through the project's pnpm scripts (`pnpm dev`, `pnpm build`, `pnpm check`, `pnpm check:components`); never edit `themes/hugoplate/` or `_vendor/`; follow the new template system paths (`layouts/_partials/`, `layouts/home.html`, top-level `layouts/baseof.html`). Component names below refer to `design.md` → Components and Interfaces.
 
-- [ ] 1. Foundation: configuration, registry and test harness
+- [x] 1. Foundation: configuration, registry and test harness
 
-- [ ] 1.1 Run pre-flight checks and confirm Hugo behaviours on the pinned version
+- [x] 1.1 Run pre-flight checks and confirm Hugo behaviours on the pinned version
   - Confirm Node, pnpm and Hugo extended exactly matching the `HUGO_VERSION` in `netlify.toml` (0.169.0); stop and ask the user to install it (mise) if it does not match
   - In a throwaway site outside the repository, confirm on 0.169.0: per-key i18n merge with single-file base mounts declared before the `i18n` directory mount, `time.AsTime` location trick, localised `time.Format` layouts, root `404.html` precedence over a theme `404.en.html`, and removal of the `/en/` alias with `disableDefaultLanguageRedirect`
   - Done when every behaviour listed in the design's research findings is confirmed on 0.169.0, or any deviation is reported to the user before further work
   - _Requirements: 1.1, 12.1_
 
-- [ ] 1.2 Settle the package manager, align build tooling and remove unused deployment configurations
+- [x] 1.2 Settle the package manager, align build tooling and remove unused deployment configurations
   - Align the Go version in the development container with the pinned version, declare pnpm as the project package manager and rename the package, delete the npm lock file and the Vercel, Amplify and GitLab configurations, and leave the Netlify configuration as the version source of truth
   - Run `pnpm install` so the pnpm lock file is the only one and later tasks resolve the package manager unambiguously
   - Done when the repository contains only the pnpm lock file, the retained configurations pin Hugo 0.169.0 and Go 1.25.1, and `pnpm install` succeeds (the build itself is repaired in 1.3)
   - _Requirements: 12.1, 12.2, 12.3_
 
-- [ ] 1.3 Restore and clean the site configuration
+- [x] 1.3 Restore and clean the site configuration
   - Restore the full configuration from the last committed version, keeping the theme line where the theme generator expects it, and apply the design's changes: production base URL, global site settings, Global unprefixed with the default-language alias disabled, disabled taxonomy/term/RSS kinds, trimmed outputs without the search index format, retained analytics placeholder
   - Replace the plugin lists with the single lazy stylesheet and single lazy script placeholders, create those placeholder assets, and override the theme's main script with an empty script so the removed slider plugin is never referenced
   - Done when `pnpm build` completes, the theme generator regenerates the theme tokens without errors, and the build output contains no taxonomy pages, feeds, per-page Markdown copies or slider/lightbox assets
   - Leave the i18n mount block to task 1.4 (it is appended to the module mounts in the root `hugo.toml`)
   - _Requirements: 1.2, 1.3, 3.4, 3.5_
 
-- [ ] 1.4 Define the six-edition registry, edition content folders and the i18n mount chain
+- [x] 1.4 Define the six-edition registry, edition content folders and the i18n mount chain
   - Write the registry entries for Global, UK, Ireland, Brazil, Portugal and Argentina with every field of the design's registry schema, moving titles, descriptions and per-edition copyright notices from the broken configuration
   - Create one content folder per edition with a home page front matter (heading, intro, description)
   - Append the base-to-edition i18n mounts followed by the project i18n directory mount to the module mounts in the root `hugo.toml`, and create minimal base tables for English, Portuguese and Spanish holding the base-language marker
   - Done when `pnpm build` produces a home page at `/`, `/en-gb/`, `/en-ie/`, `/pt-br/`, `/pt-pt/` and `/es-ar/`, and no `/en/` page exists
   - _Requirements: 1.6, 2.1, 2.2, 2.3, 2.7, 3.1, 3.2_
 
-- [ ] 1.5 Remove demo content and stock configuration
+- [x] 1.5 Remove demo content and stock configuration
   - Delete the demo content tree, the demo content-management configuration and the demo images, keeping favicon, logos and the share image
   - Remove demo-only parameters (main sections, search, navigation button, widgets, map, subscription, comments, announcement, preloader, diagrams) while leaving analytics, ads, consent and SEO parameters untouched
   - Replace the English-only menu file with a site-wide menu file containing the home entry identified for translation
@@ -38,21 +38,21 @@
   - Done when `pnpm build` succeeds and no blog, author, elements, about, contact or testimonial pages exist in the output
   - _Requirements: 3.3, 6.5_
 
-- [ ] 1.6 Create the component reference (styleguide) harness
+- [x] 1.6 Create the component reference (styleguide) harness
   - Add styleguide pages for the Global, UK, Brazil and Portugal editions, a fixture data file with matches (scheduled, live, finished, postponed, empty channels, broken crest URL, DST transition date, late-night UTC kick-off) and a styleguide layout that only includes one stub partial per section (base, edition, i18n, time, crest-kickoff, channel-icon, match-card, date-group, switcher-menu, page-header, chrome), so each later task edits only its own section partial
   - Exclude the styleguide pages from production builds through production-environment configuration
   - Done when `pnpm dev` serves the styleguide on the four editions and `pnpm build` output contains no styleguide page
   - _Requirements: 3.3, 11.5_
 
-- [ ] 2. Edition, interface-string and time contracts
+- [x] 2. Edition, interface-string and time contracts
 
-- [ ] 2.1 Implement the edition contract and registry validation
+- [x] 2.1 Implement the edition contract and registry validation
   - Provide the current-edition and all-editions view-models exactly as specified (derived code, prefix, home URL; weight order; plain values only)
   - Implement the validator with every assertion listed in the design, failing the build with messages naming the edition and field; call it from the edition styleguide section until the root skeleton exists; update only the edition section partial
   - Done when the styleguide lists the six editions with all fields, and temporarily breaking the Portugal time zone or removing its i18n mount fails the build with a message naming `pt-pt` and the field
   - _Requirements: 2.2, 2.5, 2.6, 2.8_
 
-- [ ] 2.2 (P) Complete the base and regional interface-string tables
+- [x] 2.2 (P) Complete the base and regional interface-string tables
   - Fill the English, Portuguese and Spanish base tables with the full key set from the design (navigation, switcher, home, empty and not-found states, statuses, channel types, broadcaster message, date/time layouts, theme partial keys)
   - Add the UK, Ireland, Portugal and Argentina override tables containing only differing wording
   - Done when all three base tables have identical key sets, regional tables contain only override keys, and the Portugal edition renders "equipa"-style wording while Brazil renders "time"-style wording on the styleguide
@@ -60,7 +60,7 @@
   - _Boundary: I18nTables_
   - _Requirements: 2.7, 4.1, 4.2, 4.3, 4.5_
 
-- [ ] 2.3 (P) Implement the time contract
+- [x] 2.3 (P) Implement the time contract
   - Provide parse, local, format, zone, day-key and group-by-day returning partials with the styles, offset formatting and invariants defined in the design
   - Reject time strings without an explicit UTC designator or offset with a build error naming the value
   - Done when the styleguide shows the design's expected outputs: 19:45 with "UK time (UTC+0)" for the November fixture on the UK edition, 16:45 with "horário de Brasília (UTC−3)" on Brazil, UTC+1 for the October fixture on the UK edition, and the late-night fixture grouped under different days on Brazil and Global
@@ -69,16 +69,16 @@
   - _Boundary: TimeContract_
   - _Requirements: 5.1, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
 
-- [ ] 3. Design system and shared components
+- [x] 3. Design system and shared components
 
-- [ ] 3.1 Establish design tokens and base styles
+- [x] 3.1 Establish design tokens and base styles
   - Extend the theme data file with the semantic light and dark colour tokens while keeping existing keys, and keep the brand fonts and type scale
   - Turn the root custom stylesheet into the entry that adds the extra theme tokens and imports the base, layout and per-component style files (create every component style file as an empty stub so later tasks only edit their own file)
   - Add base styles for the focus ring, skip link, minimum target size, reduced-motion handling and responsive container/header/footer/shell layout
   - Done when the regenerated theme stylesheet contains the new colour tokens, `pnpm build` succeeds, and the base styleguide section shows the visible focus ring and no horizontal scroll at 320 px (update only the base section partial)
   - _Requirements: 1.3, 7.1, 7.3, 7.4, 7.5, 7.6, 11.4_
 
-- [ ] 3.2 (P) Build the kick-off time and team crest components
+- [x] 3.2 (P) Build the kick-off time and team crest components
   - Kick-off time renders a machine-readable timestamp with offset, the localised time and the zone indicator (label and offset, label only for Global)
   - Team crest renders sized images with reserved dimensions, deferred loading, initials underlay revealed on load failure, and a decorative mode hidden from assistive technologies
   - Styles live only in the kick-off time and team crest style files; demo markup only in the crest-kickoff styleguide section
@@ -87,7 +87,7 @@
   - _Boundary: KickoffTime, TeamCrest_
   - _Requirements: 5.2, 5.4, 5.6, 8.5, 8.6, 8.7_
 
-- [ ] 3.3 (P) Build the channel badge and icon components
+- [x] 3.3 (P) Build the channel badge and icon components
   - Channel badge renders name, optional sized logo and localised type indicator, links safely in a new browsing context when an address is given, and carries the channel-click tracking attributes
   - Icon component provides the fixed inline icon set replacing the icon font
   - Styles live only in the channel badge style file; demo markup only in the channel-icon styleguide section
@@ -96,21 +96,21 @@
   - _Boundary: ChannelBadge, Icon_
   - _Requirements: 8.7, 8.8, 8.9, 8.11, 8.12_
 
-- [ ] 3.4 Build the match card component
+- [x] 3.4 Build the match card component
   - Compose crest, kick-off time and channel badge into a single-link card with the status rules, optional league, optional channel list with the localised no-broadcaster message, and match-open tracking attributes
   - Keep each rendered card within 2 KB of HTML; styles live only in the match card style file; demo markup only in the match-card styleguide section
   - Done when the styleguide shows every status fixture correctly (score for live/finished, status text instead of time for postponed), the empty-channel fixture shows the localised message, and no card renders empty containers
   - _Depends: 3.2, 3.3_
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.11, 8.12, 11.3_
 
-- [ ] 3.5 Build the date group component
+- [x] 3.5 Build the date group component
   - Render a labelled section with a localised day heading and machine-readable date, followed by that day's match cards in kick-off order; render nothing for an empty day
   - Styles live only in the date group style file; demo markup only in the date-group styleguide section
   - Done when the styleguide groups fixtures by edition-local day in kick-off order on Global and Brazil
   - _Depends: 2.3, 3.4_
   - _Requirements: 5.8, 8.10, 8.12_
 
-- [ ] 3.6 (P) Build the edition switcher and menu renderer
+- [x] 3.6 (P) Build the edition switcher and menu renderer
   - Edition switcher uses a native disclosure listing every edition by localised name, marks the current one, links to the translated page or the target edition home, appends the edition-choice marker for Global, and carries edition-switch tracking attributes
   - Menu renderer shows translated labels from menu identifiers, marks the active entry and omits the list when the menu is empty
   - Replace the empty main script with the switcher enhancement (Escape, outside-click closing, and setting `cfc_edition` cookie on selection for edge geo-routing bypass) within the JavaScript budget; styles live only in the switcher and menu style files; demo markup only in the switcher-menu styleguide section
@@ -119,7 +119,7 @@
   - _Boundary: EditionSwitcher, MenuRenderer, ClientScript_
   - _Requirements: 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 8.11, 11.1_
 
-- [ ] 3.7 (P) Build the page header, breadcrumb and empty state components
+- [x] 3.7 (P) Build the page header, breadcrumb and empty state components
   - Page header renders the single top-level heading, optional intro and optional breadcrumb; breadcrumb renders a visual trail only (no structured data); empty state renders a localised message with optional action
   - Styles live only in the page header and empty state style files; demo markup only in the page-header styleguide section
   - Done when the styleguide shows the page header with and without breadcrumb and intro, and the empty state with and without an action

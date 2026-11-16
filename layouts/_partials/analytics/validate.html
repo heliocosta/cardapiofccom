@@ -1,0 +1,58 @@
+{{/* analytics/validate.html - fail-fast build assertions. Side effects only.
+     Use: partialCached "analytics/validate.html" . site.Language.Lang */}}
+{{ $a := site.Params.analytics | default dict }}
+{{ $c := $a.consent | default dict }}
+{{ $pr := $a.privacy | default dict }}
+{{ $ga := $a.ga4_id | default "" }}
+{{ if $ga }}
+  {{ if not (findRE `^G-[A-Z0-9]{4,16}$` $ga) }}
+    {{ errorf "analytics-consent: params.analytics.ga4_id %q is not a valid GA4 measurement ID (expected G-XXXXXXXXXX)" $ga }}
+  {{ end }}
+{{ else }}
+  {{ warnf "analytics-consent: GA4 disabled (params.analytics.ga4_id is empty)" }}
+{{ end }}
+{{ $gtm := site.Params.google_tag_manager | default "" }}
+{{ if $gtm }}
+  {{ if findRE `^G-` $gtm }}
+    {{ errorf "analytics-consent: params.google_tag_manager %q is a GA4 measurement ID; set params.analytics.ga4_id instead" $gtm }}
+  {{ else }}
+    {{ warnf "analytics-consent: params.google_tag_manager is ignored (legacy key disabled)" }}
+  {{ end }}
+{{ end }}
+{{ if site.Params.google_adsense }}
+  {{ warnf "analytics-consent: params.google_adsense is ignored (CardápioFC contains zero ads)" }}
+{{ end }}
+{{ $mode := $a.cf_web_analytics | default "off" }}
+{{ if not (in (slice "embedded" "zone" "off") $mode) }}
+  {{ errorf "analytics-consent: params.analytics.cf_web_analytics %q must be embedded, zone or off" $mode }}
+{{ end }}
+{{ $tok := $a.cf_beacon_token | default "" }}
+{{ if eq $mode "embedded" }}
+  {{ if $tok }}
+    {{ if not (findRE `^[a-f0-9]{32}$` $tok) }}
+      {{ errorf "analytics-consent: params.analytics.cf_beacon_token %q must be 32 lowercase hex characters" $tok }}
+    {{ end }}
+  {{ else }}
+    {{ warnf "analytics-consent: Cloudflare beacon not emitted; set cf_beacon_token or use cf_web_analytics = \"zone\"" }}
+  {{ end }}
+{{ end }}
+{{ range ($c.region | default slice) }}
+  {{ if not (findRE `^[A-Z]{2}$` .) }}
+    {{ errorf "analytics-consent: params.analytics.consent.region contains invalid country code %q" . }}
+  {{ end }}
+{{ end }}
+{{ $out := $c.outside_region_default | default "granted" }}
+{{ if not (in (slice "granted" "denied") $out) }}
+  {{ errorf "analytics-consent: outside_region_default %q must be granted or denied" $out }}
+{{ end }}
+{{ $rd := $c.retention_days | default 180 }}
+{{ if or (lt $rd 1) (gt $rd 395) }}
+  {{ errorf "analytics-consent: retention_days %d must be within 1..395" $rd }}
+{{ end }}
+{{ if lt ($c.policy_version | default 1) 1 }}
+  {{ errorf "analytics-consent: policy_version must be >= 1" }}
+{{ end }}
+{{ if hugo.IsProduction }}
+  {{ if not $pr.controller }}{{ errorf "analytics-consent: params.analytics.privacy.controller is required in production" }}{{ end }}
+  {{ if not $pr.contact_email }}{{ errorf "analytics-consent: params.analytics.privacy.contact_email is required in production" }}{{ end }}
+{{ end }}

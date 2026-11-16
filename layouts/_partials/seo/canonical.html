@@ -1,0 +1,2 @@
+{{/* seo/canonical.html - self-referencing canonical; none on 404 or noindex pages. Args: Page, ctx */}}
+{{ if not .ctx.noindex }}<link rel="canonical" href="{{ .page.Permalink }}" />{{ end }}

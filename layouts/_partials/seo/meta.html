@@ -1,0 +1,5 @@
+{{/* seo/meta.html - title, description, robots. Args: Page, ctx (seo/context.html) */}}
+{{ $ctx := .ctx }}
+<title>{{ $ctx.title }}</title>
+<meta name="description" content="{{ $ctx.desc }}" />
+{{ if $ctx.noindex }}<meta name="robots" content="noindex, follow" />{{ end }}

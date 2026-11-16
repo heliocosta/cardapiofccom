@@ -1,0 +1,9 @@
+{{/* hooks/head-seo.html - head-seo slot: all SEO/social head output for a page */}}
+{{- $ctx := partial "seo/context.html" . -}}
+{{- $a := dict "page" . "ctx" $ctx -}}
+{{ partial "seo/meta.html" $a }}
+{{ partial "seo/canonical.html" $a }}
+{{ partial "seo/hreflang.html" $a }}
+{{ partial "seo/opengraph.html" $a }}
+{{ partial "seo/twitter.html" $a }}
+{{ if not $ctx.noindex }}{{ partial "seo/jsonld.html" $a }}{{ end }}

@@ -1,0 +1,13 @@
+{{/* analytics/page-type.html - Page -> home|match|team|league|search|app_landing|legal|other */}}
+{{ $valid := slice "home" "match" "team" "league" "search" "app_landing" "legal" "other" }}
+{{ $t := "other" }}
+{{ if and .Params.page_type (in $valid .Params.page_type) }}
+  {{ $t = .Params.page_type }}
+{{ else if .IsHome }}
+  {{ $t = "home" }}
+{{ else if in (slice "match" "team" "league" "search") .Section }}
+  {{ $t = .Section }}
+{{ else if in (slice "favourites" "my_agenda" "settings") .Section }}
+  {{ $t = "app_landing" }}
+{{ end }}
+{{ return $t }}

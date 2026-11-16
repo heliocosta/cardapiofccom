@@ -2,9 +2,9 @@
 
 > Conventions: run every command through the project's pnpm scripts (`pnpm dev`, `pnpm build`, `pnpm check`); never edit `themes/hugoplate/` or `_vendor/`; follow the new template system paths (`layouts/_partials/`, `layouts/home.html`, top-level `layouts/baseof.html`). Component names below refer to `design.md` → Components and Interfaces.
 
-- [ ] 1. Foundation: Version Single Source of Truth, Deployment Cleanup, and Hosting Manifest
+- [x] 1. Foundation: Version Single Source of Truth, Deployment Cleanup, and Hosting Manifest
 
-- [ ] 1.1 Establish toolchain version single source of truth and retire obsolete CI configs
+- [x] 1.1 Establish toolchain version single source of truth and retire obsolete CI configs
   - Create `.tool-versions` and `config/build.json` declaring the authoritative version pins for the project: Hugo Extended `0.165.0`, Go `1.25.1`, Node `22.14.0`, and pnpm `10.5.2`
   - Remove obsolete deploy manifests from the repository root: `amplify.yml`, `.gitlab-ci.yml`, and `vercel.json`
   - Update `AGENTS.md` and repository pre-flight documentation to reference `config/build.json` and `.tool-versions` instead of `netlify.toml`
@@ -13,7 +13,7 @@
   - _Boundary: VersionConfigManager_
   - _Requirements: 2.3, 9.1, 9.2, 9.3_
 
-- [ ] 1.2 Configure Cloudflare Workers Static Assets deployment manifest
+- [x] 1.2 Configure Cloudflare Workers Static Assets deployment manifest
   - Create `wrangler.jsonc` declaring the project name `cardapiofc`, compatibility date, and static assets configuration pointing to `./public`
   - Configure `html_handling: "auto-trailing-slash"` to match Hugo's directory output structure (`/match/{slug}/index.html`)
   - Configure `not_found_handling: "404-page"` to ensure missing requests serve `./public/404.html` with an HTTP 404 status
@@ -22,9 +22,9 @@
   - _Boundary: WranglerConfig_
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 2. Edge Rules: Routing, Redirects, and Response Headers
+- [x] 2. Edge Rules: Routing, Redirects, and Response Headers
 
-- [ ] 2.1 (P) Implement static HTTP 301 redirect map for legacy URLs and deep-link aliases
+- [x] 2.1 (P) Implement static HTTP 301 redirect map for legacy URLs and deep-link aliases
   - Create `static/_redirects` and delete the orphan root `_redirects` file so Hugo copies the rules directly to `public/_redirects` during build
   - Add deep-link alias redirects for both root and edition-prefixed routes: `/favorites` to `/favourites`, `/reminder` to `/my_agenda`, and edition variants (`/:splat/favorites` to `/:splat/favourites`, `/:splat/reminder` to `/:splat/my_agenda`) with status `301`
   - Add legacy Brazilian Portuguese mappings: `/pt/jogos/onde_assistir_*` and `/pt/jogos/*` to `/pt-br/`, `/pt/times/*` to `/pt-br/`, `/pt/campeonatos/*` to `/pt-br/league/`, and `/pt/*` to `/pt-br/` with status `301`
@@ -34,7 +34,7 @@
   - _Boundary: StaticRedirectMap_
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 9.4_
 
-- [ ] 2.2 (P) Implement static response headers for MIME types, caching policies, and security
+- [x] 2.2 (P) Implement static response headers for MIME types, caching policies, and security
   - Create `static/_headers` so Hugo outputs it to `public/_headers` at build time
   - Configure `Content-Type: application/json` and `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` on `/.well-known/apple-app-site-association` and `/.well-known/assetlinks.json`
   - Configure revalidation cache headers on all HTML documents (`/*.html` and `/` -> `Cache-Control: public, max-age=0, must-revalidate`) to guarantee instantaneous updates upon new deployments
@@ -45,7 +45,7 @@
   - _Boundary: StaticHeaderMap_
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 9.4_
 
-- [ ] 2.3 (P) Define declarative Cloudflare Single Redirect Rules for zero-worker geo-routing
+- [x] 2.3 (P) Define declarative Cloudflare Single Redirect Rules for zero-worker geo-routing
   - Create `cloudflare/redirect-rules.json` and `cloudflare/redirect-rules.tf` declaring the exact Cloudflare Single Redirect Rules configuration
   - Define 5 country geo-routing rules for GB (`/en-gb`), IE (`/en-ie`), BR (`/pt-br`), PT (`/pt-pt`), and AR (`/es-ar`) targeting unprefixed routes (`/`, `/match/*`, `/team/*`, `/league/*`, `/search`, `/favourites`, `/favorites`, `/my_agenda`, `/reminder`, `/settings`)
   - Include mandatory exclusion expressions in all rules: `not cf.client.bot` (verified bots stay on requested path), `not http.request.uri.query contains "edition="` (manual query parameter override), and `not http.cookie contains "cfc_edition="` (manual cookie override)
@@ -55,9 +55,9 @@
   - _Boundary: CloudflareSingleRedirectRules_
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 3. Automation: Build Guard and GitHub Actions CI/CD Pipeline
+- [x] 3. Automation: Build Guard and GitHub Actions CI/CD Pipeline
 
-- [ ] 3.1 Implement output file-count budget guard script
+- [x] 3.1 Implement output file-count budget guard script
   - Create `scripts/check-file-count.mjs` using Node.js built-ins to audit the generated `public/` directory immediately following `pnpm build`
   - Recursively count all files, verify no single file exceeds Cloudflare's 25 MiB limit, and group counts by edition (`en`, `en-gb`, `en-ie`, `pt-br`, `pt-pt`, `es-ar`) and path kind (`match`, `team`, `league`, `assets`)
   - Format and log a diagnostic breakdown of the output directory
@@ -68,7 +68,7 @@
   - _Boundary: FileCountGuard_
   - _Requirements: 1.4, 4.1, 4.2, 4.3_
 
-- [ ] 3.2 Build the GitHub Actions CI/CD deployment workflow
+- [x] 3.2 Build the GitHub Actions CI/CD deployment workflow
   - Create `.github/workflows/deploy.yml` configuring triggers for `push` to `main`, `repository_dispatch` (types: `[dataset_updated]`), manual `workflow_dispatch`, and daily cron `schedule` (`0 5 * * *`)
   - Set concurrency group `deploy-production` with `cancel-in-progress: true` to prevent concurrent deployments during rapid Retool updates
   - Setup environment with Node 22, pnpm (configured from `packageManager`), Go `1.25.1`, and exact Hugo Extended `0.165.0`
@@ -81,9 +81,9 @@
   - _Boundary: GitHubActionsPipeline_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 4. Verification and Operational Governance
+- [x] 4. Verification and Operational Governance
 
-- [ ] 4.1 Implement deployment smoke test and verification script
+- [x] 4.1 Implement deployment smoke test and verification script
   - Create `scripts/verify-deployment.mjs` using Node.js native `fetch` with `redirect: "manual"` to run post-deployment smoke tests against any specified target host (`--url=https://...` or `http://localhost:8787`)
   - Verify trailing slash normalization and custom 404 response on nonexistent paths
   - Verify HTTP 301 redirects for deep-link aliases (`/favorites` -> `/favourites`, `/reminder` -> `/my_agenda`) and legacy paths (`/pt/jogos/...` -> `/pt-br/`, `/en/matches/...` -> `/`)
@@ -94,7 +94,7 @@
   - _Boundary: VerificationSuite_
   - _Requirements: 1.2, 1.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 4.2 Create operations runbook for DNS cutover, rollback, Retool webhook, and scaling
+- [x] 4.2 Create operations runbook for DNS cutover, rollback, Retool webhook, and scaling
   - Create `docs/operations/edge-delivery-runbook.md` providing step-by-step procedures for operators and developers
   - Document the Retool webhook specification: endpoint URL (`POST /repos/:owner/:repo/dispatches`), required fine-grained PAT scopes (`contents: write` or `actions: write`), headers, and payload schema (`{"event_type": "dataset_updated", "client_payload": {...}}`)
   - Document required GitHub repository secrets (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`) with minimum permission scopes

@@ -91,7 +91,7 @@
         <p class="cfc-broadcast__cta-desc">{{ i18n "watch_on_app_sub" | default "Tap any channel in the CardápioFC app to open the broadcast on the official platform." }}</p>
       </div>
     </div>
-    <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-btn cfc-btn--primary cfc-btn--sm" data-cfc-event="store_open" data-cfc-store="smart">
+    <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-btn cfc-btn--primary cfc-btn--sm" data-cfc-event="store_click" data-cfc-store="smart">
       <span>{{ i18n "open_stream_in_app" | default "Open in the app" }}</span>
       {{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-btn__icon") }}
     </a>

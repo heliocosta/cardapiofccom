@@ -1,0 +1,21 @@
+{{/* hooks/body-start-app.html - Android smart banner (hidden by default; shown only on Android) */}}
+{{- $scheme := partial "cfcapp/scheme-url.html" . -}}
+{{- $androidUrl := partial "cfcapp/store-url.html" (dict "store" "android" "medium" "smart_banner" "campaign" "smart_banner") -}}
+{{- $iosUrl := partial "cfcapp/store-url.html" (dict "store" "ios" "medium" "smart_banner" "campaign" "smart_banner") -}}
+<aside id="cfc-android-banner" class="cfc-android-banner hidden" role="region" aria-label="{{ i18n "smart_banner_title" }}">
+  <button type="button" class="cfc-android-banner__close" data-cfc-banner-dismiss aria-label="{{ i18n "smart_banner_close" }}">×</button>
+  <img src="/images/favicon.png" alt="" width="36" height="36" class="cfc-android-banner__icon" loading="lazy" decoding="async" />
+  <div class="cfc-android-banner__info">
+    <p class="cfc-android-banner__title">{{ i18n "smart_banner_title" }}</p>
+    <p class="cfc-android-banner__sub">{{ i18n "smart_banner_sub" }}</p>
+  </div>
+  <a href="{{ $scheme }}"
+     class="cfc-btn cfc-btn--primary cfc-btn--sm"
+     data-cfc-event="app_open"
+     data-cfc-app-target="scheme"
+     data-cfc-placement="smart_banner"
+     data-ios-url="{{ $iosUrl }}"
+     data-android-url="{{ $androidUrl }}">
+    {{ i18n "smart_banner_open" }}
+  </a>
+</aside>

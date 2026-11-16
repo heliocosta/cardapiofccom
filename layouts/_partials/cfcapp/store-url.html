@@ -1,0 +1,11 @@
+{{/* cfcapp/store-url.html - builds App Store & Play Store URLs with UTM attribution.
+     Args: dict ("store" "ios"|"android", "medium"? string, "campaign"? string) */}}
+{{- $store := .store | default "ios" -}}
+{{- $medium := .medium | default "deeplink" -}}
+{{- $campaign := .campaign | default "app_download" -}}
+{{- if eq $store "android" -}}
+  {{- $ref := printf "utm_source=cardapiofc_web&utm_medium=%s&utm_campaign=%s" $medium $campaign -}}
+  {{- return (printf "https://play.google.com/store/apps/details?id=br.com.cardapiofutebol&referrer=%s" (urlquery $ref)) -}}
+{{- else -}}
+  {{- return (printf "https://apps.apple.com/app/id6745226833?utm_source=cardapiofc_web&utm_medium=%s&utm_campaign=%s" (urlquery $medium) (urlquery $campaign)) -}}
+{{- end -}}

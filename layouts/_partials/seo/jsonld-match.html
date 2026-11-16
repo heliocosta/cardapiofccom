@@ -1,0 +1,31 @@
+{{/* seo/jsonld-match.html - SportsEvent with BroadcastEvent list. Args: Page, ctx */}}
+{{ $m := .ctx.entity.match }}
+{{ $status := "https://schema.org/EventScheduled" }}
+{{ $s := lower (printf "%v" ($m.status | default "")) }}
+{{ if findRE `postpon` $s }}{{ $status = "https://schema.org/EventPostponed" }}{{ else if findRE `cancel` $s }}{{ $status = "https://schema.org/EventCancelled" }}{{ end }}
+{{ $ev := dict
+  "@type" "SportsEvent"
+  "@id" (printf "%s#event" .page.Permalink)
+  "name" (printf "%s vs %s" $m.home.name $m.away.name)
+  "sport" "Soccer"
+  "startDate" (dateFormat "2006-01-02T15:04:05Z07:00" (time.AsTime $m.kickoff))
+  "eventStatus" $status
+  "eventAttendanceMode" "https://schema.org/OfflineEventAttendanceMode"
+  "url" .page.Permalink
+  "homeTeam" (dict "@type" "SportsTeam" "name" $m.home.name "sport" "Soccer")
+  "awayTeam" (dict "@type" "SportsTeam" "name" $m.away.name "sport" "Soccer")
+}}
+{{ with $m.home.crest }}{{ $ev = merge $ev (dict "homeTeam" (dict "@type" "SportsTeam" "name" $m.home.name "sport" "Soccer" "logo" .)) }}{{ end }}
+{{ with $m.away.crest }}{{ $ev = merge $ev (dict "awayTeam" (dict "@type" "SportsTeam" "name" $m.away.name "sport" "Soccer" "logo" .)) }}{{ end }}
+{{ $venue := "" }}
+{{ if reflect.IsMap $m.venue }}{{ $venue = $m.venue.name | default "" }}{{ else if $m.venue }}{{ $venue = printf "%v" $m.venue }}{{ end }}
+{{ if $venue }}{{ $ev = merge $ev (dict "location" (dict "@type" "Place" "name" $venue)) }}{{ end }}
+{{ with $m.league }}{{ $ev = merge $ev (dict "superEvent" (dict "@type" "SportsEvent" "name" .name)) }}{{ end }}
+{{ $b := slice }}
+{{ range .ctx.entity.channels }}{{ range .channels }}
+  {{ $svc := dict "@type" "BroadcastService" "name" .name }}
+  {{ with .url }}{{ $svc = merge $svc (dict "url" .) }}{{ end }}
+  {{ $b = $b | append (dict "@type" "BroadcastEvent" "name" (printf "%s vs %s" $m.home.name $m.away.name) "isLiveBroadcast" true "startDate" (dateFormat "2006-01-02T15:04:05Z07:00" (time.AsTime $m.kickoff)) "publishedOn" $svc) }}
+{{ end }}{{ end }}
+{{ if $b }}{{ $ev = merge $ev (dict "subjectOf" $b) }}{{ end }}
+{{ return $ev }}

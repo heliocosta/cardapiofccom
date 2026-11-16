@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /search
+Disallow: /search/
+Disallow: /*?q=
+Disallow: /analytics-fixture/
+Disallow: /styleguide/
+
+Sitemap: {{ "sitemap.xml" | absURL }}

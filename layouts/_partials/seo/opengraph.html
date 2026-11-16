@@ -1,0 +1,15 @@
+{{/* seo/opengraph.html. Args: Page, ctx */}}
+{{ $p := .page }}{{ $ctx := .ctx }}
+{{ $img := partial "seo/og-image.html" . }}
+{{ $loc := site.Language.Locale | default site.Language.Lang | replaceRE "-" "_" }}
+<meta property="og:site_name" content="{{ $ctx.ed.title }}" />
+<meta property="og:title" content="{{ $ctx.title }}" />
+<meta property="og:description" content="{{ $ctx.desc }}" />
+<meta property="og:url" content="{{ $p.Permalink }}" />
+<meta property="og:type" content="{{ if $ctx.kind }}article{{ else }}website{{ end }}" />
+<meta property="og:locale" content="{{ $loc }}" />
+{{ range $p.AllTranslations }}{{ if ne .Language.Lang site.Language.Lang }}<meta property="og:locale:alternate" content="{{ .Language.Locale | default .Language.Lang | replaceRE "-" "_" }}" />{{ end }}{{ end }}
+<meta property="og:image" content="{{ $img.url }}" />
+<meta property="og:image:width" content="{{ $img.width }}" />
+<meta property="og:image:height" content="{{ $img.height }}" />
+<meta property="og:image:alt" content="{{ $img.alt }}" />

@@ -1,0 +1,61 @@
+/* Consent banner (fixed bottom sheet) and cookie-settings control */
+.cfc-consent {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  max-height: 50vh;
+  overflow-y: auto;
+  background: var(--color-body, #fff);
+  color: var(--color-text, #111);
+  border-top: 2px solid var(--color-primary);
+  box-shadow: 0 -4px 16px rgb(0 0 0 / 0.15);
+}
+.cfc-consent[hidden],
+.cfc-consent [hidden],
+.cfc-consent-open[hidden] {
+  display: none;
+}
+.cfc-consent__inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+.cfc-consent__title {
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.cfc-consent__text {
+  margin: 0 0 0.75rem;
+}
+.cfc-consent__actions,
+.cfc-consent__layer2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.cfc-consent__layer2 {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.cfc-consent__btn {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border: 2px solid var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+}
+.cfc-consent__link,
+.cfc-consent-open {
+  background: none;
+  border: 0;
+  padding: 0.5rem;
+  text-decoration: underline;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}

@@ -1,3 +1,3 @@
 # Production configuration
-# Exclude dev-only styleguide pages from production output
-ignoreFiles = ['styleguide\.md$']
+# Exclude dev-only pages from production output (styleguide, analytics fixture)
+ignoreFiles = ['styleguide\.md$', 'analytics-fixture']

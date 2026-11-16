@@ -1,0 +1,73 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [dataset_updated]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read pinned versions
+        id: v
+        run: |
+          echo "hugo=$(jq -r .hugo config/build.json)" >> "$GITHUB_OUTPUT"
+          echo "go=$(jq -r .go config/build.json)" >> "$GITHUB_OUTPUT"
+          echo "node=$(jq -r .node config/build.json)" >> "$GITHUB_OUTPUT"
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.v.outputs.node }}
+          cache: pnpm
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ steps.v.outputs.go }}
+
+      - name: Install Hugo extended
+        run: |
+          wget -q -O hugo.deb "https://github.com/gohugoio/hugo/releases/download/v${{ steps.v.outputs.hugo }}/hugo_extended_${{ steps.v.outputs.hugo }}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+
+      - name: Pre-flight version check
+        run: |
+          hugo version
+          hugo version | grep -q "extended"
+          hugo version | grep -q "v${{ steps.v.outputs.hugo }}"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: OG images
+        run: pip3 install -r requirements.txt && python3 scripts/generate_og_images.py
+
+      - name: Build
+        env:
+          # Enable after turning on Image Transformations (remote sources) for the zone.
+          HUGOxPARAMSxCFC_IMAGE_RESIZE: ${{ vars.CFC_IMAGE_RESIZE || 'false' }}
+        run: pnpm build
+
+      - run: pnpm check-file-count
+
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

@@ -1,0 +1,34 @@
+{{- $s := partialCached "analytics/settings.html" .Page site.Language.Lang -}}
+<table class="cfc-privacy-table">
+  <thead>
+    <tr>
+      <th>{{ i18n "privacy_col_service" }}</th>
+      <th>{{ i18n "privacy_col_purpose" }}</th>
+      <th>{{ i18n "privacy_col_storage" }}</th>
+      <th>{{ i18n "privacy_col_consent" }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{- if $s.ga4 }}
+    <tr>
+      <td>Google Analytics 4</td>
+      <td>{{ i18n "privacy_ga_purpose" }}</td>
+      <td>{{ i18n "privacy_storage_cookies" }}</td>
+      <td>{{ i18n "privacy_consent_required" }}</td>
+    </tr>
+    {{- end }}
+    {{- if ne $s.cf.mode "off" }}
+    <tr>
+      <td>Cloudflare Web Analytics</td>
+      <td>{{ i18n "privacy_cf_purpose" }}</td>
+      <td>{{ i18n "privacy_storage_none" }}</td>
+      <td>{{ i18n "privacy_consent_not_required" }}</td>
+    </tr>
+    {{- end }}
+  </tbody>
+</table>
+<ul>
+  <li><strong>{{ i18n "privacy_controller" }}:</strong> {{ $s.privacy.controller }}</li>
+  <li><strong>{{ i18n "privacy_contact" }}:</strong> <a href="mailto:{{ $s.privacy.contactEmail }}">{{ $s.privacy.contactEmail }}</a></li>
+  <li><strong>{{ i18n "privacy_authority_label" }}:</strong> {{ i18n "privacy_authority" }}</li>
+</ul>

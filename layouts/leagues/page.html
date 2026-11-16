@@ -37,7 +37,7 @@
     {{- with $league -}}
       <header class="cfc-entity-header">
         {{- with .logo -}}
-          <span class="cfc-entity-header__logo"><img src="{{ . }}" alt="" width="40" height="40" decoding="async" onerror="this.hidden=true" /></span>
+          <span class="cfc-entity-header__logo"><img src="{{ partial "cfc/img-src.html" (dict "src" . "width" 40) }}" alt="" width="40" height="40" decoding="async" onerror="this.hidden=true" /></span>
         {{- end -}}
         <div>
           <h1 class="cfc-entity-header__title">{{ .name }}</h1>

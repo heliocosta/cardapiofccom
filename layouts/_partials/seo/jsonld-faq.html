@@ -1,0 +1,4 @@
+{{/* FAQPage mirroring cfcpage/faq-items.html. Args: items (slice of dict q,a) */}}
+{{ $q := slice }}
+{{ range . }}{{ $q = $q | append (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a)) }}{{ end }}
+{{ return (dict "@type" "FAQPage" "mainEntity" $q) }}

@@ -1,0 +1,7 @@
+{{/* analytics/runtime.html - runtime config JSON + deferred runtime bundle */}}
+{{- $s := partialCached "analytics/settings.html" . site.Language.Lang -}}
+{{- $rc := dict "env" $s.env "ga4" $s.ga4 "edition" $s.edition.code "pageType" (partial "analytics/page-type.html" .) -}}
+<script type="application/json" id="cfc-analytics-config">{{ $rc | jsonify | safeJS }}</script>
+{{- $opts := dict "minify" true "target" "es2019" "format" "iife" "params" (dict "events" hugo.Data.analytics.events) "targetPath" "js/cfc-analytics.js" -}}
+{{- $js := resources.Get "js/analytics/index.js" | js.Build $opts | fingerprint -}}
+<script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" crossorigin="anonymous"></script>

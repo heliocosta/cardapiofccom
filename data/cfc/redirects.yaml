@@ -1,0 +1,17 @@
+# Canonical redirect manifest for legacy app-deeplink aliases (consumed by edge-delivery & checks)
+- from: /favorites
+  to: /favourites
+  status: 301
+  preserve_query: true
+- from: /reminder
+  to: /my_agenda
+  status: 301
+  preserve_query: true
+- from: /:edition/favorites
+  to: /:edition/favourites
+  status: 301
+  preserve_query: true
+- from: /:edition/reminder
+  to: /:edition/my_agenda
+  status: 301
+  preserve_query: true

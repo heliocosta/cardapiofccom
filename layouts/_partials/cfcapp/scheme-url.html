@@ -1,0 +1,39 @@
+{{/* cfcapp/scheme-url.html - maps route/entity to cardapiofc:// or cfc:// custom scheme.
+     Args: Page context or dict ("page"? Page, "kind"? string, "slug"? string, "query"? string) */}}
+{{- $p := . -}}
+{{- $kind := "" -}}
+{{- $slug := "" -}}
+{{- $query := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- if isset . "page" }}{{ $p = .page }}{{ end -}}
+  {{- if isset . "kind" }}{{ $kind = printf "%v" .kind }}{{ end -}}
+  {{- if isset . "slug" }}{{ $slug = printf "%v" .slug }}{{ end -}}
+  {{- if isset . "query" }}{{ $query = printf "%v" .query }}{{ end -}}
+{{- end -}}
+{{- if and (not $kind) $p -}}
+  {{- with $p.Params.cfc -}}
+    {{- $kind = .kind | default "" -}}
+    {{- if not $slug }}{{ $slug = .slug | default "" }}{{ end -}}
+  {{- end -}}
+  {{- if not $kind }}{{ $kind = $p.Section | default "" }}{{ end -}}
+  {{- if and (not $slug) $p.File }}{{ $slug = $p.File.ContentBaseName }}{{ end -}}
+{{- end -}}
+{{- $url := "cardapiofc://home" -}}
+{{- if and $slug (or (eq $kind "match") (eq $kind "matches")) -}}
+  {{- $url = printf "cardapiofc://match/%s" $slug -}}
+{{- else if and $slug (or (eq $kind "team") (eq $kind "teams")) -}}
+  {{- $url = printf "cardapiofc://team/%s" $slug -}}
+{{- else if and $slug (or (eq $kind "league") (eq $kind "leagues")) -}}
+  {{- $url = printf "cardapiofc://league/%s" $slug -}}
+{{- else if eq $kind "favourites" -}}
+  {{- $url = "cardapiofc://favourites" -}}
+{{- else if eq $kind "my_agenda" -}}
+  {{- $url = "cardapiofc://my_agenda" -}}
+{{- else if eq $kind "reminder" -}}
+  {{- $url = "cfc://reminder" -}}
+{{- else if eq $kind "search" -}}
+  {{- $url = cond (ne $query "") (printf "cfc://search?q=%s" (urlquery $query)) "cfc://search" -}}
+{{- else if eq $kind "settings" -}}
+  {{- $url = "cfc://settings" -}}
+{{- end -}}
+{{- return $url -}}

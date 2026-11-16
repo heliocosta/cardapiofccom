@@ -1,0 +1,6 @@
+{{ $t := .ctx.entity.team }}
+{{ $o := dict "@type" "SportsTeam" "@id" (printf "%s#team" .page.Permalink) "name" $t.name "sport" "Soccer" "url" .page.Permalink }}
+{{ with $t.crest }}{{ $o = merge $o (dict "logo" .) }}{{ end }}
+{{ $alt := slice }}{{ range $k, $v := $t.names }}{{ if and $v (ne $v $t.name) }}{{ $alt = $alt | append $v }}{{ end }}{{ end }}
+{{ with uniq $alt }}{{ $o = merge $o (dict "alternateName" .) }}{{ end }}
+{{ return $o }}

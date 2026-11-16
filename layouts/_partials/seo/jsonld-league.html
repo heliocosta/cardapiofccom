@@ -1,0 +1,5 @@
+{{/* schema.org has no SportsLeague type; SportsOrganization is the closest valid type. */}}
+{{ $l := .ctx.entity.league }}
+{{ $o := dict "@type" "SportsOrganization" "@id" (printf "%s#league" .page.Permalink) "name" $l.name "sport" "Soccer" "url" .page.Permalink }}
+{{ with $l.logo }}{{ $o = merge $o (dict "logo" .) }}{{ end }}
+{{ return $o }}
