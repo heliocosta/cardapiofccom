@@ -45,7 +45,7 @@
     "font_family": {
       "primary": "Inter:wght@400;600",
       "primary_type": "sans-serif",
-      "secondary": "Saira Condensed:wght@500;700",
+      "secondary": "Saira+Condensed:wght@500;700",
       "secondary_type": "sans-serif"
     },
     "font_size": {
