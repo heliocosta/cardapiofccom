@@ -1,7 +1,6 @@
 ################ Global (English) ##################
 [en]
 label = "Global"
-languageCode = "en"
 locale = "en"
 direction = "ltr"
 contentDir = "content/en"
@@ -24,7 +23,6 @@ isGlobal = true
 ################ UK (English) ##################
 [en-gb]
 label = "UK"
-languageCode = "en-GB"
 locale = "en-GB"
 direction = "ltr"
 contentDir = "content/en-gb"
@@ -47,7 +45,6 @@ isGlobal = false
 ################ Ireland (English) ##################
 [en-ie]
 label = "Ireland"
-languageCode = "en-IE"
 locale = "en-IE"
 direction = "ltr"
 contentDir = "content/en-ie"
@@ -70,7 +67,6 @@ isGlobal = false
 ################ Brazil (Portuguese) ##################
 [pt-br]
 label = "Brasil"
-languageCode = "pt-BR"
 locale = "pt-BR"
 direction = "ltr"
 contentDir = "content/pt-br"
@@ -93,7 +89,6 @@ isGlobal = false
 ################ Portugal (Portuguese) ##################
 [pt-pt]
 label = "Portugal"
-languageCode = "pt-PT"
 locale = "pt-PT"
 direction = "ltr"
 contentDir = "content/pt-pt"
@@ -116,7 +111,6 @@ isGlobal = false
 ################ Argentina (Spanish) ##################
 [es-ar]
 label = "Argentina"
-languageCode = "es-AR"
 locale = "es-AR"
 direction = "ltr"
 contentDir = "content/es-ar"
