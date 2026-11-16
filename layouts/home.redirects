@@ -1,30 +1,18 @@
-{{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
-# Deep-link alias redirects
+# Static redirects (must precede dynamic rules)
 /favorites /favourites 301
 /favorites/ /favourites 301
 /reminder /my_agenda 301
 /reminder/ /my_agenda 301
+/en / 301
+/en/ / 301
+
+# Dynamic redirects (Cloudflare Workers Static Assets limit: 100 dynamic rules).
+# App-share match URLs (/match/Nov_15_2026_...) are resolved client-side by layouts/404.html
+# so _redirects stays well within Cloudflare's 100-rule limit.
 /:ed/favorites /:ed/favourites 301
 /:ed/favorites/ /:ed/favourites 301
 /:ed/reminder /:ed/my_agenda 301
 /:ed/reminder/ /:ed/my_agenda 301
-
-# Cloudflare limits: 2000 static + 100 dynamic rules, so edition-prefixed app-share rules
-# are omitted (the 404 deep-link resolver handles them) and 404 fallbacks are left to
-# wrangler.jsonc not_found_handling.
-# Mobile app shared match URL redirects (Option A: {Mon}_{DD}_{YYYY}_{hh}_{mm}_{AM/PM}_{League}_{Home}_x_{Away} -> /match/{slug}/)
-{{- if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.matches) }}
-{{- range $slug := $dataset.order }}
-  {{- $m := index $dataset.matches $slug }}
-  {{- if $m }}
-    {{- $appSlugs := partial "cfcdata/app-share-slugs.html" (dict "match" $m "dataset" $dataset) }}
-    {{- range $appSlug := $appSlugs }}
-/match/{{ $appSlug }} /match/{{ $slug }}/ 301
-/match/{{ $appSlug }}/ /match/{{ $slug }}/ 301
-    {{- end }}
-  {{- end }}
-{{- end }}
-{{- end }}
 
 # Legacy route redirects
 /pt/jogos/* /pt-br/ 301
@@ -34,9 +22,6 @@
 /en/matches/* / 301
 /en/teams/* / 301
 /en/leagues/* /leagues/ 301
-# /en/sitemap.xml is the live Global sitemap, so the old /en/* catch-all is not used.
-/en / 301
-/en/ / 301
 /es/* /es-ar/ 301
 /fr/* / 301
 /zh/* / 301
