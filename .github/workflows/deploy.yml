@@ -72,3 +72,16 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4"
           command: deploy
+
+      - name: Sync Cloudflare geo-routing rules
+        if: ${{ env.CLOUDFLARE_ZONE_ID != '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          resp=$(curl -sS -X PUT \
+            "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/rulesets/phases/http_request_dynamic_redirect/entrypoint" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data-binary @cloudflare/redirect-rules.json)
+          echo "$resp" | jq -e '.success == true' > /dev/null || { echo "$resp"; exit 1; }
