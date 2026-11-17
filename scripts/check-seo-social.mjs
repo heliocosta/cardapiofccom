@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pub = path.join(root, "public");
 const BASE = "https://cardapiofc.com/";
-const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar"];
+const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar", "en-us", "zh-cn", "ja"];
 const BCP47 = /^(x-default|[a-z]{2}(-[A-Z]{2})?)$/;
 const OG_MAX = 300000;
 const SAMPLE = 5;

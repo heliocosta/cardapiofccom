@@ -70,6 +70,48 @@
           }
         }
       }
+    },
+    {
+      "description": "Geo-route US to /en-us/",
+      "expression": "(ip.src.country eq \"US\") and not (http.user_agent contains \"Googlebot\" or http.user_agent contains \"bingbot\" or http.user_agent contains \"DuckDuckBot\" or http.user_agent contains \"YandexBot\" or http.user_agent contains \"Baiduspider\" or http.user_agent contains \"Applebot\") and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": true,
+          "target_url": {
+            "expression": "concat(\"/en-us\", http.request.uri.path)"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route CN to /zh-cn/",
+      "expression": "(ip.src.country eq \"CN\") and not (http.user_agent contains \"Googlebot\" or http.user_agent contains \"bingbot\" or http.user_agent contains \"DuckDuckBot\" or http.user_agent contains \"YandexBot\" or http.user_agent contains \"Baiduspider\" or http.user_agent contains \"Applebot\") and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": true,
+          "target_url": {
+            "expression": "concat(\"/zh-cn\", http.request.uri.path)"
+          }
+        }
+      }
+    },
+    {
+      "description": "Geo-route JP to /ja/",
+      "expression": "(ip.src.country eq \"JP\") and not (http.user_agent contains \"Googlebot\" or http.user_agent contains \"bingbot\" or http.user_agent contains \"DuckDuckBot\" or http.user_agent contains \"YandexBot\" or http.user_agent contains \"Baiduspider\" or http.user_agent contains \"Applebot\") and not http.request.uri.query contains \"edition=\" and not http.cookie contains \"cfc_edition=\" and (http.request.uri.path eq \"/\" or http.request.uri.path eq \"/search\" or http.request.uri.path eq \"/favourites\" or http.request.uri.path eq \"/favorites\" or http.request.uri.path eq \"/my_agenda\" or http.request.uri.path eq \"/reminder\" or http.request.uri.path eq \"/settings\" or starts_with(http.request.uri.path, \"/match/\") or starts_with(http.request.uri.path, \"/team/\") or starts_with(http.request.uri.path, \"/league/\"))",
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "status_code": 302,
+          "preserve_query_string": true,
+          "target_url": {
+            "expression": "concat(\"/ja\", http.request.uri.path)"
+          }
+        }
+      }
     }
   ]
 }

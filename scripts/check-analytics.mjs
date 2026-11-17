@@ -16,7 +16,7 @@ if (!fs.existsSync(pub)) {
   process.exit(1);
 }
 
-const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar"];
+const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar", "en-us", "zh-cn", "ja"];
 
 function walk(dir, out = []) {
   for (const n of fs.readdirSync(dir)) {

@@ -22,7 +22,7 @@
   {{ $signChar := substr $raw 0 1 }}
   {{ $hoursStr := substr $raw 1 2 }}
   {{ $minsStr := substr $raw 4 2 }}
-  {{ $hours := cast.ToInt $hoursStr }}
+  {{ $hours := cast.ToInt (strings.TrimLeft "0" $hoursStr | default "0") }}
   {{ $sign := "+" }}
   {{ if eq $signChar "-" }}
     {{ $sign = "−" }}

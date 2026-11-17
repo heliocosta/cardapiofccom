@@ -167,6 +167,9 @@ const editions = [
   { code: 'pt-br', prefix: 'pt-br/', locale: 'pt-BR' },
   { code: 'pt-pt', prefix: 'pt-pt/', locale: 'pt-PT' },
   { code: 'es-ar', prefix: 'es-ar/', locale: 'es-AR' },
+  { code: 'en-us', prefix: 'en-us/', locale: 'en-US' },
+  { code: 'zh-cn', prefix: 'zh-cn/', locale: 'zh-CN' },
+  { code: 'ja', prefix: 'ja/', locale: 'ja' },
 ];
 
 for (const ed of editions) {
@@ -245,7 +248,7 @@ function scanPublicDir(dir) {
 scanPublicDir(publicDir);
 
 // Check C: i18n key parity across base tables
-const baseFiles = ['i18n/en.yaml', 'i18n/pt.yaml', 'i18n/es.yaml'];
+const baseFiles = ['i18n/en.yaml', 'i18n/pt.yaml', 'i18n/es.yaml', 'i18n/zh-cn.yaml', 'i18n/ja.yaml'];
 const baseKeyMaps = {};
 for (const bf of baseFiles) {
   baseKeyMaps[bf] = parseYamlKeys(path.join(rootDir, bf));

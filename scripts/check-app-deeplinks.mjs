@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pub = path.join(root, "public");
-const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar"];
+const EDITIONS = ["", "en-gb", "en-ie", "pt-br", "pt-pt", "es-ar", "en-us", "zh-cn", "ja"];
 const PAGES = ["search", "favourites", "my_agenda", "settings"];
 const MAX_INDEX = 1048576; // 1 MB
 const failures = [];

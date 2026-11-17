@@ -129,3 +129,70 @@ i18nBase = "es"
 timeZone = "America/Argentina/Buenos_Aires"
 zoneLabel = "hora de Argentina"
 isGlobal = false
+
+################ USA (English) ##################
+[en-us]
+label = "USA"
+locale = "en-US"
+direction = "ltr"
+contentDir = "content/en-us"
+weight = 7
+title = "CardápioFC USA"
+timeZone = "America/New_York"
+
+[en-us.params]
+description = "Live football and soccer on TV and streaming in the USA. Match schedules, kick-off times and US broadcast channels."
+copyright = "© 2026 CardápioFC USA. All rights reserved."
+
+[en-us.params.edition]
+country = "US"
+hreflang = "en-US"
+i18nBase = "en"
+timeZone = "America/New_York"
+zoneLabel = "US Eastern"
+isGlobal = false
+
+################ China (Simplified Chinese) ##################
+[zh-cn]
+label = "中国 (简体)"
+locale = "zh-CN"
+direction = "ltr"
+contentDir = "content/zh-cn"
+weight = 8
+title = "CardápioFC 中国"
+timeZone = "Asia/Shanghai"
+
+[zh-cn.params]
+description = "中国足球电视与流媒体直播赛程。开球时间及官方转播频道指南。"
+copyright = "© 2026 CardápioFC 中国. 保留所有权利。"
+
+[zh-cn.params.edition]
+country = "CN"
+hreflang = "zh-CN"
+i18nBase = "zh-cn"
+timeZone = "Asia/Shanghai"
+zoneLabel = "北京时间"
+isGlobal = false
+
+################ Japan (Japanese) ##################
+[ja]
+label = "日本"
+locale = "ja"
+direction = "ltr"
+contentDir = "content/ja"
+weight = 9
+title = "CardápioFC 日本"
+timeZone = "Asia/Tokyo"
+
+[ja.params]
+description = "日本のサッカーテレビ放送・ネット配信スケジュール。キックオフ時間と公式放送チャンネル一覧。"
+copyright = "© 2026 CardápioFC 日本. All rights reserved."
+
+[ja.params.edition]
+country = "JP"
+hreflang = "ja-JP"
+i18nBase = "ja"
+timeZone = "Asia/Tokyo"
+zoneLabel = "日本時間"
+isGlobal = false
+
