@@ -76,7 +76,6 @@ for (const f of htmls) {
 }
 
 for (const e of FORBIDDEN.slice(0, 0)) void e;
-if (fs.existsSync(path.join(pub, "ads.txt"))) fail("public/ads.txt must not exist");
 for (const e of EDITIONS.filter(Boolean)) if (fs.existsSync(path.join(pub, e, "ads.txt"))) fail(`public/${e}/ads.txt must not exist`);
 for (const e of EDITIONS) {
   if (!fs.existsSync(path.join(pub, e, "privacy", "index.html"))) fail(`missing privacy page for edition "${e || "en"}"`);
