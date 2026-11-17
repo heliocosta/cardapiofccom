@@ -3,6 +3,11 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'cloudflare/**'
+      - '.github/workflows/redirect-rules.yml'
+      - 'docs/**'
+      - '.kiro/**'
   repository_dispatch:
     types: [dataset_updated]
   workflow_dispatch:
