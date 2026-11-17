@@ -1,6 +1,4 @@
 {
-  "phase": "http_request_dynamic_redirect",
-  "kind": "zone",
   "name": "cardapiofc geo-routing",
   "rules": [
     {
