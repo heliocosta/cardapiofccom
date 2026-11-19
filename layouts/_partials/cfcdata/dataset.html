@@ -51,6 +51,48 @@
       {{ if isset . "matches" }}{{ $matches = .matches }}{{ else }}{{ $matches = . }}{{ end }}
       {{ if isset . "order" }}{{ $order = .order }}{{ end }}
     {{ end }}
+    {{/* Deduplicate matches.order when duplicate upstream DB fixtures collide on the same slug */}}
+    {{ if and (reflect.IsSlice $order) (gt (len $order) 0) }}
+      {{ $dedupOrder := uniq $order }}
+      {{ if ne (len $dedupOrder) (len $order) }}
+        {{ $seenOrder := dict }}
+        {{ $dupSlugs := slice }}
+        {{ range $mSlug := $order }}
+          {{ $mSlugStr := printf "%v" $mSlug }}
+          {{ if isset $seenOrder $mSlugStr }}
+            {{ $dupSlugs = $dupSlugs | append $mSlugStr }}
+          {{ else }}
+            {{ $seenOrder = merge $seenOrder (dict $mSlugStr true) }}
+          {{ end }}
+        {{ end }}
+        {{ warnf "data-pages: webhook: deduplicated %d duplicate match slug(s) in matches.order: %s" (len $dupSlugs) (delimit (uniq $dupSlugs) ", ") }}
+        {{/* Re-sort deduplicated slugs by (kickoff, slug) when all slugs exist in $matches,
+             so a later duplicate with a different kickoff overwriting $matches[slug] cannot
+             leave $order out of chronological sequence. Unknown slugs remain untouched so
+             validate.html still rejects them. */}}
+        {{ $allKnown := true }}
+        {{ $sortable := slice }}
+        {{ range $s := $dedupOrder }}
+          {{ $sStr := printf "%v" $s }}
+          {{ if and (isset $matches $sStr) (reflect.IsMap (index $matches $sStr)) }}
+            {{ $m := index $matches $sStr }}
+            {{ $k := printf "%v" ($m.kickoff | default "") }}
+            {{ $sortable = $sortable | append (dict "key" (printf "%s|%s" $k $sStr) "slug" $sStr) }}
+          {{ else }}
+            {{ $allKnown = false }}
+          {{ end }}
+        {{ end }}
+        {{ if $allKnown }}
+          {{ $rebuilt := slice }}
+          {{ range (sort $sortable "key" "asc") }}
+            {{ $rebuilt = $rebuilt | append .slug }}
+          {{ end }}
+          {{ $order = $rebuilt }}
+        {{ else }}
+          {{ $order = $dedupOrder }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
     {{ with .channels }}
       {{ $channels = . }}
     {{ end }}
