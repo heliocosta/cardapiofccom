@@ -4,9 +4,6 @@ description: "See where to watch major football championships, European cups, an
 sites:
   matrix:
     languages: ["**"]
-aliases:
-  - "/league/"
-  - "/league"
 params:
   cfc:
     kind: "leagues"

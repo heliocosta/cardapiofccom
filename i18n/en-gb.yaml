@@ -7,3 +7,17 @@ next_match: "Next fixture"
 
 privacy_authority: "the Information Commissioner's Office (ICO)"
 app_landing_my_agenda_desc: "Save upcoming fixtures and get kick-off reminders with official UK TV & streaming channels in the CardápioFC app."
+
+# Localized hub SEO, homepage coverage, and app features
+seo_home_title: "Live Football on TV & Streaming in the UK | CardápioFC"
+seo_match_title: "{{ .Home }} vs {{ .Away }}: UK TV ({{ .DateShort }})"
+seo_team_title: "{{ .Team }}: UK Fixtures, Times & TV Channels"
+seo_league_title: "{{ .League }}: UK Fixtures & TV Channels"
+seo_leagues_title: "Football Leagues & Cups: UK TV & Streaming"
+seo_teams_title: "Football Teams: UK Fixtures & TV Channels"
+seo_matches_title: "Today's Football Fixtures on UK TV & Streaming"
+coverage_domestic_1: "Premier League, Championship, League One & League Two"
+coverage_domestic_2: "FA Cup, EFL Cup (Carabao Cup) & EFL Trophy"
+coverage_domestic_3: "Scottish Premiership & Women's Super League (WSL)"
+coverage_domestic_4: "LaLiga, Serie A, Bundesliga & Ligue 1"
+coverage_domestic_5: "Brasileirão, MLS & Major Domestic Leagues Worldwide"

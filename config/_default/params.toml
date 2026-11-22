@@ -39,22 +39,13 @@ generate_llms_full_txt = true
 # Limit to specific paths (e.g. "/about/", "/blog/*", "/blog/**"). Empty = all pages.
 include = []
 # Exclude specific paths (same wildcard formats as include). Include takes priority on conflicts.
-exclude = []
+exclude = ["/search/**", "/favourites/**", "/my_agenda/**", "/settings/**", "/*/search/**", "/*/favourites/**", "/*/my_agenda/**", "/*/settings/**"]
 
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo
 [metadata]
-keywords = ["futebol na tv","football on tv",
-"futebol tv","football tv",
-"assistir jogo ao vivo","watch live match",
-"tnt sports","tnt sports",
-"tv ao vivo futebol","live football tv",
-"tv futebol ao vivo","football tv live",
-"futebol na tv ao vivo aplicativo","live football on tv app",
-"futebol da hora ao vivo","football of the hour live",
-"tv brasil futebol ao vivo","brazil tv live football",
-"assistir","watch"]
-description = "Football streaming and TV guide"
+keywords = ["live football on tv", "football streaming guide", "futebol na tv ao vivo", "onde assistir futebol", "kickoff times", "official football channels"]
+description = "Live football on TV and streaming worldwide: verified kick-off times and official broadcast channels."
 author = "CardápioFC"
 twitter = ""
 image = "images/og-image.png"

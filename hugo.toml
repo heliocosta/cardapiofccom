@@ -55,26 +55,11 @@ disableWatch = true
 source = 'hugo_stats.json'
 target = 'assets/notwatching/hugo_stats.json'
 [[module.mounts]]
-source = "i18n/en.yaml"
-target = "i18n/en-gb.yaml"
-[[module.mounts]]
-source = "i18n/en.yaml"
-target = "i18n/en-ie.yaml"
+source = "i18n"
+target = "i18n"
 [[module.mounts]]
 source = "i18n/pt.yaml"
 target = "i18n/pt-br.yaml"
-[[module.mounts]]
-source = "i18n/pt.yaml"
-target = "i18n/pt-pt.yaml"
-[[module.mounts]]
-source = "i18n/es.yaml"
-target = "i18n/es-ar.yaml"
-[[module.mounts]]
-source = "i18n/en.yaml"
-target = "i18n/en-us.yaml"
-[[module.mounts]]
-source = "i18n"
-target = "i18n"
 
 
 ############################# Outputs ############################

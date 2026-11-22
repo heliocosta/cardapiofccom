@@ -3,7 +3,7 @@
      (CI sets env HUGOxPARAMSxCFC_IMAGE_RESIZE=true). Local/dev builds keep the original URL. */}}
 {{- $src := .src -}}
 {{- $w := mul (.width | default 40) 2 -}}
-{{- if and (eq (printf "%v" site.Params.cfc_image_resize) "true") (hasPrefix $src "http") -}}
+{{- if and (eq (printf "%v" site.Params.cfc_image_resize) "true") (hasPrefix $src "http") (not (strings.Contains $src "retool.com")) -}}
   {{- printf "/cdn-cgi/image/width=%d,quality=80,format=auto/%s" $w $src -}}
 {{- else -}}
   {{- $src -}}

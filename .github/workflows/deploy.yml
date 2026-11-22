@@ -60,12 +60,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: OG images
+        env:
+          CFC_WEBHOOK_URL: ${{ vars.CFC_WEBHOOK_URL }}
+          HUGO_CFC_WEBHOOK_KEY: ${{ secrets.HUGO_CFC_WEBHOOK_KEY }}
         run: pip3 install -r requirements.txt && python3 scripts/generate_og_images.py
 
       - name: Build
         env:
           # Enable after turning on Image Transformations (remote sources) for the zone.
           HUGOxPARAMSxCFC_IMAGE_RESIZE: ${{ vars.CFC_IMAGE_RESIZE || 'false' }}
+          HUGO_CFC_WEBHOOK_KEY: ${{ secrets.HUGO_CFC_WEBHOOK_KEY }}
         run: pnpm build
 
       - run: pnpm check-file-count

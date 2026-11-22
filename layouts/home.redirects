@@ -1,18 +1,36 @@
 # Static redirects (must precede dynamic rules)
-/favorites /favourites 301
-/favorites/ /favourites 301
-/reminder /my_agenda 301
-/reminder/ /my_agenda 301
+/favorites /favourites/ 301
+/favorites/ /favourites/ 301
+/reminder /my_agenda/ 301
+/reminder/ /my_agenda/ 301
 /en / 301
 /en/ / 301
+/en/about /about/ 301
+/en/about/ /about/ 301
+/en/faq /faq/ 301
+/en/faq/ /faq/ 301
+/pt/sobre /pt-br/about/ 301
+/pt/sobre/ /pt-br/about/ 301
+/zh/about /zh-cn/about/ 301
+/zh/about/ /zh-cn/about/ 301
+/fr/about /about/ 301
+/fr/about/ /about/ 301
+/ar/faq /faq/ 301
+/ar/faq/ /faq/ 301
+/league /leagues/ 301
+/league/ /leagues/ 301
 
 # Dynamic redirects (Cloudflare Workers Static Assets limit: 100 dynamic rules).
 # App-share match URLs (/match/Nov_15_2026_...) are resolved client-side by layouts/404.html
 # so _redirects stays well within Cloudflare's 100-rule limit.
-/:ed/favorites /:ed/favourites 301
-/:ed/favorites/ /:ed/favourites 301
-/:ed/reminder /:ed/my_agenda 301
-/:ed/reminder/ /:ed/my_agenda 301
+/:ed/favorites /:ed/favourites/ 301
+/:ed/favorites/ /:ed/favourites/ 301
+/:ed/reminder /:ed/my_agenda/ 301
+/:ed/reminder/ /:ed/my_agenda/ 301
+/league/* /leagues/:splat 301
+/:ed/league /:ed/leagues/ 301
+/:ed/league/ /:ed/leagues/ 301
+/:ed/league/* /:ed/leagues/:splat 301
 
 # Legacy route redirects
 /pt/jogos/* /pt-br/ 301
@@ -22,7 +40,9 @@
 /en/matches/* / 301
 /en/teams/* / 301
 /en/leagues/* /leagues/ 301
+/en/pages/* / 301
 /es/* /es-ar/ 301
+/zh/* /zh-cn/ 301
 /fr/* / 301
 /hi/* / 301
 /ar/* / 301

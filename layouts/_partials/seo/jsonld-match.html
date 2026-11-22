@@ -1,14 +1,20 @@
 {{/* seo/jsonld-match.html - SportsEvent with BroadcastEvent list. Args: Page, ctx */}}
 {{ $m := .ctx.entity.match }}
+{{ $img := partial "seo/og-image.html" . }}
 {{ $status := "https://schema.org/EventScheduled" }}
 {{ $s := lower (printf "%v" ($m.status | default "")) }}
 {{ if findRE `postpon` $s }}{{ $status = "https://schema.org/EventPostponed" }}{{ else if findRE `cancel` $s }}{{ $status = "https://schema.org/EventCancelled" }}{{ end }}
+{{ $start := time.AsTime $m.kickoff }}
+{{ $end := $start.Add (time.ParseDuration "2h") }}
 {{ $ev := dict
   "@type" "SportsEvent"
   "@id" (printf "%s#event" .page.Permalink)
   "name" (printf "%s vs %s" $m.home.name $m.away.name)
+  "description" .ctx.desc
+  "image" $img.url
   "sport" "Soccer"
-  "startDate" (dateFormat "2006-01-02T15:04:05Z07:00" (time.AsTime $m.kickoff))
+  "startDate" (dateFormat "2006-01-02T15:04:05Z07:00" $start)
+  "endDate" (dateFormat "2006-01-02T15:04:05Z07:00" $end)
   "eventStatus" $status
   "eventAttendanceMode" "https://schema.org/OfflineEventAttendanceMode"
   "url" .page.Permalink
@@ -19,7 +25,12 @@
 {{ with $m.away.crest }}{{ $ev = merge $ev (dict "awayTeam" (dict "@type" "SportsTeam" "name" $m.away.name "sport" "Soccer" "logo" .)) }}{{ end }}
 {{ $venue := "" }}
 {{ if reflect.IsMap $m.venue }}{{ $venue = $m.venue.name | default "" }}{{ else if $m.venue }}{{ $venue = printf "%v" $m.venue }}{{ end }}
-{{ if $venue }}{{ $ev = merge $ev (dict "location" (dict "@type" "Place" "name" $venue)) }}{{ end }}
+{{ if not $venue }}
+  {{ with $m.league }}
+    {{ if and (reflect.IsMap .country) .country.name }}{{ $venue = .country.name }}{{ else if .name }}{{ $venue = .name }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ $ev = merge $ev (dict "location" (dict "@type" "Place" "name" ($venue | default "TBA"))) }}
 {{ with $m.league }}{{ $ev = merge $ev (dict "superEvent" (dict "@type" "SportsEvent" "name" .name)) }}{{ end }}
 {{ $b := slice }}
 {{ range .ctx.entity.channels }}{{ range .channels }}

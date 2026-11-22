@@ -31,10 +31,12 @@
   {{- $allSlugs = slice -}}
 {{- end -}}
 
-{{- $max := 0 -}}
+{{- $max := 120 -}}
 {{- with $settings.home -}}
   {{- with .max -}}
-    {{- $max = int . -}}
+    {{- if gt (int .) 0 -}}
+      {{- $max = int . -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 

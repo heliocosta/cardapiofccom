@@ -11,8 +11,8 @@
 
     {{ partial "cfc/page-hero.html" (dict
       "eyebrow" (i18n "section_agenda_eyebrow" | default "Match agenda")
-      "title" (.Title | default (i18n "matches_title" | default "Live Football Matches on TV & Streaming"))
-      "intro" (.Description | default (i18n "matches_intro" | default "Daily match agenda and official broadcast schedules."))
+      "title" (i18n "matches_title" | default .Title | default "Live Football Matches on TV & Streaming")
+      "intro" (i18n "matches_intro" | default .Description | default "Daily match agenda and official broadcast schedules.")
     ) }}
 
     {{/* Matches grouped by day with day tabs */}}

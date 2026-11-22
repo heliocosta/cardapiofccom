@@ -10,8 +10,8 @@
 
     {{ partial "cfc/page-hero.html" (dict
       "eyebrow" (i18n "faq_badge" | default "Frequently Asked Questions")
-      "title" (.Title | default (i18n "faq_title" | default "CardápioFC FAQ — Watch Football on TV & Streaming"))
-      "intro" (.Description | default (i18n "faq_intro" | default "Everything you need to know about official football broadcasts, streaming services, and the CardápioFC mobile app."))
+      "title" (i18n "faq_title" | default .Title | default "CardápioFC FAQ: Watch Football on TV & Streaming")
+      "intro" (i18n "faq_intro" | default .Description | default "Everything you need to know about official football broadcasts, streaming services, and the CardápioFC mobile app.")
     ) }}
 
     {{/* App Download Banner */}}

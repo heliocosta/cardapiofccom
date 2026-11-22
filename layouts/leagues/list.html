@@ -20,8 +20,8 @@
 
     {{ partial "cfc/page-hero.html" (dict
       "eyebrow" (i18n "section_competitions_eyebrow" | default "Competitions")
-      "title" (.Title | default (i18n "leagues_title" | default "Football Leagues & Cups | Where To Watch"))
-      "intro" (.Description | default (i18n "leagues_intro" | default "Browse major domestic championships, continental tournaments, and international cups."))
+      "title" (i18n "leagues_title" | default .Title | default "Football Leagues & Cups: Where To Watch")
+      "intro" (i18n "leagues_intro" | default .Description | default "Browse major domestic championships, continental tournaments, and international cups.")
     ) }}
 
     {{- if gt (len $popular) 0 -}}

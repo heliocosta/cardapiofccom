@@ -1,5 +1,6 @@
-{{/* seo/meta.html - title, description, robots. Args: Page, ctx (seo/context.html) */}}
+{{/* seo/meta.html - title, description, content-language, robots. Args: Page, ctx (seo/context.html) */}}
 {{ $ctx := .ctx }}
 <title>{{ $ctx.title }}</title>
 <meta name="description" content="{{ $ctx.desc }}" />
+<meta http-equiv="content-language" content="{{ site.Language.Locale | default site.Language.Lang }}" />
 {{ if $ctx.noindex }}<meta name="robots" content="noindex, follow" />{{ end }}

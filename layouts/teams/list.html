@@ -11,8 +11,8 @@
 
     {{ partial "cfc/page-hero.html" (dict
       "eyebrow" (i18n "teams" | default "Teams")
-      "title" (.Title | default (i18n "teams_title" | default "Football Teams | Where To Watch"))
-      "intro" (.Description | default (i18n "teams_intro" | default "Find upcoming match schedules and official TV channels for your favourite football clubs."))
+      "title" (i18n "teams_title" | default .Title | default "Football Teams: Where To Watch")
+      "intro" (i18n "teams_intro" | default .Description | default "Find upcoming match schedules and official TV channels for your favourite football clubs.")
     ) }}
 
     {{/* App Download Banner */}}

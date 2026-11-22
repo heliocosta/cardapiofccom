@@ -36,7 +36,7 @@
     <section class="cfc-section cfc-how" aria-labelledby="cfc-how-title">
       {{ partial "cfc/section-head.html" (dict
         "eyebrow" (i18n "section_how_eyebrow" | default "How it works")
-        "title" (i18n "how_it_works_title" | default "How CardápioFC Works — Simple Football TV Guide")
+        "title" (i18n "how_it_works_title" | default "How CardápioFC Works: Simple Football TV Guide")
         "intro" (i18n "how_it_works_subtitle" | default "Designed for football fans who want instant access to where every match is broadcast. Simple, fast, and always up-to-date.")
         "id" "cfc-how-title"
       ) }}
@@ -61,35 +61,35 @@
 
     {{/* All Competitions Available Directory */}}
     <section class="cfc-section" aria-labelledby="cfc-coverage-title">
-      {{- $coverageTitle := "All Football Competitions Available" -}}
-      {{- if $countryName -}}{{- $coverageTitle = printf "All Football Competitions Available in %s" $countryName -}}{{- end -}}
+      {{- $coverageTitle := i18n "coverage_title" | default "All Football Competitions Available" -}}
+      {{- if $countryName -}}{{- $coverageTitle = i18n "coverage_title_in" (dict "Country" $countryName) | default (printf "All Football Competitions in %s" $countryName) -}}{{- end -}}
       {{ partial "cfc/section-head.html" (dict
         "eyebrow" (i18n "section_competitions_eyebrow" | default "Coverage")
         "title" $coverageTitle
-        "intro" "Complete coverage of major domestic championships, continental tournaments, and international cups."
+        "intro" (i18n "coverage_intro" | default "Complete coverage of major domestic championships, continental tournaments, and international cups.")
         "id" "cfc-coverage-title"
       ) }}
       <div class="cfc-coverage">
         <div class="cfc-card cfc-coverage__card">
           <div class="cfc-icon-tile">{{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-icon-tile__icon") }}</div>
-          <h3 class="cfc-card__title">Domestic Championships &amp; Cups</h3>
+          <h3 class="cfc-card__title">{{ i18n "coverage_domestic_title" | default "Domestic Championships & Cups" }}</h3>
           <ul class="cfc-check-list" role="list">
-            <li>Campeonato Brasileiro Série A, B, C &amp; D</li>
-            <li>Copa do Brasil &amp; State Championships (Paulista, Carioca, Mineiro, Gaúcho)</li>
-            <li>Campeonato Brasileiro Feminino A1 &amp; A2</li>
-            <li>Copa do Nordeste, Copa Verde &amp; Regional Tournaments</li>
-            <li>Major League Soccer (MLS) &amp; Continental Americas</li>
+            <li>{{ i18n "coverage_domestic_1" }}</li>
+            <li>{{ i18n "coverage_domestic_2" }}</li>
+            <li>{{ i18n "coverage_domestic_3" }}</li>
+            <li>{{ i18n "coverage_domestic_4" }}</li>
+            <li>{{ i18n "coverage_domestic_5" }}</li>
           </ul>
         </div>
         <div class="cfc-card cfc-coverage__card">
           <div class="cfc-icon-tile">{{ partial "cfc/icon.html" (dict "name" "star" "class" "cfc-icon-tile__icon") }}</div>
-          <h3 class="cfc-card__title">International &amp; European Tournaments</h3>
+          <h3 class="cfc-card__title">{{ i18n "coverage_intl_title" | default "International & Continental Tournaments" }}</h3>
           <ul class="cfc-check-list" role="list">
-            <li>Copa Libertadores &amp; Copa Sudamericana</li>
-            <li>UEFA Champions League, Europa League &amp; Conference League</li>
-            <li>Premier League, LaLiga, Serie A, Bundesliga, Ligue 1</li>
-            <li>FIFA World Cup, Qualifiers &amp; International Friendlies</li>
-            <li>UEFA Women's Champions League &amp; International Women's Cups</li>
+            <li>{{ i18n "coverage_intl_1" }}</li>
+            <li>{{ i18n "coverage_intl_2" }}</li>
+            <li>{{ i18n "coverage_intl_3" }}</li>
+            <li>{{ i18n "coverage_intl_4" }}</li>
+            <li>{{ i18n "coverage_intl_5" }}</li>
           </ul>
         </div>
       </div>
@@ -100,6 +100,7 @@
     {{ partial "cfc/app-features.html" . }}
 
     {{/* Closing CTA */}}
-    {{ partial "cfc/app-download.html" (dict "page" . "title" (i18n "app_download_cta_title" | default "Ready to Never Miss Another Match?") "subtitle" (i18n "app_download_cta_subtitle" | default "Install CardápioFC now for iOS & Android.") "screen" "images/app_screens/android/pt/light_13_league_stats.png") }}
+    {{- $ctaScreen := cond (hasPrefix site.Language.Lang "pt") "images/app_screens/android/pt/light_13_league_stats.png" "images/app_screens/android/en/dark_09_team_stadium.png" -}}
+    {{ partial "cfc/app-download.html" (dict "page" . "title" (i18n "app_download_cta_title" | default "Ready to Never Miss Another Match?") "subtitle" (i18n "app_download_cta_subtitle" | default "Install CardápioFC now for iOS & Android.") "screen" $ctaScreen) }}
   </div>
 {{ end }}

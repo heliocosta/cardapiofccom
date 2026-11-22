@@ -26,7 +26,9 @@
 
   {{- $homeUrl := "/" | relLangURL -}}
   {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
-  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $teamTitle "label" $teamTitle) -}}
+  {{- $teamsUrl := "teams/" | relLangURL -}}
+  {{- $teamsLabel := i18n "teams" | default "Teams" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $teamsLabel "label" $teamsLabel "url" $teamsUrl) (dict "name" $teamTitle "label" $teamTitle) -}}
 
   <div class="cfc-container py-6">
     {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}

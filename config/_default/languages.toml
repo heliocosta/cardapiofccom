@@ -190,7 +190,7 @@ copyright = "© 2026 CardápioFC 日本. All rights reserved."
 
 [ja.params.edition]
 country = "JP"
-hreflang = "ja-JP"
+hreflang = "ja"
 i18nBase = "ja"
 timeZone = "Asia/Tokyo"
 zoneLabel = "日本時間"

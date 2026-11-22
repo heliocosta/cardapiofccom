@@ -70,7 +70,14 @@
       {{- $dayDate := $group.date -}}
       {{- $dayKey := $group.day | default ($dayDate.Format "2006-01-02") -}}
       {{- $dow := strings.TrimSuffix "." (time.Format "Mon" $dayDate) -}}
+      {{- if eq site.Language.Lang "zh-cn" -}}
+        {{- $dowMap := dict "Sun" "周日" "Mon" "周一" "Tue" "周二" "Wed" "周三" "Thu" "周四" "Fri" "周五" "Sat" "周六" -}}
+        {{- $dow = index $dowMap $dow | default $dow -}}
+      {{- end -}}
       {{- $shortDate := strings.TrimSuffix "." (time.Format "2 Jan" $dayDate) -}}
+      {{- if in (slice "zh-cn" "ja") site.Language.Lang -}}
+        {{- $shortDate = time.Format "1/2" $dayDate -}}
+      {{- end -}}
       {{- $isActive := eq $idx 0 -}}
       {{- $tab := printf `<button type="button" role="tab" id="tab-day-%s-%s" aria-controls="pane-day-%s-%s" aria-selected="%s" data-cfc-tab="%s" class="cfc-day-tab%s"><span class="cfc-day-tab__dow">%s</span><span class="cfc-day-tab__date">%s</span></button>` $uid $dayKey $uid $dayKey (cond $isActive "true" "false") $dayKey (cond $isActive " is-active" "") $dow $shortDate -}}
       {{- $tabs = printf "%s%s" $tabs $tab -}}

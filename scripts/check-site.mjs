@@ -248,7 +248,7 @@ function scanPublicDir(dir) {
 scanPublicDir(publicDir);
 
 // Check C: i18n key parity across base tables
-const baseFiles = ['i18n/en.yaml', 'i18n/pt.yaml', 'i18n/es.yaml', 'i18n/zh-cn.yaml', 'i18n/ja.yaml'];
+const baseFiles = ['i18n/en.yaml', 'i18n/pt.yaml', 'i18n/pt-pt.yaml', 'i18n/es.yaml', 'i18n/es-ar.yaml', 'i18n/zh-cn.yaml', 'i18n/ja.yaml'];
 const baseKeyMaps = {};
 for (const bf of baseFiles) {
   baseKeyMaps[bf] = parseYamlKeys(path.join(rootDir, bf));

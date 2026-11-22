@@ -3,7 +3,7 @@
 {{- $heading := .heading -}}
 {{- $intro := .intro -}}
 {{- $mainScreen := "images/app_screens/android/en/dark_01_home_feed.png" -}}
-{{- $backScreen := "images/app_screens/android/pt/dark_11_league_standings.png" -}}
+{{- $backScreen := cond (hasPrefix site.Language.Lang "pt") "images/app_screens/android/pt/dark_11_league_standings.png" "images/app_screens/android/en/dark_09_team_stadium.png" -}}
 <section class="cfc-hero" aria-labelledby="cfc-hero-title">
   <div class="cfc-hero__bg" aria-hidden="true">
     <span class="cfc-hero__glow cfc-hero__glow--a"></span>

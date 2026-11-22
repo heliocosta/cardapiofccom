@@ -6,7 +6,7 @@
 <meta property="og:title" content="{{ $ctx.title }}" />
 <meta property="og:description" content="{{ $ctx.desc }}" />
 <meta property="og:url" content="{{ $p.Permalink }}" />
-<meta property="og:type" content="{{ if $ctx.kind }}article{{ else }}website{{ end }}" />
+<meta property="og:type" content="{{ if in (slice "match" "team" "league") $ctx.kind }}article{{ else }}website{{ end }}" />
 <meta property="og:locale" content="{{ $loc }}" />
 {{ range $p.AllTranslations }}{{ if ne .Language.Lang site.Language.Lang }}<meta property="og:locale:alternate" content="{{ .Language.Locale | default .Language.Lang | replaceRE "-" "_" }}" />{{ end }}{{ end }}
 <meta property="og:image" content="{{ $img.url }}" />

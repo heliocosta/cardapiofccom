@@ -237,9 +237,13 @@ const layoutProbePath = path.join(ROOT_DIR, 'layouts', '_cfc_i18n_probe.html');
 const probeProbes = [
   { code: 'en', dir: 'content/en', outFile: '_probe_en.json' },
   { code: 'en-gb', dir: 'content/en-gb', outFile: 'en-gb/_probe_en-gb.json' },
+  { code: 'en-ie', dir: 'content/en-ie', outFile: 'en-ie/_probe_en-ie.json' },
+  { code: 'en-us', dir: 'content/en-us', outFile: 'en-us/_probe_en-us.json' },
   { code: 'pt-br', dir: 'content/pt-br', outFile: 'pt-br/_probe_pt-br.json' },
   { code: 'pt-pt', dir: 'content/pt-pt', outFile: 'pt-pt/_probe_pt-pt.json' },
   { code: 'es-ar', dir: 'content/es-ar', outFile: 'es-ar/_probe_es-ar.json' },
+  { code: 'ja', dir: 'content/ja', outFile: 'ja/_probe_ja.json' },
+  { code: 'zh-cn', dir: 'content/zh-cn', outFile: 'zh-cn/_probe_zh-cn.json' },
 ];
 
 const createdFiles = [];
@@ -249,6 +253,7 @@ try {
   fs.writeFileSync(
     layoutProbePath,
     `{{- $res := dict
+      "i18n_base" (i18n "i18n_base")
       "round" (i18n "round")
       "upcoming_matches" (i18n "upcoming_matches")
       "next_match" (i18n "next_match")
@@ -257,6 +262,11 @@ try {
       "no_broadcaster_check_app" (i18n "no_broadcaster_check_app")
       "watch_in_other_countries" (i18n "watch_in_other_countries")
       "country_gb" (i18n "country_gb")
+      "consent_customise" (i18n "consent_customise")
+      "privacy_authority" (i18n "privacy_authority")
+      "layout_time" (i18n "layout_time")
+      "sun_short" (partial "time/format.html" (dict "t" "2026-11-22T12:00:00Z" "style" "dateShort"))
+      "sun_heading" (partial "time/format.html" (dict "t" "2026-11-22T12:00:00Z" "style" "dayHeading"))
     -}}
     {{- $res | jsonify -}}
 `,
@@ -289,6 +299,7 @@ url: "/${p.outFile}"
 
   const expectations = {
     en: {
+      i18n_base: 'en',
       round: 'Round',
       upcoming_matches: 'Upcoming Matches',
       next_match: 'Next match',
@@ -298,28 +309,58 @@ url: "/${p.outFile}"
       country_gb: 'United Kingdom',
     },
     'en-gb': {
+      i18n_base: 'en',
       round: 'Round', // fallback to en
       upcoming_matches: 'Upcoming Fixtures', // regional override
       next_match: 'Next fixture', // regional override
       where_to_watch_in: 'Where to watch in United Kingdom', // fallback
+      privacy_authority: "the Information Commissioner's Office (ICO)",
+    },
+    'en-ie': {
+      i18n_base: 'en',
+      round: 'Round', // fallback to en
+      upcoming_matches: 'Upcoming Fixtures', // regional override
+      next_match: 'Next fixture', // regional override
+      privacy_authority: 'the Data Protection Commission',
+    },
+    'en-us': {
+      i18n_base: 'en',
+      round: 'Round', // fallback to en
+      consent_customise: 'Customize',
+      layout_time: '3:04 PM',
+      privacy_authority: 'the Federal Trade Commission (FTC) or your state privacy authority',
     },
     'pt-br': {
+      i18n_base: 'pt',
       round: 'Rodada',
       where_to_watch_in: 'Onde assistir em United Kingdom',
       watch_in_other_countries: 'Assistir em outros países',
       country_gb: 'Reino Unido',
     },
     'pt-pt': {
+      i18n_base: 'pt',
       round: 'Jornada', // regional override
       where_to_watch_in: 'Onde ver em United Kingdom', // regional override
       watch_in_other_countries: 'Ver noutros países', // regional override
       country_gb: 'Reino Unido', // fallback to pt
+      privacy_authority: 'Comissão Nacional de Proteção de Dados (CNPD)',
     },
     'es-ar': {
+      i18n_base: 'es',
       round: 'Fecha', // regional override
       no_broadcaster_check_app: 'Sin transmisión confirmada — consultá la app CardápioFC.', // regional override
       upcoming_matches: 'Próximos partidos', // fallback to es
       country_gb: 'Reino Unido', // fallback to es
+    },
+    ja: {
+      i18n_base: 'ja',
+      sun_short: '11月22日(日)',
+      sun_heading: '11月22日(日)',
+    },
+    'zh-cn': {
+      i18n_base: 'zh-cn',
+      sun_short: '11月22日 周日',
+      sun_heading: '11月22日 星期日',
     },
   };
 

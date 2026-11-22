@@ -1,4 +1,5 @@
-{{ $logo := "images/logos/cardapiofc_logo_light.svg" | absURL }}
+{{ $logo := "images/og-image.png" | absURL }}
+{{ with resources.Get "images/favicon.png" }}{{ $logo = .Permalink }}{{ end }}
 {{ return (dict "@type" "Organization" "@id" "https://cardapiofc.com/#organization" "name" "CardápioFC" "url" "https://cardapiofc.com/" "logo" $logo
   "sameAs" (slice
     "https://apps.apple.com/app/id6745226833"

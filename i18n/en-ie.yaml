@@ -7,3 +7,17 @@ next_match: "Next fixture"
 
 privacy_authority: "the Data Protection Commission"
 app_landing_my_agenda_desc: "Save upcoming fixtures and get kick-off reminders with official Irish TV & streaming channels in the CardápioFC app."
+
+# Localized hub SEO, homepage coverage, and app features
+seo_home_title: "Live Football on TV & Streaming in Ireland | CardápioFC"
+seo_match_title: "{{ .Home }} vs {{ .Away }}: Irish TV ({{ .DateShort }})"
+seo_team_title: "{{ .Team }}: Ireland Fixtures & TV Channels"
+seo_league_title: "{{ .League }}: Ireland Fixtures & TV Channels"
+seo_leagues_title: "Football Leagues & Cups: Ireland TV & Streaming"
+seo_teams_title: "Football Teams: Ireland Fixtures & TV Channels"
+seo_matches_title: "Today's Football Fixtures on Irish TV & Streaming"
+coverage_domestic_1: "League of Ireland Premier & First Division, FAI Cup"
+coverage_domestic_2: "Premier League, Championship, FA Cup & EFL Cup"
+coverage_domestic_3: "Scottish Premiership & Women's Super League (WSL)"
+coverage_domestic_4: "LaLiga, Serie A, Bundesliga & Ligue 1"
+coverage_domestic_5: "Brasileirão, MLS & Major Domestic Leagues Worldwide"

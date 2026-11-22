@@ -1,20 +1,20 @@
 {{/* cfc/app-features.html - Highlights native mobile app capabilities (strictly NO lineups) */}}
 {{- $features := slice
-  (dict "icon" "tv" "title" `Instant "Where to Watch" Guide` "desc" "Know immediately which TV channel, cable network, or legal streaming service broadcasts any football match in your country.")
-  (dict "icon" "clock" "title" "Real-Time Scores & Match Clock" "desc" "Follow live scores, elapsed minutes, halftime/fulltime results, and penalty shootouts as they happen in real time.")
-  (dict "icon" "stream" "title" "One-Tap Launch to Streaming Apps" "desc" "Tap a broadcast channel directly on any match to jump straight into the official broadcaster's app or live stream.")
-  (dict "icon" "calendar" "title" `Daily Football "Menu" by Date` "desc" "Swipe smoothly across days (yesterday, today, tomorrow, and upcoming fixtures) to plan your football viewing week.")
-  (dict "icon" "bell" "title" "Custom Reminders & Alerts" "desc" "Set pre-match reminder alarms (e.g., 15 or 30 minutes before kick-off) and receive push notifications for your teams' games.")
-  (dict "icon" "star" "title" "Personalised Favourites & Watchlist" "desc" `Follow your favourite clubs, leagues, and channels, and bookmark upcoming games in "My Agenda" so you never lose track.`)
-  (dict "icon" "check" "title" "Match Stats & Head-to-Head" "desc" "Compare team form, past head-to-head results, stadium info, and match statistics before and during every game.")
-  (dict "icon" "search" "title" "Live Standings & Knockout Brackets" "desc" "Check up-to-date league tables, points, goal differences, qualification zones, and visual tournament knockout trees.")
-  (dict "icon" "globe" "title" "Multi-Country & Big-Screen Companion" "desc" "Check live schedules on your wrist with Wear OS, browse on Android TV, or switch countries when traveling abroad.")
+  (dict "icon" "tv" "title" (i18n "app_feat_1_title") "desc" (i18n "app_feat_1_desc"))
+  (dict "icon" "clock" "title" (i18n "app_feat_2_title") "desc" (i18n "app_feat_2_desc"))
+  (dict "icon" "stream" "title" (i18n "app_feat_3_title") "desc" (i18n "app_feat_3_desc"))
+  (dict "icon" "calendar" "title" (i18n "app_feat_4_title") "desc" (i18n "app_feat_4_desc"))
+  (dict "icon" "bell" "title" (i18n "app_feat_5_title") "desc" (i18n "app_feat_5_desc"))
+  (dict "icon" "star" "title" (i18n "app_feat_6_title") "desc" (i18n "app_feat_6_desc"))
+  (dict "icon" "check" "title" (i18n "app_feat_7_title") "desc" (i18n "app_feat_7_desc"))
+  (dict "icon" "search" "title" (i18n "app_feat_8_title") "desc" (i18n "app_feat_8_desc"))
+  (dict "icon" "globe" "title" (i18n "app_feat_9_title") "desc" (i18n "app_feat_9_desc"))
 -}}
 <section class="cfc-section cfc-app-features" aria-labelledby="cfc-features-title">
   {{ partial "cfc/section-head.html" (dict
     "eyebrow" (i18n "section_features_eyebrow" | default "Native mobile app")
-    "title" "Everything Football Fans Need, in Your Pocket"
-    "intro" "The CardápioFC mobile app is loaded with live match companion features you won't find anywhere else. Completely free, no piracy."
+    "title" (i18n "features_section_title" | default "Everything Football Fans Need, in Your Pocket")
+    "intro" (i18n "features_section_intro" | default "The CardápioFC mobile app brings live match companion tools without intrusive ads or pirated streams.")
     "id" "cfc-features-title"
   ) }}
   <div class="cfc-features-grid">

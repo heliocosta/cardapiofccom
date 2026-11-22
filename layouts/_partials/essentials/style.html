@@ -4,15 +4,9 @@
 {{ $sf := hugo.Data.theme.fonts.font_family.secondary }}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<script>
-  (function () {
-    const googleFont = document.createElement("link");
-    googleFont.href = "https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap";
-    googleFont.type = "text/css";
-    googleFont.rel = "stylesheet";
-    document.head.appendChild(googleFont);
-  })();
-</script>
+{{- $fontHref := printf "https://fonts.googleapis.com/css2?family=%s%s&display=swap" $pf (cond (ne $sf "") (printf "&family=%s" $sf) "") -}}
+<link rel="preload" as="style" href="{{ $fontHref | safeURL }}" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="{{ $fontHref | safeURL }}" /></noscript>
 
 <!-- main styles -->
 {{ $styles := slice }}

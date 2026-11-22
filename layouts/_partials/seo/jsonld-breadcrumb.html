@@ -1,9 +1,21 @@
-{{/* Home > League > Match (match) ; Home > Page (others). Args: Page, ctx */}}
+{{/* Home > League > Match (match) ; Home > Leagues > League ; Home > Teams > Team ; Home > Page (others). Args: Page, ctx */}}
 {{ $items := slice (dict "name" (i18n "menu_home" | default "Home") "url" site.Home.Permalink) }}
 {{ if eq .ctx.kind "match" }}
   {{ with .ctx.entity.match.league }}{{ if .url }}{{ $items = $items | append (dict "name" .name "url" (.url | absURL)) }}{{ end }}{{ end }}
+{{ else if eq .ctx.kind "league" }}
+  {{ $items = $items | append (dict "name" (i18n "leagues" | default "Leagues") "url" (("leagues/" | relLangURL) | absURL)) }}
+{{ else if eq .ctx.kind "team" }}
+  {{ $items = $items | append (dict "name" (i18n "teams" | default "Teams") "url" (("teams/" | relLangURL) | absURL)) }}
 {{ end }}
-{{ if not .page.IsHome }}{{ $items = $items | append (dict "name" (.page.Title) "url" .page.Permalink) }}{{ end }}
+{{ if not .page.IsHome }}
+  {{- $lastName := .page.Title -}}
+  {{- if and (not .ctx.kind) .page.Section -}}
+    {{- $lastName = i18n .page.Section | default .page.Title -}}
+  {{- else if eq .ctx.kind "leagues" -}}
+    {{- $lastName = i18n "leagues" | default .page.Title -}}
+  {{- end -}}
+  {{ $items = $items | append (dict "name" $lastName "url" .page.Permalink) }}
+{{ end }}
 {{ $list := slice }}
 {{ range $i, $it := $items }}{{ $list = $list | append (dict "@type" "ListItem" "position" (add $i 1) "name" $it.name "item" $it.url) }}{{ end }}
 {{ return (dict "@type" "BreadcrumbList" "itemListElement" $list) }}

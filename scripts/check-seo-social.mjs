@@ -68,15 +68,18 @@ for (const f of htmls) {
 
   const key = EDITIONS.find((e) => e && rel.startsWith(e + path.sep)) || "";
   const kind = rel.replace(key ? key + path.sep : "", "").split(path.sep)[0];
-  if (["match", "team", "league", ""].includes(kind) || rel === "index.html") {
+  if (["match", "team", "leagues", "faq", ""].includes(kind) || rel === "index.html") {
     const k = `${key}|${kind || "home"}`;
     perKind[k] = (perKind[k] || 0) + 1;
     if (perKind[k] <= SAMPLE) sampled.push({ f, rel, html, kind: kind || "home", edition: key });
   }
 }
 
-// hreflang + JSON-LD on sampled pages
+// hreflang + content-language + JSON-LD on sampled pages
 for (const { f, rel, html, kind } of sampled) {
+  if (!/<meta http-equiv=["']?content-language["']?/i.test(html)) {
+    fail(`${rel}: missing content-language meta tag`);
+  }
   const alts = [...html.matchAll(altRe)].map((m) => ({ lang: m[1], href: m[2] }));
   if (alts.length) {
     for (const a of alts) if (!BCP47.test(a.lang)) fail(`${rel}: hreflang "${a.lang}" is not a BCP 47 code`);
@@ -100,12 +103,31 @@ for (const { f, rel, html, kind } of sampled) {
   if (blocks.length !== 1) { fail(`${rel}: expected one JSON-LD script, found ${blocks.length}`); continue; }
   let data;
   try { data = JSON.parse(blocks[0][1]); } catch (e) { fail(`${rel}: invalid JSON-LD (${e.message})`); continue; }
-  const types = new Set((data["@graph"] || []).map((n) => n["@type"]));
+  const graph = data["@graph"] || [];
+  const types = new Set(graph.map((n) => n["@type"]));
+  const isLeagueHub = kind === "leagues" && (rel === "leagues/index.html" || EDITIONS.some((e) => e && rel === `${e}/leagues/index.html`));
   const need = kind === "match" ? ["SportsEvent", "BreadcrumbList", "FAQPage"]
     : kind === "team" ? ["SportsTeam", "BreadcrumbList"]
-    : kind === "league" ? ["SportsOrganization", "BreadcrumbList"]
+    : (kind === "leagues" && !isLeagueHub) ? ["SportsOrganization", "BreadcrumbList"]
+    : kind === "faq" ? ["FAQPage", "BreadcrumbList"]
     : kind === "home" ? ["WebSite", "Organization"] : [];
   for (const t of need) if (!types.has(t)) fail(`${rel}: JSON-LD missing ${t}`);
+  for (const n of graph) {
+    if (n["@type"] === "SportsEvent") {
+      for (const field of ["location", "image", "description", "endDate"]) {
+        if (!n[field]) fail(`${rel}: SportsEvent missing ${field}`);
+      }
+    }
+    if (n["@type"] === "Organization" && typeof n.logo === "string" && n.logo.endsWith(".svg")) {
+      fail(`${rel}: Organization.logo must not be SVG (${n.logo})`);
+    }
+    if (n["@type"] === "MobileApplication" && !n.offers) {
+      fail(`${rel}: MobileApplication missing offers`);
+    }
+    if (n["@type"] === "WebSite" && n.potentialAction) {
+      fail(`${rel}: WebSite must not emit blocked SearchAction`);
+    }
+  }
   if (kind === "match" && !JSON.stringify(data).includes("BroadcastEvent")) warnings.push(`${rel}: no BroadcastEvent (no channels?)`);
 }
 
@@ -115,6 +137,8 @@ for (const u of ogUrls) {
   if (!f || !fs.existsSync(f)) { fail(`og:image does not exist: ${u}`); continue; }
   if (fs.statSync(f).size > OG_MAX) fail(`og:image over ${OG_MAX} bytes: ${u}`);
 }
+if (fs.existsSync(path.join(pub, "og", ".cache"))) fail("public/og/.cache must not exist in build output");
+if (fs.existsSync(path.join(pub, "league"))) fail("public/league/ meta-refresh aliases must not exist in build output");
 
 // sitemap, robots, llms
 const idx = path.join(pub, "sitemap.xml");
@@ -124,7 +148,13 @@ else {
   if (!x.includes("<sitemapindex")) fail("sitemap.xml is not a sitemap index");
   for (const m of x.matchAll(/<loc>([^<]+)<\/loc>/g)) {
     const f = urlToFile(m[1]);
-    if (!f || !fs.existsSync(f)) fail(`sitemap index entry missing: ${m[1]}`);
+    if (!f || !fs.existsSync(f)) { fail(`sitemap index entry missing: ${m[1]}`); continue; }
+    const sm = read(f);
+    if (sm.includes("<priority>0</priority>")) fail(`${path.relative(pub, f)}: contains <priority>0</priority>`);
+    if (!sm.includes('hreflang="x-default"') && !sm.includes("hreflang=x-default")) fail(`${path.relative(pub, f)}: missing x-default hreflang`);
+    for (const bad of ["/search/", "/favourites/", "/my_agenda/", "/settings/"]) {
+      if (sm.includes(bad)) fail(`${path.relative(pub, f)}: contains noindex URL (${bad})`);
+    }
   }
 }
 const robots = path.join(pub, "robots.txt");

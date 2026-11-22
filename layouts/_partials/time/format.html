@@ -24,6 +24,13 @@
   {{ end }}
   {{ $layout := i18n $layoutKey | default (i18n (printf "layout_%s" $style)) | default $defaultLayout }}
   {{ $result = time.Format $layout $local }}
+  {{ if eq site.Language.Lang "zh-cn" }}
+    {{ $result = $result
+      | replaceRE "Sunday" "星期日" | replaceRE "Monday" "星期一" | replaceRE "Tuesday" "星期二"
+      | replaceRE "Wednesday" "星期三" | replaceRE "Thursday" "星期四" | replaceRE "Friday" "星期五" | replaceRE "Saturday" "星期六"
+      | replaceRE "Sun" "周日" | replaceRE "Mon" "周一" | replaceRE "Tue" "周二"
+      | replaceRE "Wed" "周三" | replaceRE "Thu" "周四" | replaceRE "Fri" "周五" | replaceRE "Sat" "周六" }}
+  {{ end }}
 {{ end }}
 
 {{ return $result }}

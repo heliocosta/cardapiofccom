@@ -14,4 +14,7 @@ jsconfig.json
 go.sum
 yarn.lock
 .hugo_build.lock
-static/og/
+static/og/matches/
+static/og/teams/
+static/og/leagues/
+static/og/.cache/

@@ -6,6 +6,7 @@ Design requirement: Just the logos, NO text at all.
 """
 
 import os
+import re
 import sys
 import json
 import urllib.request
@@ -15,7 +16,7 @@ from PIL import Image, ImageOps
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_OG_DIR = os.path.join(BASE_DIR, "static", "og")
-CACHE_DIR = os.path.join(STATIC_OG_DIR, ".cache")
+CACHE_DIR = os.path.join(BASE_DIR, ".tmp", "og-cache")
 
 MATCHES_OG_DIR = os.path.join(STATIC_OG_DIR, "matches")
 TEAMS_OG_DIR = os.path.join(STATIC_OG_DIR, "teams")
@@ -119,6 +120,37 @@ def generate_match_og(slug, home_crest_url, away_crest_url):
 
     canvas.convert("RGB").save(out_path, "PNG", optimize=True)
 
+def _read_settings_yaml():
+    settings_path = os.path.join(BASE_DIR, "data", "cfc", "settings.yaml")
+    if not os.path.exists(settings_path):
+        return {}
+    values = {}
+    with open(settings_path, "r", encoding="utf-8") as f:
+        for line in f:
+            m = re.match(
+                r'^(webhookURL|webhookKey):\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s#]+))',
+                line.rstrip("\r\n"),
+            )
+            if not m:
+                continue
+            val = next((g for g in (m.group(2), m.group(3), m.group(4)) if g is not None), "")
+            values[m.group(1)] = val
+    return values
+
+
+def resolve_webhook_config():
+    """Return (webhook_url, webhook_key) from env vars, falling back to data/cfc/settings.yaml."""
+    env_url = os.environ.get("CFC_WEBHOOK_URL", "").strip()
+    env_key = os.environ.get("HUGO_CFC_WEBHOOK_KEY", "").strip()
+    if env_url and env_key:
+        return env_url, env_key
+    settings = _read_settings_yaml()
+    return (
+        env_url or settings.get("webhookURL", ""),
+        env_key or settings.get("webhookKey", ""),
+    )
+
+
 def main():
     payload_path = os.environ.get("CFC_PAYLOAD_PATH", "/tmp/retool_payload.json")
     data = None
@@ -127,8 +159,10 @@ def main():
             data = json.load(f)
     else:
         print("Dataset payload not found locally, fetching from Retool webhook...")
-        webhook_url = os.environ.get("CFC_WEBHOOK_URL", "https://api.retool.com/v1/workflows/86127aed-9192-425a-bb96-502151f6d467/startTrigger")
-        webhook_key = os.environ.get("HUGO_CFC_WEBHOOK_KEY", "retool_wk_ab60d09813004561a9137df3bd78860a")
+        webhook_url, webhook_key = resolve_webhook_config()
+        if not webhook_url or not webhook_key:
+            print("CFC_WEBHOOK_URL / HUGO_CFC_WEBHOOK_KEY not set and payload missing; skipping remote fetch.")
+            return
         req = urllib.request.Request(
             webhook_url,
             data=b"{}",

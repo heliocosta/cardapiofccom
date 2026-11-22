@@ -7,7 +7,11 @@
 {{ $desc := $p.Description | default $p.Params.description | default $ed.description }}
 {{ $noindex := or $p.Params.noindex (eq $p.Kind "404") }}
 {{ $in := partial "cfc/country-in.html" . }}
-{{ if and $p.Title (not $p.IsHome) }}{{ $title = printf "%s · %s" $p.Title $ed.title }}{{ end }}
+{{ if $p.IsHome }}
+  {{ $title = i18n "seo_home_title" | default $ed.title }}
+{{ else if and $p.Title (not $p.IsHome) }}
+  {{ $title = printf "%s · %s" $p.Title $ed.title }}
+{{ end }}
 {{ $kind := "" }}
 {{ with $entity }}{{ $kind = .kind }}{{ end }}
 {{ if eq $kind "match" }}
@@ -18,15 +22,22 @@
   {{ $names := slice }}
   {{ range $entity.channels }}{{ range .channels }}{{ $names = $names | append .name }}{{ end }}{{ end }}
   {{ $chText := i18n "seo_channels_pending" }}
-  {{ if $names }}{{ $chText = i18n "seo_channels_known" (dict "List" (delimit (first 4 (uniq $names)) ", ")) }}{{ end }}
-  {{ $args := dict "Home" $m.home.name "Away" $m.away.name "League" $m.league.name "In" $in "Date" (partial "time/format.html" (dict "t" $m.kickoff "style" "dayHeading")) "Time" (partial "time/format.html" (dict "t" $m.kickoff "style" "time")) "Zone" $zoneTxt "Channels" $chText }}
+  {{ if $names }}{{ $chText = i18n "seo_channels_known" (dict "List" (delimit (first 3 (uniq $names)) ", ")) }}{{ end }}
+  {{ $dateShort := partial "time/format.html" (dict "t" $m.kickoff "style" "dateShort") }}
+  {{ $args := dict "Home" $m.home.name "Away" $m.away.name "League" $m.league.name "In" $in "Date" (partial "time/format.html" (dict "t" $m.kickoff "style" "dayHeading")) "DateShort" $dateShort "Time" (partial "time/format.html" (dict "t" $m.kickoff "style" "time")) "Zone" $zoneTxt "ZoneShort" $zone.label "Channels" $chText }}
   {{ $title = i18n "seo_match_title" $args }}
   {{ $desc = i18n "seo_match_desc" $args }}
 {{ else if eq $kind "team" }}
-  {{ $title = i18n "seo_team_title" (dict "Team" $entity.team.name) }}
+  {{ $title = i18n "seo_team_title" (dict "Team" $entity.team.name "In" $in) }}
   {{ $desc = i18n "seo_team_desc" (dict "Team" $entity.team.name "In" $in) }}
 {{ else if eq $kind "league" }}
-  {{ $title = i18n "seo_league_title" (dict "League" $entity.league.name) }}
+  {{ $title = i18n "seo_league_title" (dict "League" $entity.league.name "In" $in) }}
   {{ $desc = i18n "seo_league_desc" (dict "League" $entity.league.name "In" $in) }}
+{{ else if not $p.IsHome }}
+  {{ $hubKey := $p.Params.app_feature | default ($p.Params.page_type | default $p.Section) }}
+  {{ if $hubKey }}
+    {{ with (i18n (printf "seo_%s_title" $hubKey)) }}{{ $title = . }}{{ end }}
+    {{ with (i18n (printf "seo_%s_desc" $hubKey)) }}{{ $desc = . }}{{ end }}
+  {{ end }}
 {{ end }}
 {{ return (dict "title" $title "desc" $desc "noindex" $noindex "entity" $entity "kind" $kind "ed" $ed) }}
