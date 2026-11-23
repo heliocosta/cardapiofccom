@@ -10,6 +10,7 @@ Repository → Settings → Secrets and variables → Actions:
 |---|---|
 | `CLOUDFLARE_API_TOKEN` | API token with **Account → Workers Scripts: Edit** (add Zone → Workers Routes: Edit if using routes) |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID |
+| `INDEXNOW_KEY` | IndexNow API key (8–128 chars `[a-zA-Z0-9-]`; recommended 32 hex chars via `openssl rand -hex 16` or Bing Webmaster Tools) |
 
 ## 2. Retool webhook (rebuild after data upload)
 
@@ -62,3 +63,33 @@ Cloudflare `_redirects` allows 2,000 static and 100 dynamic rules. `layouts/home
 ## 8. Versions
 
 `.tool-versions`, `config/build.json` and `netlify.toml` must agree (Hugo 0.169.0 extended, Go 1.25.1, Node 22.14.0, pnpm 10.16.1). CI reads `config/build.json`.
+
+## 9. IndexNow
+
+Production deploys submit added, substantively modified, and removed canonical URLs to `https://api.indexnow.org/indexnow` (distributing to Microsoft Bing, Yandex, Seznam, Naver, Yep, etc.).
+
+### One-time activation
+
+1. Generate a 32-hex-character key (or reuse an existing key from Bing Webmaster Tools):
+   ```sh
+   openssl rand -hex 16
+   ```
+2. Set the `INDEXNOW_KEY` GitHub Actions secret (`gh secret set INDEXNOW_KEY` or Repository → Settings → Secrets and variables → Actions). Do **not** commit `<key>.txt` to `static/`.
+3. Trigger a `Deploy` workflow run (push to `main` or Actions → Deploy → Run workflow).
+
+### How CI submission works
+
+1. **Key file generation (pre-deploy):** If `INDEXNOW_KEY` is set, `node scripts/indexnow.mjs write-key` writes `public/<key>.txt` with exact key contents and no trailing newline before `wrangler deploy`. If `INDEXNOW_KEY` is unset, IndexNow steps are skipped with a warning so builds never break.
+2. **State cache restore:** Restores `.tmp/indexnow-state.json` from `actions/cache/restore@v4` (`indexnow-state-<branch>-<run_id>-<attempt>` with fallback `indexnow-state-<branch>-`).
+3. **Substantive diff & submission:** `scripts/indexnow.mjs submit --soft-fail` parses all URLs in `public/sitemap.xml` (and child sitemaps), fingerprints SEO `<head>` tags plus `<main>` (stripping `<footer class="cfc-freshness">`), diffs against the previous state, verifies `GET https://cardapiofc.com/<key>.txt` returns `200` with exact key body, and POSTs prioritized batches (hubs/static → matches → leagues → teams) of up to 10,000 URLs.
+4. **Transactional state save:** Only batches accepted with HTTP `200`/`202` update `.tmp/indexnow-state.json`, which is persisted via `actions/cache/save@v4`.
+
+### Manual commands
+
+- Preview diff without network calls or state changes: `pnpm indexnow:dry-run`
+- Verify the live key file on production: `INDEXNOW_KEY=<key> pnpm indexnow:verify`
+- Force-resubmit all canonical sitemap URLs: `INDEXNOW_KEY=<key> pnpm indexnow:submit -- --all`
+
+### Cloudflare Crawler Hints
+
+Do **not** enable Cloudflare Crawler Hints alongside this workflow. Direct submission proactively notifies IndexNow about newly published or removed URLs right after deploy (without waiting for a human visit to warm cache) and restricts notifications strictly to canonical indexable sitemap URLs.

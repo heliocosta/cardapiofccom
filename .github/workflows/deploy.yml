@@ -74,6 +74,19 @@ jobs:
 
       - run: pnpm check-file-count
 
+      - name: Write IndexNow key file
+        id: indexnow_key
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: |
+          if [ -z "$INDEXNOW_KEY" ]; then
+            echo "::warning::INDEXNOW_KEY secret is not configured; skipping IndexNow."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            node scripts/indexnow.mjs write-key
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
@@ -81,3 +94,25 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4"
           command: deploy
+
+      - name: Restore IndexNow state
+        if: steps.indexnow_key.outputs.enabled == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .tmp/indexnow-state.json
+          key: indexnow-state-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            indexnow-state-${{ github.ref_name }}-
+
+      - name: Submit changed URLs to IndexNow
+        if: steps.indexnow_key.outputs.enabled == 'true'
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node scripts/indexnow.mjs submit --soft-fail
+
+      - name: Save IndexNow state
+        if: steps.indexnow_key.outputs.enabled == 'true' && hashFiles('.tmp/indexnow-state.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .tmp/indexnow-state.json
+          key: indexnow-state-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}

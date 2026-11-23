@@ -31,5 +31,17 @@ if (asset) {
   check(`immutable asset ${asset[1]}`, (r.headers.get("cache-control") || "").includes("immutable"), r.headers.get("cache-control"));
 }
 
+const indexNowKey = (process.env.INDEXNOW_KEY || "").trim();
+if (indexNowKey) {
+  r = await get(`/${indexNowKey}.txt`);
+  const ct = (r.headers.get("content-type") || "").toLowerCase();
+  const body = r.status === 200 ? await r.text() : "";
+  check(
+    "IndexNow key file",
+    r.status === 200 && ct.includes("text/plain") && body === indexNowKey,
+    `status ${r.status}, content-type ${ct}, len ${body.length}/${indexNowKey.length}`
+  );
+}
+
 console.log(failed ? `${failed} check(s) failed` : "All checks passed");
 process.exit(failed ? 1 : 0);
