@@ -1,0 +1,46 @@
+name: IndexNow
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Submit all live sitemap URLs ("full") or a single homepage test ping ("ping")'
+        required: true
+        default: "full"
+        type: choice
+        options:
+          - full
+          - ping
+
+permissions:
+  contents: read
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read pinned Node version
+        id: v
+        run: echo "node=$(jq -r .node config/build.json)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.v.outputs.node }}
+
+      - name: Submit live URLs to IndexNow
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INPUT_MODE: ${{ inputs.mode }}
+        run: |
+          if [ -z "$INDEXNOW_KEY" ]; then
+            echo "::error::INDEXNOW_KEY secret is not configured."
+            exit 1
+          fi
+          if [ "$INPUT_MODE" = "ping" ]; then
+            node scripts/indexnow.mjs submit-live --url=https://cardapiofc.com/
+          else
+            node scripts/indexnow.mjs submit-live
+          fi

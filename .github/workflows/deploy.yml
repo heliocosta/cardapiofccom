@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - 'cloudflare/**'
       - '.github/workflows/redirect-rules.yml'
+      - '.github/workflows/indexnow.yml'
       - 'docs/**'
       - '.kiro/**'
   repository_dispatch:

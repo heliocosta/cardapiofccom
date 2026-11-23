@@ -12,6 +12,9 @@ const ROOT_DIR = path.resolve(__dirname, "..");
 export const KEY_PATTERN = /^[a-zA-Z0-9-]{8,128}$/;
 export const DEFAULT_ENDPOINT = "https://api.indexnow.org/indexnow";
 export const MAX_BATCH_SIZE = 10000;
+export const DEFAULT_KEY_VERIFY_ATTEMPTS = 6;
+export const DEFAULT_KEY_VERIFY_DELAYS_MS = [5000, 10000, 15000, 15000, 15000];
+export const DEFAULT_VERIFICATION_RETRY_DELAY_MS = 15000;
 export const DEFAULT_STATE_PATH = path.join(ROOT_DIR, ".tmp", "indexnow-state.json");
 export const DEFAULT_PUBLIC_DIR = path.join(ROOT_DIR, "public");
 
@@ -426,9 +429,29 @@ function extractUrlsetLocs(xml) {
   return locs;
 }
 
+function validateAndDedupeUrls(rawUrls, normalizedBase) {
+  const expectedHost = new URL(normalizedBase).host;
+  const unique = new Set();
+  for (const u of rawUrls) {
+    let parsed;
+    try {
+      parsed = new URL(u);
+    } catch {
+      throw new Error(`Invalid URL in sitemap: ${u}`);
+    }
+    if (parsed.host !== expectedHost || !u.startsWith(normalizedBase)) {
+      throw new Error(
+        `Off-host or out-of-scope URL in sitemap (expected ${normalizedBase}): ${u}`
+      );
+    }
+    unique.add(u);
+  }
+
+  return [...unique].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+}
+
 export function collectSitemapUrls(publicDir, baseUrl) {
   const normalizedBase = normalizeBaseUrl(baseUrl);
-  const expectedHost = new URL(normalizedBase).host;
   const rootSitemap = path.join(publicDir, "sitemap.xml");
   if (!fs.existsSync(rootSitemap)) {
     throw new Error(`Sitemap not found: ${rootSitemap}`);
@@ -457,23 +480,71 @@ export function collectSitemapUrls(publicDir, baseUrl) {
     throw new Error(`Unrecognized sitemap format in ${rootSitemap}`);
   }
 
-  const unique = new Set();
-  for (const u of rawUrls) {
-    let parsed;
-    try {
-      parsed = new URL(u);
-    } catch {
-      throw new Error(`Invalid URL in sitemap: ${u}`);
+  return validateAndDedupeUrls(rawUrls, normalizedBase);
+}
+
+export async function collectLiveSitemapUrls(
+  baseUrl,
+  { fetchImpl = fetch } = {}
+) {
+  const normalizedBase = normalizeBaseUrl(baseUrl);
+  const expectedHost = new URL(normalizedBase).host;
+  const rootSitemapUrl = `${normalizedBase}sitemap.xml`;
+  const headers = {
+    "User-Agent": "CardapioFC-IndexNow/1.0 (+https://cardapiofc.com)",
+  };
+
+  const rootRes = await fetchImpl(rootSitemapUrl, { method: "GET", headers });
+  if (rootRes.status !== 200) {
+    throw new Error(
+      `Failed to fetch live sitemap ${rootSitemapUrl}: HTTP ${rootRes.status}`
+    );
+  }
+  const rootXml = await rootRes.text();
+  const rawUrls = [];
+
+  if (/<sitemapindex\b/i.test(rootXml)) {
+    const childSitemaps = extractSitemapLocs(rootXml);
+    for (const childUrl of childSitemaps) {
+      let parsedChild;
+      try {
+        parsedChild = new URL(childUrl);
+      } catch {
+        throw new Error(`Invalid child sitemap URL: ${childUrl}`);
+      }
+      if (parsedChild.host !== expectedHost || !childUrl.startsWith(normalizedBase)) {
+        throw new Error(
+          `Off-host or out-of-scope child sitemap URL (expected ${normalizedBase}): ${childUrl}`
+        );
+      }
     }
-    if (parsed.host !== expectedHost || !u.startsWith(normalizedBase)) {
-      throw new Error(
-        `Off-host or out-of-scope URL in sitemap (expected ${normalizedBase}): ${u}`
-      );
+
+    const childXmlList = await Promise.all(
+      childSitemaps.map(async (childUrl) => {
+        const childRes = await fetchImpl(childUrl, { method: "GET", headers });
+        if (childRes.status !== 200) {
+          throw new Error(
+            `Failed to fetch live child sitemap ${childUrl}: HTTP ${childRes.status}`
+          );
+        }
+        return childRes.text();
+      })
+    );
+
+    for (const childXml of childXmlList) {
+      for (const u of extractUrlsetLocs(childXml)) {
+        rawUrls.push(u);
+      }
     }
-    unique.add(u);
+  } else if (/<urlset\b/i.test(rootXml)) {
+    for (const u of extractUrlsetLocs(rootXml)) {
+      rawUrls.push(u);
+    }
+  } else {
+    throw new Error(`Unrecognized live sitemap format at ${rootSitemapUrl}`);
   }
 
-  return [...unique].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return validateAndDedupeUrls(rawUrls, normalizedBase);
 }
 
 function toRelPath(url, baseUrl) {
@@ -611,8 +682,8 @@ export async function verifyLiveKey({
   key,
   baseUrl,
   fetchImpl = fetch,
-  attempts = 3,
-  retryDelaysMs = [3000, 5000],
+  attempts = DEFAULT_KEY_VERIFY_ATTEMPTS,
+  retryDelaysMs = DEFAULT_KEY_VERIFY_DELAYS_MS,
   logger = console,
 }) {
   const validKey = validateKey(key);
@@ -711,6 +782,7 @@ export async function submitBatch({
   fetchImpl = fetch,
   maxRetries = 3,
   baseDelayMs = 2000,
+  verificationDelayMs = DEFAULT_VERIFICATION_RETRY_DELAY_MS,
 }) {
   const validKey = validateKey(key);
   const body = JSON.stringify({
@@ -760,6 +832,16 @@ export async function submitBatch({
       snippet = "";
     }
     const suffix = snippet ? `: ${snippet}` : "";
+
+    if (res.status === 403 && snippet.includes("SiteVerificationNotCompleted")) {
+      if (attempt >= maxRetries) {
+        throw new Error(
+          `IndexNow failed after ${attempt + 1} attempts with HTTP 403${suffix}`
+        );
+      }
+      await sleep(Math.min(verificationDelayMs * (attempt + 1), 60000));
+      continue;
+    }
 
     if (res.status === 400 || res.status === 403 || res.status === 422) {
       throw new Error(`IndexNow rejected batch with HTTP ${res.status}${suffix}`);
@@ -847,6 +929,69 @@ function chunkArray(items, size) {
   return chunks;
 }
 
+async function submitUrlBatches({
+  batches,
+  endpoint,
+  host,
+  key,
+  keyLocation,
+  minDelayMs,
+  maxRetries,
+  baseDelayMs,
+  verificationDelayMs,
+  fetchImpl,
+  logger,
+  onBatchAccepted,
+}) {
+  let submittedCount = 0;
+  let failedBatches = 0;
+  let failureError = null;
+
+  for (let i = 0; i < batches.length; i++) {
+    const batch = batches[i];
+    if (i > 0 && minDelayMs > 0) {
+      await sleep(minDelayMs);
+    }
+    const urlList = batch.map((item) => (typeof item === "string" ? item : item.url));
+    try {
+      const res = await submitBatch({
+        endpoint,
+        host,
+        key,
+        keyLocation,
+        urlList,
+        fetchImpl,
+        maxRetries,
+        baseDelayMs,
+        verificationDelayMs,
+      });
+      if (onBatchAccepted) {
+        onBatchAccepted(batch);
+      }
+      submittedCount += batch.length;
+      logger.log(
+        `IndexNow batch ${i + 1}/${batches.length} accepted (HTTP ${res.status}, ${batch.length} URLs).`
+      );
+    } catch (err) {
+      failedBatches = batches.length - i;
+      failureError = err instanceof Error ? err : new Error(String(err));
+      break;
+    }
+  }
+
+  return { submittedCount, failedBatches, failureError };
+}
+
+function handleRunFailure(failureError, keyForRedact, softFail, logger) {
+  const safeMsg = redactKey(failureError.message, keyForRedact);
+  if (softFail) {
+    const prefix = process.env.GITHUB_ACTIONS === "true" ? "::warning::" : "Warning: ";
+    logger.warn(`${prefix}${safeMsg}`);
+    return safeMsg;
+  }
+  throw new Error(safeMsg);
+}
+
 export async function runSubmit(options = {}) {
   const {
     key = process.env.INDEXNOW_KEY,
@@ -860,10 +1005,11 @@ export async function runSubmit(options = {}) {
     skipKeyCheck = false,
     batchSize = MAX_BATCH_SIZE,
     minDelayMs = 1000,
-    keyVerifyAttempts = 3,
-    retryDelaysMs = [3000, 5000],
+    keyVerifyAttempts = DEFAULT_KEY_VERIFY_ATTEMPTS,
+    retryDelaysMs = DEFAULT_KEY_VERIFY_DELAYS_MS,
     maxRetries = 3,
     baseDelayMs = 2000,
+    verificationDelayMs = DEFAULT_VERIFICATION_RETRY_DELAY_MS,
     fetchImpl = fetch,
     logger = console,
   } = options;
@@ -964,23 +1110,19 @@ export async function runSubmit(options = {}) {
     const keyLocation = `${normalizedBase}${validKey}.txt`;
     const nextUrls = { ...prevUrls };
 
-    for (let i = 0; i < batches.length; i++) {
-      const batch = batches[i];
-      if (i > 0 && minDelayMs > 0) {
-        await sleep(minDelayMs);
-      }
-      const urlList = batch.map((c) => c.url);
-      try {
-        const res = await submitBatch({
-          endpoint,
-          host,
-          key: validKey,
-          keyLocation,
-          urlList,
-          fetchImpl,
-          maxRetries,
-          baseDelayMs,
-        });
+    const batchRes = await submitUrlBatches({
+      batches,
+      endpoint,
+      host,
+      key: validKey,
+      keyLocation,
+      minDelayMs,
+      maxRetries,
+      baseDelayMs,
+      verificationDelayMs,
+      fetchImpl,
+      logger,
+      onBatchAccepted: (batch) => {
         for (const item of batch) {
           if (item.kind === "removed") {
             delete nextUrls[item.relPath];
@@ -988,16 +1130,12 @@ export async function runSubmit(options = {}) {
             nextUrls[item.relPath] = item.hash;
           }
         }
-        submittedCount += batch.length;
-        logger.log(
-          `IndexNow batch ${i + 1}/${batches.length} accepted (HTTP ${res.status}, ${batch.length} URLs).`
-        );
-      } catch (err) {
-        failedBatches = batches.length - i;
-        failureError = err instanceof Error ? err : new Error(String(err));
-        break;
-      }
-    }
+      },
+    });
+
+    submittedCount = batchRes.submittedCount;
+    failedBatches = batchRes.failedBatches;
+    failureError = batchRes.failureError;
 
     if (submittedCount > 0) {
       saveStateAtomic(statePath, normalizedBase, nextUrls);
@@ -1014,24 +1152,19 @@ export async function runSubmit(options = {}) {
   });
 
   if (failureError) {
-    const safeMsg = redactKey(failureError.message, validKey || key);
-    if (softFail) {
-      const prefix = process.env.GITHUB_ACTIONS === "true" ? "::warning::" : "Warning: ";
-      logger.warn(`${prefix}${safeMsg}`);
-      return {
-        ok: false,
-        dryRun: false,
-        totalUrls,
-        missing,
-        diff,
-        batches: batches.length,
-        submittedCount,
-        failedBatches,
-        stateChanged,
-        error: safeMsg,
-      };
-    }
-    throw new Error(safeMsg);
+    const safeMsg = handleRunFailure(failureError, validKey || key, softFail, logger);
+    return {
+      ok: false,
+      dryRun: false,
+      totalUrls,
+      missing,
+      diff,
+      batches: batches.length,
+      submittedCount,
+      failedBatches,
+      stateChanged,
+      error: safeMsg,
+    };
   }
 
   return {
@@ -1044,6 +1177,129 @@ export async function runSubmit(options = {}) {
     submittedCount,
     failedBatches: 0,
     stateChanged,
+  };
+}
+
+export async function runSubmitLive(options = {}) {
+  const {
+    key = process.env.INDEXNOW_KEY,
+    baseUrl = readBaseUrl(ROOT_DIR),
+    endpoint = DEFAULT_ENDPOINT,
+    urls = null,
+    batchSize = MAX_BATCH_SIZE,
+    minDelayMs = 1000,
+    keyVerifyAttempts = DEFAULT_KEY_VERIFY_ATTEMPTS,
+    retryDelaysMs = DEFAULT_KEY_VERIFY_DELAYS_MS,
+    maxRetries = 3,
+    baseDelayMs = 2000,
+    verificationDelayMs = DEFAULT_VERIFICATION_RETRY_DELAY_MS,
+    skipKeyCheck = false,
+    softFail = false,
+    fetchImpl = fetch,
+    logger = console,
+  } = options;
+
+  const normalizedBase = normalizeBaseUrl(baseUrl);
+  const effectiveBatchSize = Math.max(
+    1,
+    Math.min(MAX_BATCH_SIZE, Number(batchSize) || MAX_BATCH_SIZE)
+  );
+  const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
+  let validKey = "";
+  let totalUrls = 0;
+  let batches = [];
+  let submittedCount = 0;
+  let failedBatches = 0;
+  let failureError = null;
+
+  try {
+    validKey = validateKey(key);
+
+    if (!skipKeyCheck) {
+      await verifyLiveKey({
+        key: validKey,
+        baseUrl: normalizedBase,
+        fetchImpl,
+        attempts: keyVerifyAttempts,
+        retryDelaysMs,
+        logger,
+      });
+      logger.log("Live IndexNow key file verified (HTTP 200 exact match).");
+    }
+
+    const rawTargetUrls =
+      Array.isArray(urls) && urls.length > 0
+        ? validateAndDedupeUrls(
+            urls.map((u) => new URL(u).toString()),
+            normalizedBase
+          )
+        : await collectLiveSitemapUrls(normalizedBase, { fetchImpl });
+
+    const sortedUrls = [...rawTargetUrls].sort((a, b) => {
+      const ra = toRelPath(a, normalizedBase);
+      const rb = toRelPath(b, normalizedBase);
+      return urlPriority(ra) - urlPriority(rb) || cmp(ra, rb);
+    });
+
+    totalUrls = sortedUrls.length;
+    batches = chunkArray(sortedUrls, effectiveBatchSize);
+
+    logger.log(
+      `IndexNow live submission: ${totalUrls} URL(s) in ${batches.length} batch(es).`
+    );
+
+    if (totalUrls === 0) {
+      return {
+        ok: true,
+        totalUrls: 0,
+        batches: 0,
+        submittedCount: 0,
+        failedBatches: 0,
+      };
+    }
+
+    const host = new URL(normalizedBase).host;
+    const keyLocation = `${normalizedBase}${validKey}.txt`;
+    const batchRes = await submitUrlBatches({
+      batches,
+      endpoint,
+      host,
+      key: validKey,
+      keyLocation,
+      minDelayMs,
+      maxRetries,
+      baseDelayMs,
+      verificationDelayMs,
+      fetchImpl,
+      logger,
+    });
+
+    submittedCount = batchRes.submittedCount;
+    failedBatches = batchRes.failedBatches;
+    failureError = batchRes.failureError;
+  } catch (err) {
+    failureError = err instanceof Error ? err : new Error(String(err));
+  }
+
+  if (failureError) {
+    const safeMsg = handleRunFailure(failureError, validKey || key, softFail, logger);
+    return {
+      ok: false,
+      totalUrls,
+      batches: batches.length,
+      submittedCount,
+      failedBatches,
+      error: safeMsg,
+    };
+  }
+
+  return {
+    ok: true,
+    totalUrls,
+    batches: batches.length,
+    submittedCount,
+    failedBatches: 0,
   };
 }
 
@@ -1081,7 +1337,7 @@ async function main() {
 
   if (command === "verify-key") {
     const baseUrl = flags["base-url"] || readBaseUrl(ROOT_DIR);
-    const attempts = flags.attempts ? Number(flags.attempts) : 3;
+    const attempts = flags.attempts ? Number(flags.attempts) : DEFAULT_KEY_VERIFY_ATTEMPTS;
     const res = await verifyLiveKey({
       key: rawKey,
       baseUrl,
@@ -1116,8 +1372,27 @@ async function main() {
     return;
   }
 
+  if (command === "submit-live") {
+    const explicitUrls =
+      typeof flags.url === "string" && flags.url.trim()
+        ? [flags.url.trim()]
+        : null;
+    await runSubmitLive({
+      key: rawKey,
+      baseUrl: flags["base-url"] || readBaseUrl(ROOT_DIR),
+      endpoint: flags.endpoint || DEFAULT_ENDPOINT,
+      urls: explicitUrls,
+      softFail: Boolean(flags["soft-fail"]),
+      skipKeyCheck: Boolean(flags["skip-key-check"]),
+      batchSize: flags["batch-size"] ? Number(flags["batch-size"]) : MAX_BATCH_SIZE,
+      minDelayMs: flags["min-delay-ms"] !== undefined ? Number(flags["min-delay-ms"]) : 1000,
+      logger: console,
+    });
+    return;
+  }
+
   console.error(
-    "Usage: node scripts/indexnow.mjs <write-key|verify-key|submit> [options]"
+    "Usage: node scripts/indexnow.mjs <write-key|verify-key|submit|submit-live> [options]"
   );
   process.exit(1);
 }

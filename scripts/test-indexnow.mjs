@@ -9,13 +9,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  collectLiveSitemapUrls,
   collectSitemapUrls,
   computeDiff,
   fingerprintHtml,
   readBaseUrl,
   redactKey,
   runSubmit,
+  runSubmitLive,
   stripFreshnessFooters,
+  submitBatch,
   unescapeXml,
   urlPriority,
   urlToPublicFile,
@@ -657,6 +660,232 @@ test("readBaseUrl and urlToPublicFile resolve project settings and guard travers
     urlToPublicFile("https://cardapiofc.com/%2e%2e/etc/passwd", "https://cardapiofc.com/", "/tmp/pub")
   );
   assert.equal(redactKey("err key=secret1234", "secret1234"), "err key=[REDACTED]");
+});
+
+// 10. 403 SiteVerificationNotCompleted retry vs generic 403 fail-fast
+test("submitBatch and runSubmit retry 403 SiteVerificationNotCompleted and fail fast on generic 403", async () => {
+  const key = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+  let postHits = 0;
+  let mode = "verify-then-202";
+
+  const server = await startMockServer(async (req, res) => {
+    if (req.method === "GET" && req.url === `/${key}.txt`) {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end(key);
+      return;
+    }
+    if (req.method === "POST" && req.url === "/indexnow") {
+      postHits++;
+      if (mode === "verify-then-202") {
+        if (postHits < 3) {
+          res.writeHead(403, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({
+              errorCode: "SiteVerificationNotCompleted",
+              message: "Site Verification is not completed.",
+            })
+          );
+          return;
+        }
+        res.writeHead(202);
+        res.end();
+        return;
+      }
+      if (mode === "generic-403") {
+        res.writeHead(403, { "Content-Type": "text/plain" });
+        res.end("Invalid key");
+        return;
+      }
+    }
+    res.writeHead(404).end();
+  });
+
+  const dir = makeTempDir();
+  try {
+    const pubDir = path.join(dir, "public");
+    const statePath = path.join(dir, "state.json");
+    createSiteFixture(pubDir, server.baseUrl, {
+      "/": buildHtml({ mainBody: "<h1>Home</h1>" }),
+    });
+
+    const res = await runSubmit({
+      key,
+      publicDir: pubDir,
+      statePath,
+      baseUrl: server.baseUrl,
+      endpoint: server.endpoint,
+      maxRetries: 3,
+      verificationDelayMs: 1,
+      retryDelaysMs: [1],
+      logger: { log() {}, warn() {} },
+    });
+    assert.equal(res.ok, true);
+    assert.equal(res.submittedCount, 1);
+    assert.equal(postHits, 3);
+    assert.ok(fs.existsSync(statePath));
+
+    mode = "generic-403";
+    postHits = 0;
+    await assert.rejects(
+      () =>
+        submitBatch({
+          endpoint: server.endpoint,
+          host: new URL(server.baseUrl).host,
+          key,
+          keyLocation: `${server.baseUrl}${key}.txt`,
+          urlList: [server.baseUrl],
+          maxRetries: 3,
+          verificationDelayMs: 1,
+          baseDelayMs: 1,
+        }),
+      /HTTP 403: Invalid key/
+    );
+    assert.equal(postHits, 1, "Generic 403 must fail fast without retrying");
+  } finally {
+    await server.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// 11. collectLiveSitemapUrls over HTTP (sitemapindex, urlset, off-host rejection)
+test("collectLiveSitemapUrls fetches sitemapindex and urlset and rejects off-host URLs", async () => {
+  let mode = "index";
+  const server = await startMockServer(async (req, res) => {
+    if (req.url === "/sitemap.xml") {
+      res.writeHead(200, { "Content-Type": "application/xml" });
+      if (mode === "index") {
+        res.end(
+          `<sitemapindex><sitemap><loc>${server.baseUrl}en/sitemap.xml</loc></sitemap><sitemap><loc>${server.baseUrl}pt-br/sitemap.xml</loc></sitemap></sitemapindex>`
+        );
+      } else if (mode === "urlset") {
+        res.end(
+          `<urlset><url><loc>${server.baseUrl}</loc></url><url><loc>${server.baseUrl}about/</loc></url><url><loc>${server.baseUrl}</loc></url></urlset>`
+        );
+      } else {
+        res.end(
+          `<urlset><url><loc>https://evil.example.com/bad/</loc></url></urlset>`
+        );
+      }
+      return;
+    }
+    if (req.url === "/en/sitemap.xml") {
+      res.writeHead(200, { "Content-Type": "application/xml" });
+      res.end(
+        `<urlset><url><loc>${server.baseUrl}</loc></url><url><loc>${server.baseUrl}match/m1/</loc></url></urlset>`
+      );
+      return;
+    }
+    if (req.url === "/pt-br/sitemap.xml") {
+      res.writeHead(200, { "Content-Type": "application/xml" });
+      res.end(`<urlset><url><loc>${server.baseUrl}pt-br/</loc></url></urlset>`);
+      return;
+    }
+    res.writeHead(404).end();
+  });
+
+  try {
+    const idxUrls = await collectLiveSitemapUrls(server.baseUrl);
+    assert.deepEqual(idxUrls, [
+      `${server.baseUrl}`,
+      `${server.baseUrl}match/m1/`,
+      `${server.baseUrl}pt-br/`,
+    ]);
+
+    mode = "urlset";
+    const setUrls = await collectLiveSitemapUrls(server.baseUrl);
+    assert.deepEqual(setUrls, [`${server.baseUrl}`, `${server.baseUrl}about/`]);
+
+    mode = "offhost";
+    await assert.rejects(() => collectLiveSitemapUrls(server.baseUrl), /Off-host/);
+  } finally {
+    await server.close();
+  }
+});
+
+// 12. runSubmitLive & CLI submit-live
+test("runSubmitLive and CLI submit-live handle single ping and full live sitemap batches", async () => {
+  const key = "00112233445566778899aabbccddeeff";
+  const postedBatches = [];
+
+  const server = await startMockServer(async (req, res, body) => {
+    if (req.method === "GET" && req.url === `/${key}.txt`) {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end(key);
+      return;
+    }
+    if (req.method === "GET" && req.url === "/sitemap.xml") {
+      res.writeHead(200, { "Content-Type": "application/xml" });
+      res.end(
+        `<urlset><url><loc>${server.baseUrl}team/t1/</loc></url><url><loc>${server.baseUrl}</loc></url><url><loc>${server.baseUrl}match/m1/</loc></url><url><loc>${server.baseUrl}leagues/epl/</loc></url></urlset>`
+      );
+      return;
+    }
+    if (req.method === "POST" && req.url === "/indexnow") {
+      postedBatches.push(JSON.parse(body));
+      res.writeHead(202);
+      res.end();
+      return;
+    }
+    res.writeHead(404).end();
+  });
+
+  try {
+    // Full live sitemap in batches of 2, priority-ordered
+    const fullRes = await runSubmitLive({
+      key,
+      baseUrl: server.baseUrl,
+      endpoint: server.endpoint,
+      batchSize: 2,
+      minDelayMs: 0,
+      retryDelaysMs: [1],
+      logger: { log() {}, warn() {} },
+    });
+    assert.equal(fullRes.ok, true);
+    assert.equal(fullRes.totalUrls, 4);
+    assert.equal(fullRes.submittedCount, 4);
+    assert.equal(postedBatches.length, 2);
+    assert.deepEqual(postedBatches[0].urlList, [
+      `${server.baseUrl}`,
+      `${server.baseUrl}match/m1/`,
+    ]);
+    assert.deepEqual(postedBatches[1].urlList, [
+      `${server.baseUrl}leagues/epl/`,
+      `${server.baseUrl}team/t1/`,
+    ]);
+
+    // Single-URL ping via runSubmitLive
+    postedBatches.length = 0;
+    const pingRes = await runSubmitLive({
+      key,
+      baseUrl: server.baseUrl,
+      endpoint: server.endpoint,
+      urls: [server.baseUrl.slice(0, -1), server.baseUrl],
+      minDelayMs: 0,
+      retryDelaysMs: [1],
+      logger: { log() {}, warn() {} },
+    });
+    assert.equal(pingRes.ok, true);
+    assert.equal(pingRes.submittedCount, 1);
+    assert.deepEqual(postedBatches[0].urlList, [server.baseUrl]);
+
+    // CLI submit-live --url=...
+    postedBatches.length = 0;
+    const cliRes = await runCli(
+      [
+        "submit-live",
+        `--url=${server.baseUrl}`,
+        `--base-url=${server.baseUrl}`,
+        `--endpoint=${server.endpoint}`,
+        "--min-delay-ms=0",
+      ],
+      { INDEXNOW_KEY: key }
+    );
+    assert.equal(cliRes.status, 0, cliRes.stderr);
+    assert.equal(postedBatches.length, 1);
+    assert.deepEqual(postedBatches[0].urlList, [server.baseUrl]);
+  } finally {
+    await server.close();
+  }
 });
 
 // Runner

@@ -81,14 +81,22 @@ Production deploys submit added, substantively modified, and removed canonical U
 
 1. **Key file generation (pre-deploy):** If `INDEXNOW_KEY` is set, `node scripts/indexnow.mjs write-key` writes `public/<key>.txt` with exact key contents and no trailing newline before `wrangler deploy`. If `INDEXNOW_KEY` is unset, IndexNow steps are skipped with a warning so builds never break.
 2. **State cache restore:** Restores `.tmp/indexnow-state.json` from `actions/cache/restore@v4` (`indexnow-state-<branch>-<run_id>-<attempt>` with fallback `indexnow-state-<branch>-`).
-3. **Substantive diff & submission:** `scripts/indexnow.mjs submit --soft-fail` parses all URLs in `public/sitemap.xml` (and child sitemaps), fingerprints SEO `<head>` tags plus `<main>` (stripping `<footer class="cfc-freshness">`), diffs against the previous state, verifies `GET https://cardapiofc.com/<key>.txt` returns `200` with exact key body, and POSTs prioritized batches (hubs/static → matches → leagues → teams) of up to 10,000 URLs.
+3. **Substantive diff & submission:** `scripts/indexnow.mjs submit --soft-fail` parses all URLs in `public/sitemap.xml` (and child sitemaps), fingerprints SEO `<head>` tags plus `<main>` (stripping `<footer class="cfc-freshness">`), diffs against the previous state, polls `GET https://cardapiofc.com/<key>.txt` for up to 60 seconds (`200` exact key body) to absorb Cloudflare propagation, and POSTs prioritized batches (hubs/static → matches → leagues → teams) of up to 10,000 URLs (retrying `429`/`5xx` and first-time `403 SiteVerificationNotCompleted` responses).
 4. **Transactional state save:** Only batches accepted with HTTP `200`/`202` update `.tmp/indexnow-state.json`, which is persisted via `actions/cache/save@v4`.
+
+### Fast manual workflow (no Hugo rebuild)
+
+When `public/<key>.txt` is already deployed and you want to test or retry IndexNow without waiting for an 18-minute full site build, trigger **Actions → IndexNow → Run workflow** (`.github/workflows/indexnow.yml`, ~15 seconds):
+- **`full` (default):** Fetches the live `sitemap.xml` (and child sitemaps) and submits all canonical URLs.
+- **`ping`:** Submits only `https://cardapiofc.com/` as a quick verification test.
 
 ### Manual commands
 
 - Preview diff without network calls or state changes: `pnpm indexnow:dry-run`
 - Verify the live key file on production: `INDEXNOW_KEY=<key> pnpm indexnow:verify`
-- Force-resubmit all canonical sitemap URLs: `INDEXNOW_KEY=<key> pnpm indexnow:submit -- --all`
+- Send a single homepage test ping against live production: `INDEXNOW_KEY=<key> pnpm indexnow:ping`
+- Submit all URLs from the live sitemap: `INDEXNOW_KEY=<key> pnpm indexnow:submit-live`
+- Force-resubmit all canonical sitemap URLs from local `public/`: `INDEXNOW_KEY=<key> pnpm indexnow:submit -- --all`
 
 ### Cloudflare Crawler Hints
 
