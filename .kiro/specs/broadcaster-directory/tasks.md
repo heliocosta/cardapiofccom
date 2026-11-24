@@ -71,7 +71,7 @@
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 7.1_
 
 - [ ] 3. Integration — Navigation, Match Linking, SEO/Hreflang/Sitemap, Edge/IndexNow, and JSON-LD
-- [ ] 3.1 (P) Wire `/channels/` into site navigation menus and edition-switcher channel fallback
+- [x] 3.1 (P) Wire `/channels/` into site navigation menus and edition-switcher channel fallback
   - Add `channels` entry (`url = "/channels/"`, localized via `menu_channels`) to both `[[main]]` and `[[footer]]` in `config/_default/menus.toml`
   - Update `layouts/_partials/cfc/edition-switcher.html`: when current page has `Params.cfc.kind == "channel"`, set `$targetUrl` for non-current editions to `printf "%schannels/" $ed.prefix` (preserving current page URL for `$isCurrent`)
   - Observable completed state: Sample build shows Channels link in header & footer across all 9 editions, and edition-switcher links on `public/pt-br/channels/ge-tv/index.html` point to `/channels/`, `/en-gb/channels/`, `/en-ie/channels/`, etc.

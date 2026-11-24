@@ -2,10 +2,22 @@
 {{- if reflect.IsMap . -}}
   {{- if isset . "page" -}}
     {{- $p = .page -}}
+  {{- else -}}
+    {{- $p = nil -}}
   {{- end -}}
 {{- end -}}
 {{- $curr := partialCached "edition/current.html" $p site.Language.Lang -}}
 {{- $all := partialCached "edition/all.html" $p -}}
+{{- $isChannelPage := false -}}
+{{- with $p -}}
+  {{- with .Params -}}
+    {{- with .cfc -}}
+      {{- if and (reflect.IsMap .) (isset . "kind") .kind (eq (printf "%v" .kind) "channel") -}}
+        {{- $isChannelPage = true -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 
 <details class="cfc-switcher">
   <summary class="cfc-switcher__summary" aria-label="{{ i18n "edition_switcher" | default "Edition switcher" }}: {{ $curr.label }}">
@@ -19,10 +31,23 @@
       {{- $isCurrent := eq $ed.code $curr.code -}}
       {{- $targetUrl := $ed.prefix -}}
 
-      {{- with $p.AllTranslations -}}
-        {{- range . -}}
-          {{- if eq .Language.Lang $ed.code -}}
-            {{- $targetUrl = .RelPermalink -}}
+      {{- if and $isChannelPage (not $isCurrent) -}}
+        {{- $targetUrl = printf "%schannels/" $ed.prefix -}}
+      {{- else -}}
+        {{- if $isCurrent -}}
+          {{- with $p -}}
+            {{- with .RelPermalink -}}
+              {{- $targetUrl = . -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+        {{- with $p -}}
+          {{- with .AllTranslations -}}
+            {{- range . -}}
+              {{- if eq .Language.Lang $ed.code -}}
+                {{- $targetUrl = .RelPermalink -}}
+              {{- end -}}
+            {{- end -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
