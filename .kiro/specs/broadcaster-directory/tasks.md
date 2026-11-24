@@ -2,7 +2,7 @@
 
 ## Tasks
 
-- [ ] 1. Foundation — Overlay, Localization, Styles, Catalog Resolver, Adapter, and Shared Directory
+- [x] 1. Foundation — Overlay, Localization, Styles, Catalog Resolver, Adapter, and Shared Directory
 - [x] 1.1 (P) Author curated broadcaster overlay (`data/cfc/broadcasters.yaml`)
   - Define `denylist.slugs` (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed`, `tba`, `unknown`) and `denylist.namePatterns` (`(?i)^(canal a confirmar|não confirmado|nao confirmado|to be confirmed|tba|tbd)$`)
   - Define `normalization.stripSuffixes` regexes stripping `(Watch it live)`, `(Ver ao vivo)`, `(Ver en vivo)`, `(Ver en directo)`, `(Míralo en vivo)`, `(Miralo en vivo)`, and `(Live)` alongside leading and trailing whitespace trimming
@@ -39,7 +39,7 @@
   - _Boundary: BroadcasterBudgetGuard, ChannelsSectionContent, ChannelsContentAdapter_
   - _Depends: 1.4_
   - _Requirements: 2.1, 3.1, 3.2, 6.3, 6.4, 8.1, 8.2_
-- [ ] 1.6 Create reusable broadcaster directory partial (`layouts/_partials/cfcpage/broadcasters-directory.html`)
+- [x] 1.6 Create reusable broadcaster directory partial (`layouts/_partials/cfcpage/broadcasters-directory.html`)
   - Accept `dict "page" . "compact" (bool) "headingLevel" (int, default 2)`
   - On regional editions: load `partialCached "cfcdata/broadcasters.html"` with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`; render category groups (`free_tv`, `tv`, `streaming`) using `.cfc-broadcaster-*` markup (full cards when `compact: false`, compact pills when `compact: true`) with normalized name, type label, optional logo via `cfc/img-src.html` with explicit numeric `width="32" height="32"` and `onerror="this.hidden=true"`, upcoming match count badge (`i18n "channels_upcoming_count" (dict "Count" .matchCount)`) when `matchCount > 0`, and link to `/{ed}/channels/{slug}/`; render `cfc/empty-state.html` + app link when `totalBroadcasters == 0`
   - On Global edition: iterate `edition/all.html` where `not .isGlobal`; load each country's catalog with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}` (`lang: site.Language.Lang`); for each country with `totalBroadcasters > 0`, render country heading, link to `/{ed.code}/channels/`, and links to each regional detail page `/{ed.code}/channels/{slug}/`

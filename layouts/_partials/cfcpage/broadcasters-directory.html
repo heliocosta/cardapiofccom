@@ -1,0 +1,129 @@
+{{/* layouts/_partials/cfcpage/broadcasters-directory.html */}}
+{{/* Reusable broadcaster directory rendered on /channels/ hubs (compact: false) and /faq/ (compact: true). */}}
+{{/* Args: dict "page" . "compact" (bool, default false) "headingLevel" (int, default 2; clamped 2..6). */}}
+
+{{- $page := . -}}
+{{- $compact := false -}}
+{{- $headingLevel := 2 -}}
+{{- if reflect.IsMap . -}}
+  {{- if and (isset . "page") (ne (index . "page") nil) -}}
+    {{- $page = index . "page" -}}
+  {{- end -}}
+  {{- if and (isset . "compact") (index . "compact") -}}
+    {{- $compact = true -}}
+  {{- end -}}
+  {{- if and (isset . "headingLevel") (ne (index . "headingLevel") nil) -}}
+    {{- $headingLevel = int (index . "headingLevel") -}}
+  {{- end -}}
+{{- end -}}
+{{- if lt $headingLevel 2 -}}{{- $headingLevel = 2 -}}{{- end -}}
+{{- if gt $headingLevel 6 -}}{{- $headingLevel = 6 -}}{{- end -}}
+
+{{- $ed := partialCached "edition/current.html" $page site.Language.Lang -}}
+{{- $dataset := partialCached "cfcdata/dataset.html" $page "dataset" -}}
+{{- $lang := site.Language.Lang -}}
+{{- $edCode := $ed.code | default $lang -}}
+
+{{- /* Normalize Regional category groups and Global country groups into one uniform section list. */ -}}
+{{- $sections := slice -}}
+{{- if $ed.isGlobal -}}
+  {{- $allEditions := partialCached "edition/all.html" $page -}}
+  {{- $viewCountryLabel := i18n "channels_view_country" | default "View all country channels" -}}
+  {{- range $reg := $allEditions -}}
+    {{- $regCc := upper (strings.TrimSpace (printf "%v" ($reg.country | default ""))) -}}
+    {{- if and (not $reg.isGlobal) (ne $regCc "") -}}
+      {{- $regCat := partialCached "cfcdata/broadcasters.html" (dict "country" $regCc "editionCode" $reg.code "lang" $lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $regCc $reg.code $lang) -}}
+      {{- if gt ($regCat.totalBroadcasters | default 0) 0 -}}
+        {{- $countryName := i18n (printf "country_%s" (lower $regCc)) | default $reg.label -}}
+        {{- $hubUrl := partial "cfcdata/url.html" (dict "kind" "channels" "edition" $reg.code) -}}
+        {{- $sections = $sections | append (dict
+          "id" (printf "cfc-broadcasters-country-%s" (lower $regCc))
+          "title" $countryName
+          "hubUrl" $hubUrl
+          "hubLabel" $viewCountryLabel
+          "hubAriaLabel" (printf "%s — %s" $viewCountryLabel $countryName)
+          "count" ($regCat.totalBroadcasters | default 0)
+          "items" ($regCat.list | default slice)
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- $cc := upper (strings.TrimSpace (printf "%v" ($ed.country | default ""))) -}}
+  {{- if ne $cc "" -}}
+    {{- $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $cc "editionCode" $edCode "lang" $lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $cc $edCode $lang) -}}
+    {{- range ($catalog.groups | default slice) -}}
+      {{- $typeTitle := i18n (printf "channel_type_%s" .type) | default .type -}}
+      {{- $sections = $sections | append (dict
+        "id" (printf "cfc-broadcasters-%s" .type)
+        "title" $typeTitle
+        "hubUrl" ""
+        "hubLabel" ""
+        "hubAriaLabel" ""
+        "count" (len .items)
+        "items" .items
+      ) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if eq (len $sections) 0 -}}
+  {{- $appLinks := partial "cfc/app-links.html" $page -}}
+  {{ partial "cfc/empty-state.html" (dict
+    "message" (i18n "channels_empty")
+    "action" (dict "url" $appLinks.ios "label" (i18n "app_download_title" | default "Download CardápioFC"))
+  ) }}
+{{- else -}}
+  {{- range $sections -}}
+    <section class="cfc-broadcaster-group" aria-labelledby="{{ .id }}">
+      <div class="cfc-broadcaster-group__head">
+        <h{{ $headingLevel }} id="{{ .id }}" class="cfc-broadcaster-group__title">{{ .title }}</h{{ $headingLevel }}>
+        {{- if .hubUrl -}}
+          <a href="{{ .hubUrl }}" class="cfc-section-head__action" aria-label="{{ .hubAriaLabel }}">{{ .hubLabel }}<span aria-hidden="true" class="cfc-section-head__arrow">→</span></a>
+        {{- else -}}
+          <span class="cfc-pill cfc-pill--muted">{{ .count }}</span>
+        {{- end -}}
+      </div>
+      {{- if $compact -}}
+        <ul class="cfc-broadcaster-chips" role="list">
+          {{- range .items -}}
+            <li>
+              <a href="{{ .url }}" class="cfc-broadcaster-chip" data-cfc-channel="{{ .slug }}">
+                {{- with .logo -}}
+                  <img src="{{ partial "cfc/img-src.html" (dict "src" . "width" 32) }}" alt="" width="32" height="32" class="cfc-broadcaster-logo" loading="lazy" decoding="async" onerror="this.hidden=true" />
+                {{- end -}}
+                <span>{{ .name }}</span>
+                {{- if gt (.matchCount | default 0) 0 -}}
+                  <span class="cfc-broadcaster-chip__count">{{ i18n "channels_upcoming_count" (dict "Count" .matchCount) }}</span>
+                {{- end -}}
+              </a>
+            </li>
+          {{- end -}}
+        </ul>
+      {{- else -}}
+        <ul class="cfc-broadcaster-grid" role="list">
+          {{- range .items -}}
+            {{- $itemType := .type | default "tv" -}}
+            {{- $itemTypeLabel := i18n (printf "channel_type_%s" $itemType) | default $itemType -}}
+            <li>
+              <a href="{{ .url }}" class="cfc-broadcaster-card" data-cfc-channel="{{ .slug }}">
+                {{- with .logo -}}
+                  <img src="{{ partial "cfc/img-src.html" (dict "src" . "width" 32) }}" alt="" width="32" height="32" class="cfc-broadcaster-logo" loading="lazy" decoding="async" onerror="this.hidden=true" />
+                {{- end -}}
+                <span class="cfc-broadcaster-card__body">
+                  <span class="cfc-broadcaster-card__title">{{ .name }}</span>
+                  <span class="cfc-broadcaster-card__meta">
+                    <span class="cfc-broadcaster-card__type">{{ $itemTypeLabel }}</span>
+                    {{- if gt (.matchCount | default 0) 0 -}}
+                      <span class="cfc-broadcaster-card__count">{{ i18n "channels_upcoming_count" (dict "Count" .matchCount) }}</span>
+                    {{- end -}}
+                  </span>
+                </span>
+              </a>
+            </li>
+          {{- end -}}
+        </ul>
+      {{- end -}}
+    </section>
+  {{- end -}}
+{{- end -}}
