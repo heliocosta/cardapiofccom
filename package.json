@@ -22,6 +22,7 @@
     "check:analytics": "node scripts/check-analytics.mjs",
     "check:seo": "node scripts/check-seo-social.mjs",
     "validate:blog": "node scripts/validate-blog.mjs",
+    "test:blog": "node scripts/test-editorial-blog.mjs",
     "check:deeplinks": "node scripts/check-app-deeplinks.mjs",
     "check:data": "node scripts/check-data-pages.mjs",
     "test:failures": "node scripts/test-data-pages.mjs",

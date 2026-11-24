@@ -103,7 +103,7 @@
   - _Depends: 2.1, 2.2, 3.1, 3.2_
   - _Requirements: 2.4, 3.3, 4.1, 4.2, 4.3, 4.4, 6.3_
 
-- [ ] 4.3 Build the editorial blog end-to-end test suite and test script alias
+- [x] 4.3 Build the editorial blog end-to-end test suite and test script alias
   - Create an end-to-end editorial blog test suite verifying built nine-edition blog HTML, explicit numeric image dimensions, reading time, related posts/CTA blocks, three-level breadcrumbs, immutable blog image cache headers, geo-routing rules, and synthetic threshold tests for the restored post-build file-count guard and additive blog budget partial; expose the blog test alias in package scripts
   - Observable completion: Running the editorial blog test suite passes all HTML, media, edge, and synthetic threshold assertions with zero leftover temporary directories
   - _Boundary: BlogBudgetAndValidation_
