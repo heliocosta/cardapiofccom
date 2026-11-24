@@ -1,5 +1,5 @@
-{{/* analytics/page-type.html - Page -> home|match|team|league|search|app_landing|legal|other */}}
-{{ $valid := slice "home" "match" "team" "league" "search" "app_landing" "legal" "other" }}
+{{/* analytics/page-type.html - Page -> home|match|team|league|search|app_landing|legal|blog|article|other */}}
+{{ $valid := slice "home" "match" "team" "league" "search" "app_landing" "legal" "blog" "article" "other" }}
 {{ $t := "other" }}
 {{ if and .Params.page_type (in $valid .Params.page_type) }}
   {{ $t = .Params.page_type }}
@@ -9,5 +9,7 @@
   {{ $t = .Section }}
 {{ else if in (slice "favourites" "my_agenda" "settings") .Section }}
   {{ $t = "app_landing" }}
+{{ else if eq .Section "blog" }}
+  {{ $t = cond .IsPage "article" "blog" }}
 {{ end }}
 {{ return $t }}

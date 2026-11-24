@@ -73,7 +73,7 @@
   - _Depends: 3.1_
   - _Requirements: 4.4_
 
-- [ ] 3.3 (P) Classify blog hubs and articles in analytics page-type configuration
+- [x] 3.3 (P) Classify blog hubs and articles in analytics page-type configuration
   - Extend the allowed analytics page-type vocabulary and classification logic to distinguish blog hubs from individual editorial articles across all editions without altering consent defaults or zero-ad rules
   - Observable completion: Built blog hubs emit the blog page type and built seed articles emit the article page type in runtime analytics config
   - _Boundary: BlogAnalytics_
