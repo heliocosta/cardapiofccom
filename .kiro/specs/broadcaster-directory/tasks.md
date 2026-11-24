@@ -78,7 +78,7 @@
   - _Boundary: SiteMenus, EditionSwitcher_
   - _Depends: 1.2, 1.5_
   - _Requirements: 2.6, 3.8, 7.1_
-- [ ] 3.2 (P) Link confirmed match-page channel names to regional broadcaster detail pages
+- [x] 3.2 (P) Link confirmed match-page channel names to regional broadcaster detail pages
   - Update `layouts/_partials/cfcpage/channels.html` (both Global country-grouped loop and Regional loop): load `partialCached "cfcdata/broadcasters.html"` for the group's `country` and `edition` (`lang: site.Language.Lang`, 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`); if `.id` exists in `$catalog.bySlug`, render `<a href="{{ $rec.url }}" class="cfc-channel-card__name cfc-channel-card__link">{{ $rec.name }}</a>`; otherwise render plain `<span class="cfc-channel-card__name">{{ .name }}</span>`; keep the existing app-launcher CTA (`cfc-channel-card__action`) untouched
   - Observable completed state: Sample match pages on both Global and regional editions link valid confirmed channels to `/{ed}/channels/{slug}/` with `.cfc-channel-card__link` while preserving the app-launcher CTA and leaving unknown/excluded channels unlinked
   - _Boundary: MatchChannelsPanel_

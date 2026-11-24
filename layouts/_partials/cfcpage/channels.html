@@ -18,6 +18,7 @@
 {{- end -}}
 {{- $slug = strings.Trim (trim $slug " ") "/" -}}
 
+{{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
 {{- $groups := partial "cfcdata/channels.html" (dict "slug" $slug) -}}
 {{- $edition := partialCached "edition/current.html" . site.Language.Lang -}}
 {{- $appLinks := partial "cfc/app-links.html" . -}}
@@ -32,6 +33,36 @@
   {{- if gt (len $filled) 0 -}}{{- $filled = first 1 $filled -}}{{- end -}}
 {{- end -}}
 
+{{- /* Resolve confirmed regional broadcaster links and normalized names once per country group */ -}}
+{{- $resolved := slice -}}
+{{- range $filled -}}
+  {{- $grpCountry := upper (strings.TrimSpace (printf "%v" (.country | default ""))) -}}
+  {{- $grpEdition := strings.TrimSpace (printf "%v" (.edition | default "")) -}}
+  {{- $bySlug := dict -}}
+  {{- if and (ne $grpCountry "") (ne $grpEdition "") (ne (lower $grpEdition) "en") (ne (lower $grpEdition) "global") -}}
+    {{- $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $grpCountry "editionCode" $grpEdition "lang" site.Language.Lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $grpCountry $grpEdition site.Language.Lang) -}}
+    {{- if and (reflect.IsMap $catalog) (reflect.IsMap $catalog.bySlug) -}}
+      {{- $bySlug = $catalog.bySlug -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $items := slice -}}
+  {{- range .channels -}}
+    {{- $chId := strings.Trim (strings.TrimSpace (printf "%v" (.id | default ""))) "/" -}}
+    {{- $rec := index (dict) "nil" -}}
+    {{- if and (ne $chId "") (reflect.IsMap $bySlug) -}}
+      {{- $rec = index $bySlug $chId -}}
+    {{- end -}}
+    {{- $detailUrl := "" -}}
+    {{- $displayName := .name -}}
+    {{- if $rec -}}
+      {{- $detailUrl = $rec.url -}}
+      {{- $displayName = $rec.name -}}
+    {{- end -}}
+    {{- $items = $items | append (merge . (dict "detailUrl" $detailUrl "displayName" $displayName)) -}}
+  {{- end -}}
+  {{- $resolved = $resolved | append (merge . (dict "channels" $items)) -}}
+{{- end -}}
+
 <section class="cfc-broadcast cfc-panel" aria-labelledby="cfc-broadcast-title">
   <div class="cfc-broadcast__head">
     <div>
@@ -44,23 +75,27 @@
         {{- end -}}
       </h2>
     </div>
-    {{- if gt (len $filled) 0 -}}
+    {{- if gt (len $resolved) 0 -}}
       <span class="cfc-pill cfc-pill--muted">{{ partial "cfc/icon.html" (dict "name" "check" "class" "cfc-pill__icon") }}{{ i18n "confirmed_channels_title" | default "Confirmed TV & streaming" }}</span>
     {{- end -}}
   </div>
 
-  {{- if eq (len $filled) 0 -}}
+  {{- if eq (len $resolved) 0 -}}
     {{ partial "cfc/empty-state.html" (dict "message" (i18n "no_broadcaster_check_app")) }}
   {{- else if $edition.isGlobal -}}
     <div class="cfc-broadcast__list">
-      {{- range $filled -}}
+      {{- range $resolved -}}
         {{- $cName := i18n (printf "country_%s" (lower .country)) | default .countryName -}}
         <div class="cfc-broadcast__group">
           <h3 class="cfc-broadcast__country"><span class="cfc-broadcast__country-code" aria-hidden="true">{{ upper .country }}</span>{{ $cName }}</h3>
           <ul class="cfc-broadcast__channels">
             {{- range .channels -}}
               <li class="cfc-channel-card">
-                <span class="cfc-channel-card__name">{{ .name }}</span>
+                {{- if .detailUrl -}}
+                  <a href="{{ .detailUrl }}" class="cfc-channel-card__name cfc-channel-card__link">{{ .displayName }}</a>
+                {{- else -}}
+                  <span class="cfc-channel-card__name">{{ .name }}</span>
+                {{- end -}}
                 {{- with .type -}}<span class="cfc-channel-card__type">{{ i18n (printf "channel_type_%s" .) | default . }}</span>{{- end -}}
                 <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" aria-label="{{ i18n "stream_in_app" | default "Open channel" }}: {{ .name }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}"{{ with $slug }} data-cfc-match="{{ . }}"{{ end }} data-cfc-edition="{{ site.Language.Lang }}">{{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-i") }}<span>{{ i18n "stream_in_app" | default "Open channel" }}</span></a>
               </li>
@@ -70,11 +105,15 @@
       {{- end -}}
     </div>
   {{- else -}}
-    {{- $grp := index $filled 0 -}}
+    {{- $grp := index $resolved 0 -}}
     <ul class="cfc-broadcast__channels">
       {{- range $grp.channels -}}
         <li class="cfc-channel-card">
-          <span class="cfc-channel-card__name">{{ .name }}</span>
+          {{- if .detailUrl -}}
+            <a href="{{ .detailUrl }}" class="cfc-channel-card__name cfc-channel-card__link">{{ .displayName }}</a>
+          {{- else -}}
+            <span class="cfc-channel-card__name">{{ .name }}</span>
+          {{- end -}}
           {{- with .type -}}<span class="cfc-channel-card__type">{{ i18n (printf "channel_type_%s" .) | default . }}</span>{{- end -}}
           <a href="{{ $appLinks.ios }}" data-app-smart-link data-ios-url="{{ $appLinks.ios }}" data-android-url="{{ $appLinks.android }}" target="_blank" rel="noopener noreferrer" class="cfc-channel-card__action" aria-label="{{ i18n "stream_in_app" | default "Open channel" }}: {{ .name }}" data-cfc-event="channel_click" data-cfc-channel="{{ .id | default (.name | urlize) }}" data-cfc-channel-type="{{ .type | default "tv" }}"{{ with $slug }} data-cfc-match="{{ . }}"{{ end }} data-cfc-edition="{{ site.Language.Lang }}">{{ partial "cfc/icon.html" (dict "name" "stream" "class" "cfc-i") }}<span>{{ i18n "stream_in_app" | default "Open channel" }}</span></a>
         </li>
