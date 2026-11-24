@@ -84,7 +84,7 @@
   - _Boundary: MatchChannelsPanel_
   - _Depends: 1.3, 1.4, 1.5_
   - _Requirements: 5.1, 5.2, 5.3_
-- [ ] 3.3 (P) Integrate broadcaster SEO context, Open Graph, strict cross-country `hreflang`, and sitemap isolation
+- [x] 3.3 (P) Integrate broadcaster SEO context, Open Graph, strict cross-country `hreflang`, and sitemap isolation
   - Update `layouts/_partials/seo/context.html`: handle `kind == "channel"` using `seo_channel_title` (`Channel`, `In`) and `seo_channel_desc` (`Channel`, `Type`, `In`, `Count`, or curated description cleanly formatted); handle `kind == "channels"` passing `(dict "In" $in)` to `seo_channels_title` and `seo_channels_desc` so every edition emits unique `<title>` and `<meta name="description">`
   - Update `layouts/_partials/seo/hreflang.html`: guard with `and (not .ctx.noindex) (not (eq .ctx.kind "channel")) (gt (len $p.AllTranslations) 1)`
   - Update `layouts/_partials/seo/opengraph.html`: add `"channel"` to `og:type = "article"` slice and skip `og:locale:alternate` loop when `eq $ctx.kind "channel"`

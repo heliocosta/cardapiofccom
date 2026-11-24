@@ -1,6 +1,6 @@
 {{/* seo/hreflang.html - reciprocal BCP 47 alternates + x-default (Global). Args: Page, ctx */}}
 {{ $p := .page }}
-{{ if and (not .ctx.noindex) (gt (len $p.AllTranslations) 1) }}
+{{ if and (not .ctx.noindex) (not (eq .ctx.kind "channel")) (gt (len $p.AllTranslations) 1) }}
   {{ range $p.AllTranslations }}
 <link rel="alternate" hreflang="{{ .Language.Locale | default .Language.Lang }}" href="{{ .Permalink }}" />
     {{- if eq .Language.Lang hugo.Sites.Default.Language.Lang }}

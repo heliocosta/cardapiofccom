@@ -33,6 +33,22 @@
 {{ else if eq $kind "league" }}
   {{ $title = i18n "seo_league_title" (dict "League" $entity.league.name "In" $in) }}
   {{ $desc = i18n "seo_league_desc" (dict "League" $entity.league.name "In" $in) }}
+{{ else if eq $kind "channel" }}
+  {{- $b := index $entity "channel" -}}
+  {{- $chName := $p.Title -}}
+  {{- $chType := i18n "channel_type_tv" | default "TV" -}}
+  {{- $count := 0 -}}
+  {{- if and $b (reflect.IsMap $b) -}}
+    {{- with $b.name }}{{ $chName = . }}{{ end -}}
+    {{- with $b.type }}{{ $chType = i18n (printf "channel_type_%s" .) | default . }}{{ end -}}
+    {{- if isset $b "matchCount" }}{{ $count = $b.matchCount | default 0 }}{{ end -}}
+  {{- end -}}
+  {{- $args := dict "Channel" $chName "Type" $chType "In" $in "Count" $count -}}
+  {{- $title = i18n "seo_channel_title" $args | default $title -}}
+  {{- $desc = i18n "seo_channel_desc" $args | default $desc -}}
+{{ else if eq $kind "channels" }}
+  {{- $title = i18n "seo_channels_title" (dict "In" $in) | default $title -}}
+  {{- $desc = i18n "seo_channels_desc" (dict "In" $in) | default $desc -}}
 {{ else if not $p.IsHome }}
   {{ $hubKey := $p.Params.app_feature | default ($p.Params.page_type | default $p.Section) }}
   {{ if $hubKey }}

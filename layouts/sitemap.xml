@@ -3,10 +3,18 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   {{- range where .Pages "Sitemap.Disable" "ne" true }}
     {{- if and .Permalink (not .Params.noindex) }}
+      {{- $cfcKind := "" -}}
+      {{- with .Params.cfc -}}
+        {{- if reflect.IsMap . -}}
+          {{- $cfcKind = printf "%v" (.kind | default "") -}}
+        {{- end -}}
+      {{- end -}}
       {{- $alts := slice -}}
-      {{- range .AllTranslations -}}
-        {{- if and .Permalink (not .Params.noindex) -}}
-          {{- $alts = $alts | append . -}}
+      {{- if ne $cfcKind "channel" -}}
+        {{- range .AllTranslations -}}
+          {{- if and .Permalink (not .Params.noindex) -}}
+            {{- $alts = $alts | append . -}}
+          {{- end -}}
         {{- end -}}
       {{- end }}
   <url>
