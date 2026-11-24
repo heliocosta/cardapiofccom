@@ -4,21 +4,29 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.625rem 1rem;
-  background: var(--color-theme-light, #f5f5f5);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text-dark, #000000);
   border-bottom: 1px solid var(--color-border, #e5e5e5);
+}
+html.dark .cfc-android-banner {
+  background: var(--color-darkmode-surface, #1a2e05);
+  color: var(--color-darkmode-text-dark, #ffffff);
+  border-bottom-color: var(--color-darkmode-border, #90918a);
 }
 .cfc-android-banner.hidden { display: none; }
 .cfc-android-banner__close {
   background: none;
   border: 0;
+  color: inherit;
   font-size: 1.25rem;
   line-height: 1;
   padding: 0.25rem;
   cursor: pointer;
 }
 .cfc-android-banner__info { flex: 1; min-width: 0; }
-.cfc-android-banner__title { font-weight: 700; margin: 0; font-size: 0.875rem; }
-.cfc-android-banner__sub { margin: 0; font-size: 0.75rem; opacity: 0.8; }
+.cfc-android-banner__title { font-weight: 700; margin: 0; font-size: 0.875rem; color: inherit; }
+.cfc-android-banner__sub { margin: 0; font-size: 0.75rem; color: var(--color-text-light, #374151); }
+html.dark .cfc-android-banner__sub { color: var(--color-darkmode-text-light, #d1d5db); }
 
 .cfc-footer-app {
   display: flex;
