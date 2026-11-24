@@ -77,3 +77,4 @@ input[type="radio"],
 }
 @import "./cfc/components/app-deeplinks.css";
 @import "./cfc/components/updates.css";
+@import "./cfc/components/blog.css";

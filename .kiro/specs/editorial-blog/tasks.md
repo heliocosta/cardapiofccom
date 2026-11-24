@@ -16,7 +16,7 @@
   - _Boundary: BlogContentContract_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 3.1, 4.3, 6.4_
 
-- [ ] 1.3 (P) Create sharp-corner blog component styles using CFC design tokens and typography
+- [x] 1.3 (P) Create sharp-corner blog component styles using CFC design tokens and typography
   - Author dedicated blog layout, card, article header, metadata strip, hero figure, typography prose, and back-navigation styles using existing sharp-corner design tokens and dark-mode contrast variables, and import them into the custom stylesheet entry point
   - Ensure zero FontAwesome icon classes and zero match-list broadcast channel badge classes are introduced while keeping the home page weight within the 100 KB gzip budget
   - Observable completion: Styles compile cleanly into the site bundle with compliant light/dark contrast, zero radius values, and home page weight remaining under 100 KB gzip
