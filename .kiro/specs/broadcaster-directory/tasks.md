@@ -49,7 +49,7 @@
   - _Requirements: 2.2, 2.3, 2.4, 2.5, 4.1, 4.2, 7.1_
 
 - [ ] 2. Core — Broadcaster Hub, Broadcaster Detail Page, and Enriched FAQ
-- [ ] 2.1 (P) Implement broadcaster directory hub page layout (`layouts/channels/list.html`)
+- [x] 2.1 (P) Implement broadcaster directory hub page layout (`layouts/channels/list.html`)
   - Render breadcrumb (`Home > Channels`), `cfc/page-hero.html` with localized title/intro, `cfcpage/broadcasters-directory.html` (`compact: false`), and app download CTA
   - Handle Global country-grouped view, regional category-grouped view, and empty-country state (`en-us`, `zh-cn`, `ja`) cleanly
   - Observable completed state: Sample build renders non-empty `public/channels/index.html` (country-grouped) and all 8 `public/{ed}/channels/index.html` hubs (category-grouped for populated editions, localized empty state for US/CN/JP) with breadcrumbs and explicit logo dimensions
