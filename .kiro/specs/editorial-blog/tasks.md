@@ -66,7 +66,7 @@
   - _Depends: 1.1, 1.2, 1.5, 2.1, 2.2_
   - _Requirements: 3.3, 4.1, 4.2_
 
-- [ ] 3.2 Build Blog and BlogPosting structured data builders and wire optional FAQPage output
+- [x] 3.2 Build Blog and BlogPosting structured data builders and wire optional FAQPage output
   - Create dedicated Blog and BlogPosting structured data builders referencing CardápioFC's Organization publisher/author and resolved OG image URL, and wire them into the unified JSON-LD graph alongside optional FAQPage structured data matching visible article FAQs verbatim
   - Observable completion: Built blog hubs emit valid Blog + BreadcrumbList JSON-LD and built seed articles emit valid BlogPosting + BreadcrumbList + verbatim FAQPage JSON-LD inside a single graph script
   - _Boundary: BlogSeoJsonLd_

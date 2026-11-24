@@ -26,6 +26,25 @@
 {{ else if eq .page.Section "faq" }}
   {{ $faqItems := partial "cfcpage/faq-page-items.html" .page }}
   {{ if $faqItems }}{{ $graph = $graph | append (partial "seo/jsonld-faq.html" $faqItems) }}{{ end }}
+{{ else if and (eq .page.Section "blog") .page.IsSection }}
+  {{ $graph = $graph | append (partial "seo/jsonld-blog.html" $a) }}
+{{ else if and (eq .page.Section "blog") .page.IsPage }}
+  {{ $graph = $graph | append (partial "seo/jsonld-blog-posting.html" $a) }}
+  {{ $faqItems := slice }}
+  {{ with .page.Params.faq }}
+    {{ if reflect.IsSlice . }}
+      {{ range . }}
+        {{ $faqQ := strings.TrimSpace (printf "%v" (.q | default "")) }}
+        {{ $faqA := strings.TrimSpace (printf "%v" (.a | default "")) }}
+        {{ if and $faqQ $faqA }}
+          {{ $faqItems = $faqItems | append (dict "q" $faqQ "a" $faqA) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if gt (len $faqItems) 0 }}
+    {{ $graph = $graph | append (partial "seo/jsonld-faq.html" $faqItems) }}
+  {{ end }}
 {{ end }}
 {{ if not .page.IsHome }}
   {{ $graph = $graph | append (partial "seo/jsonld-breadcrumb.html" $a) }}

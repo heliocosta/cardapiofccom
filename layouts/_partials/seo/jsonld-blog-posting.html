@@ -1,0 +1,33 @@
+{{/* seo/jsonld-blog-posting.html - Schema.org BlogPosting JSON-LD node for blog articles. Args: Page, ctx */}}
+{{- $p := .page -}}
+{{- $img := partial "seo/og-image.html" . -}}
+{{- $inLang := site.Language.Locale | default site.Language.Lang -}}
+{{- $org := dict "@type" "Organization" "@id" "https://cardapiofc.com/#organization" "name" "CardápioFC" -}}
+{{- $desc := $p.Description | default $p.Params.description | default "" -}}
+{{- if and (eq $desc "") .ctx .ctx.desc -}}
+  {{- $desc = .ctx.desc -}}
+{{- end -}}
+{{- $node := dict
+  "@type" "BlogPosting"
+  "@id" (printf "%s#article" $p.Permalink)
+  "headline" $p.Title
+  "description" $desc
+  "image" $img.url
+  "inLanguage" $inLang
+  "mainEntityOfPage" (dict "@type" "WebPage" "@id" $p.Permalink)
+  "author" $org
+  "publisher" $org
+-}}
+{{- if not $p.Date.IsZero -}}
+  {{- $node = merge $node (dict "datePublished" ($p.Date.Format "2006-01-02T15:04:05Z07:00")) -}}
+{{- end -}}
+{{- $mod := cond (not $p.Lastmod.IsZero) $p.Lastmod $p.Date -}}
+{{- if not $mod.IsZero -}}
+  {{- $node = merge $node (dict "dateModified" ($mod.Format "2006-01-02T15:04:05Z07:00")) -}}
+{{- end -}}
+{{- $pillar := strings.TrimSpace (printf "%v" ($p.Params.pillar | default "")) -}}
+{{- if $pillar -}}
+  {{- $pillarLabel := i18n (printf "blog_pillar_%s" (replace $pillar "-" "_")) | default ($pillar | humanize) -}}
+  {{- $node = merge $node (dict "articleSection" $pillarLabel) -}}
+{{- end -}}
+{{- return $node -}}
