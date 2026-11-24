@@ -8,13 +8,23 @@
   {{ $graph = $graph | append (partial "seo/jsonld-team.html" $a) }}
 {{ else if eq .ctx.kind "league" }}
   {{ $graph = $graph | append (partial "seo/jsonld-league.html" $a) }}
-{{ else if eq .page.Section "faq" }}
-  {{ $faqItems := slice }}
-  {{ range seq 1 11 }}
-    {{ $q := i18n (printf "faq_q%d" .) }}
-    {{ $ans := i18n (printf "faq_a%d" .) }}
-    {{ if and $q $ans }}{{ $faqItems = $faqItems | append (dict "q" $q "a" $ans) }}{{ end }}
+{{ else if eq .ctx.kind "channel" }}
+  {{ $graph = $graph | append (partial "seo/jsonld-channel.html" $a) }}
+  {{ if and .ctx.entity (reflect.IsMap .ctx.entity) }}
+    {{ with index .ctx.entity "channel" }}
+      {{ if reflect.IsMap . }}
+        {{ with index . "faqs" }}
+          {{ if and (reflect.IsSlice .) (gt (len .) 0) }}
+            {{ $graph = $graph | append (partial "seo/jsonld-faq.html" .) }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
   {{ end }}
+{{ else if eq .ctx.kind "channels" }}
+  {{ $graph = $graph | append (partial "seo/jsonld-channels.html" $a) }}
+{{ else if eq .page.Section "faq" }}
+  {{ $faqItems := partial "cfcpage/faq-page-items.html" .page }}
   {{ if $faqItems }}{{ $graph = $graph | append (partial "seo/jsonld-faq.html" $faqItems) }}{{ end }}
 {{ end }}
 {{ if not .page.IsHome }}

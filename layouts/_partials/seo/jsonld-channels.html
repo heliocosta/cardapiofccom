@@ -1,0 +1,73 @@
+{{/* seo/jsonld-channels.html - Schema.org CollectionPage + ItemList for broadcaster directory hubs. Args: Page, ctx */}}
+{{- $rawItems := slice -}}
+{{- $isGlobal := false -}}
+{{- $edCode := site.Language.Lang -}}
+{{- if and .ctx .ctx.ed (reflect.IsMap .ctx.ed) -}}
+  {{- $isGlobal = or (index .ctx.ed "isGlobal") (index .ctx.ed "isglobal") -}}
+  {{- with index .ctx.ed "code" -}}
+    {{- $edCode = printf "%v" . -}}
+  {{- end -}}
+{{- end -}}
+{{- if $isGlobal -}}
+  {{- $allEditions := partialCached "edition/all.html" .page -}}
+  {{- $dataset := partialCached "cfcdata/dataset.html" .page "dataset" -}}
+  {{- $lang := site.Language.Lang -}}
+  {{- range $reg := $allEditions -}}
+    {{- $regCc := upper (strings.TrimSpace (printf "%v" ($reg.country | default ""))) -}}
+    {{- if and (not $reg.isGlobal) (ne $regCc "") -}}
+      {{- $regCat := partialCached "cfcdata/broadcasters.html" (dict "country" $regCc "editionCode" $reg.code "lang" $lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $regCc $reg.code $lang) -}}
+      {{- if gt ($regCat.totalBroadcasters | default 0) 0 -}}
+        {{- $countryName := i18n (printf "country_%s" (lower $regCc)) | default $reg.label -}}
+        {{- $hubUrl := (partial "cfcdata/url.html" (dict "kind" "channels" "edition" $reg.code)) | absURL -}}
+        {{- $rawItems = $rawItems | append (dict "name" $countryName "url" $hubUrl) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if and .ctx .ctx.entity (reflect.IsMap .ctx.entity) -}}
+  {{- with index .ctx.entity "catalog" -}}
+    {{- if reflect.IsMap . -}}
+      {{- with index . "list" -}}
+        {{- if reflect.IsSlice . -}}
+          {{- range $b := . -}}
+            {{- if reflect.IsMap $b -}}
+              {{- $bName := strings.TrimSpace (printf "%v" ($b.name | default "")) -}}
+              {{- $bPath := strings.TrimSpace (printf "%v" ($b.url | default "")) -}}
+              {{- if and (eq $bPath "") $b.slug -}}
+                {{- $bPath = partial "cfcdata/url.html" (dict "kind" "channel" "slug" $b.slug "edition" $edCode) -}}
+              {{- end -}}
+              {{- if and (ne $bName "") (ne $bPath "") -}}
+                {{- $rawItems = $rawItems | append (dict "name" $bName "url" ($bPath | absURL)) -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $listItems := slice -}}
+{{- range $i, $it := $rawItems -}}
+  {{- $listItems = $listItems | append (dict "@type" "ListItem" "position" (add $i 1) "name" $it.name "url" $it.url) -}}
+{{- end -}}
+{{- $pageName := i18n "channels_title" | default .page.Title -}}
+{{- if and .ctx .ctx.title -}}
+  {{- $pageName = .ctx.title -}}
+{{- end -}}
+{{- $o := dict
+  "@type" "CollectionPage"
+  "@id" (printf "%s#channels" .page.Permalink)
+  "name" $pageName
+  "url" .page.Permalink
+  "mainEntity" (dict
+    "@type" "ItemList"
+    "numberOfItems" (len $listItems)
+    "itemListElement" $listItems
+  )
+-}}
+{{- if and .ctx .ctx.desc -}}
+  {{- $d := strings.TrimSpace (printf "%v" .ctx.desc) -}}
+  {{- if ne $d "" -}}
+    {{- $o = merge $o (dict "description" $d) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $o -}}

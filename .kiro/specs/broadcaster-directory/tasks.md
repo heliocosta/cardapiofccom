@@ -70,7 +70,7 @@
   - _Depends: 1.2, 1.3, 1.5, 1.6_
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 7.1_
 
-- [ ] 3. Integration — Navigation, Match Linking, SEO/Hreflang/Sitemap, Edge/IndexNow, and JSON-LD
+- [x] 3. Integration — Navigation, Match Linking, SEO/Hreflang/Sitemap, Edge/IndexNow, and JSON-LD
 - [x] 3.1 (P) Wire `/channels/` into site navigation menus and edition-switcher channel fallback
   - Add `channels` entry (`url = "/channels/"`, localized via `menu_channels`) to both `[[main]]` and `[[footer]]` in `config/_default/menus.toml`
   - Update `layouts/_partials/cfc/edition-switcher.html`: when current page has `Params.cfc.kind == "channel"`, set `$targetUrl` for non-current editions to `printf "%schannels/" $ed.prefix` (preserving current page URL for `$isCurrent`)
@@ -101,7 +101,7 @@
   - _Boundary: EdgeGeoRouting, IndexNowClassifier_
   - _Depends: 1.5_
   - _Requirements: 6.7, 6.8_
-- [ ] 3.5 Implement broadcaster JSON-LD builders, unified `/faq/` JSON-LD wiring, and channel breadcrumbs
+- [x] 3.5 Implement broadcaster JSON-LD builders, unified `/faq/` JSON-LD wiring, and channel breadcrumbs
   - Create `layouts/_partials/seo/jsonld-channel.html` emitting Schema.org `BroadcastService` (`@id`, `name`, `broadcastDisplayName`, `url`, `areaServed` Country, `additionalType`, optional `sameAs` set strictly from `$b.officialUrl` when non-empty, optional `description`)
   - Create `layouts/_partials/seo/jsonld-channels.html` emitting Schema.org `CollectionPage` + `ItemList` of listed regional broadcasters (or country hubs on Global)
   - Update `layouts/_partials/seo/jsonld-breadcrumb.html` for `kind == "channel"` (`Home > Channels > {Broadcaster}`) and `kind == "channels"` (`Home > Channels`)

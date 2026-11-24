@@ -1,0 +1,66 @@
+{{/* seo/jsonld-channel.html - Schema.org BroadcastService for a broadcaster detail page. Args: Page, ctx */}}
+{{- $entity := dict -}}
+{{- if and .ctx .ctx.entity (reflect.IsMap .ctx.entity) -}}
+  {{- $entity = .ctx.entity -}}
+{{- end -}}
+{{- $b := dict -}}
+{{- with index $entity "channel" -}}
+  {{- if reflect.IsMap . -}}
+    {{- $b = . -}}
+  {{- end -}}
+{{- end -}}
+{{- $name := .page.Title -}}
+{{- with index $b "name" -}}
+  {{- $n := strings.TrimSpace (printf "%v" .) -}}
+  {{- if ne $n "" -}}
+    {{- $name = $n -}}
+  {{- end -}}
+{{- end -}}
+{{- $type := "tv" -}}
+{{- with index $b "type" -}}
+  {{- $t := strings.TrimSpace (printf "%v" .) -}}
+  {{- if ne $t "" -}}
+    {{- $type = $t -}}
+  {{- end -}}
+{{- end -}}
+{{- $typeLabel := i18n (printf "channel_type_%s" $type) | default $type -}}
+{{- $cc := "" -}}
+{{- with index $entity "country" -}}
+  {{- $cc = strings.TrimSpace (printf "%v" .) -}}
+{{- end -}}
+{{- if and (eq $cc "") .ctx .ctx.ed (reflect.IsMap .ctx.ed) -}}
+  {{- with index .ctx.ed "country" -}}
+    {{- $cc = strings.TrimSpace (printf "%v" .) -}}
+  {{- end -}}
+{{- end -}}
+{{- $countryName := $cc -}}
+{{- if and .ctx .ctx.ed (reflect.IsMap .ctx.ed) -}}
+  {{- with index .ctx.ed "label" -}}
+    {{- $countryName = printf "%v" . -}}
+  {{- end -}}
+{{- end -}}
+{{- if ne $cc "" -}}
+  {{- $countryName = i18n (printf "country_%s" (lower $cc)) | default $countryName | default $cc -}}
+{{- end -}}
+{{- $o := dict
+  "@type" "BroadcastService"
+  "@id" (printf "%s#broadcast-service" .page.Permalink)
+  "name" $name
+  "broadcastDisplayName" $name
+  "url" .page.Permalink
+  "areaServed" (dict "@type" "Country" "name" $countryName)
+  "additionalType" $typeLabel
+-}}
+{{- with index $b "officialUrl" -}}
+  {{- $sameAs := strings.TrimSpace (printf "%v" .) -}}
+  {{- if ne $sameAs "" -}}
+    {{- $o = merge $o (dict "sameAs" $sameAs) -}}
+  {{- end -}}
+{{- end -}}
+{{- with index $b "description" -}}
+  {{- $desc := strings.TrimSpace (printf "%v" .) -}}
+  {{- if ne $desc "" -}}
+    {{- $o = merge $o (dict "description" $desc) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $o -}}
