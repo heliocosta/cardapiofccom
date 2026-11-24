@@ -1,5 +1,5 @@
 ---
-heading: "Futebol ao Vivo na TV e Streaming"
-intro: "Saiba onde assistir aos jogos de futebol ao vivo no Brasil com horários de Brasília e canais de transmissão."
-description: "Jogos de futebol ao vivo na TV e streaming no Brasil. Horários, canais de transmissão e onde assistir."
+heading: "Guia de Jogos na TV: Futebol ao Vivo"
+intro: "Programação de futebol na TV e streaming oficial hoje no Brasil: horários de Brasília e onde assistir cada jogo ao vivo."
+description: "Guia de jogos na TV e programação de futebol ao vivo hoje no Brasil. Horários de Brasília, canais oficiais de TV e streaming."
 ---
