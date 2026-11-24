@@ -81,3 +81,9 @@ identifier = "about"
 name = "About"
 url = "/about/"
 weight = 7
+
+[[footer]]
+identifier = "updates"
+name = "App Updates"
+url = "/updates/"
+weight = 8

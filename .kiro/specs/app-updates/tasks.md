@@ -1,6 +1,6 @@
 # Implementation Plan: app-updates
 
-- [ ] 1. Foundation — release history contract, footer navigation, and localization parity
+- [x] 1. Foundation — release history contract, footer navigation, and localization parity
 - [x] 1.1 Establish the release-history data contract and empty-safe schema structure
   - Define the versioned release-history data structure storing app identifiers, latest iOS and Android platform summaries, chronologically ordered release entries, per-edition localized note objects, optional manual curation flags, and no volatile check timestamps
   - Ensure platform entries cleanly represent omitted Android web version numbers without placeholder strings
@@ -8,7 +8,7 @@
   - _Boundary: AppUpdatesData_
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 1.2 Add footer-only navigation entry, seven-table localization parity, and task runner aliases
+- [x] 1.2 Add footer-only navigation entry, seven-table localization parity, and task runner aliases
   - Register the updates route in the site footer navigation while keeping the primary header navigation unchanged
   - Add complete localized copy (headings, breadcrumbs, platform labels, footer link label, metadata, empty state, and download calls to action) across all seven parity-enforced language tables
   - Expose convenient package command aliases for checking store updates, writing updates, and running offline unit tests
