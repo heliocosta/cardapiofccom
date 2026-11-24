@@ -17,7 +17,7 @@
   - _Requirements: 1.2, 1.3, 3.1_
 
 - [ ] 2. Core feature — store monitoring and multilingual updates page
-- [ ] 2.1 (P) Implement zero-secret multi-store update extractor and fail-safe release merge logic
+- [x] 2.1 (P) Implement zero-secret multi-store update extractor and fail-safe release merge logic
   - Query public Apple App Store and Google Play Store listings across active regional storefronts using built-in HTTP requests paced to avoid rate limits and requiring zero API secrets
   - Extract version, release date, and localized notes from Apple Store responses, and extract release date, localized notes, and optional version from Google Play listings while gracefully handling omitted version values and unsupported storefronts
   - Normalize raw notes into clean summaries and bulleted items, group matching iOS and Android releases by version or release-date window, deduplicate Android updates by release date and normalized notes, preserve manually curated history, and leave stored history untouched when no material change occurs or when errors occur
