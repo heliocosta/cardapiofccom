@@ -43,8 +43,8 @@ Six regional editions ship first — Global (EN, unprefixed root), UK `/en-gb/`,
 - None — Phase-1 specs are complete; Phase-2 specs integrate via their documented seams.
 
 ## Direct Implementation Candidates
-- [ ] legacy-faq-about-redirects -- Add missing explicit 301s in `layouts/home.redirects` (`/pt/perguntas-frequentes` -> `/pt-br/faq/`, `/es/faq` -> `/es-ar/faq/`, `/fr/faq` -> `/faq/`, `/zh/faq` -> `/zh-cn/faq/`, `/es/about` -> `/es-ar/about/`, `/hi/about` -> `/about/`); small static redirect fix requiring no spec.
-- [ ] pt-br-tv-guide-copy -- Tune PT-BR homepage and matches titles/descriptions/headings in `i18n/pt.yaml` to cover "Guia de Jogos na TV" and "Programação de Futebol na TV"; trivial localized copy update requiring no spec.
+- [x] legacy-faq-about-redirects -- Add missing explicit 301s in `layouts/home.redirects` (`/pt/perguntas-frequentes` -> `/pt-br/faq/`, `/es/faq` -> `/es-ar/faq/`, `/fr/faq` -> `/faq/`, `/zh/faq` -> `/zh-cn/faq/`, `/es/about` -> `/es-ar/about/`, `/hi/about` -> `/about/`); small static redirect fix requiring no spec.
+- [x] pt-br-tv-guide-copy -- Tune PT-BR homepage and matches titles/descriptions/headings in `i18n/pt.yaml` to cover "Guia de Jogos na TV" and "Programação de Futebol na TV"; trivial localized copy update requiring no spec.
 
 ## Specs (dependency order)
 - [x] site-foundation -- Repair config, define the 6-edition registry (locale prefixes, timezones, i18n en/pt/es + regional overrides), remove demo content, establish upgrade-safe override structure and the redesigned visual system/base layouts. Dependencies: none
@@ -53,4 +53,4 @@ Six regional editions ship first — Global (EN, unprefixed root), UK `/en-gb/`,
 - [x] app-deeplinks -- Web search, app landing pages (/favourites, /my_agenda, /settings), /favorites alias, smart app banner and store fallbacks, apple-app-site-association + assetlinks.json covering unprefixed and edition-prefixed paths. Dependencies: site-foundation, data-pages
 - [x] seo-social -- SportsEvent/BroadcastEvent, BreadcrumbList, Organization/WebSite JSON-LD (fixing double-encoding), locale hreflang with x-default to Global, canonicals, localised Open Graph/Twitter previews for WhatsApp, sitemaps, robots, llms.txt. Dependencies: site-foundation, data-pages
 - [x] edge-delivery -- Free Cloudflare static hosting, CI build triggered by Retool webhook with exact Hugo pin, file-count guard, geo-routing Redirect Rules (bots excluded), legacy URL 301s (/en/matches/where_to_watch_…, /pt/jogos/…, zh/hi/fr/ar/es), headers and caching. Dependencies: site-foundation, data-pages
-- [ ] broadcaster-directory -- Country-scoped broadcaster directory (`/channels/`, `/{ed}/channels/{slug}/`) and enriched `/faq/` "Included Broadcasters & Services" section driven by `dataset.channels` + `data/cfc/broadcasters.yaml` overlay. Dependencies: site-foundation, data-pages, seo-social
+- [x] broadcaster-directory -- Country-scoped broadcaster directory (`/channels/`, `/{ed}/channels/{slug}/`) and enriched `/faq/` "Included Broadcasters & Services" section driven by `dataset.channels` + `data/cfc/broadcasters.yaml` overlay. Dependencies: site-foundation, data-pages, seo-social
