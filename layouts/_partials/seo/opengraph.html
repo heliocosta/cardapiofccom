@@ -2,11 +2,22 @@
 {{ $p := .page }}{{ $ctx := .ctx }}
 {{ $img := partial "seo/og-image.html" . }}
 {{ $loc := site.Language.Locale | default site.Language.Lang | replaceRE "-" "_" }}
+{{ $isBlogPost := and (eq $p.Section "blog") $p.IsPage }}
 <meta property="og:site_name" content="{{ $ctx.ed.title }}" />
 <meta property="og:title" content="{{ $ctx.title }}" />
 <meta property="og:description" content="{{ $ctx.desc }}" />
 <meta property="og:url" content="{{ $p.Permalink }}" />
-<meta property="og:type" content="{{ if in (slice "match" "team" "league" "channel") $ctx.kind }}article{{ else }}website{{ end }}" />
+<meta property="og:type" content="{{ if or (in (slice "match" "team" "league" "channel") $ctx.kind) $isBlogPost }}article{{ else }}website{{ end }}" />
+{{ if $isBlogPost }}
+  {{ if not $p.Date.IsZero }}<meta property="article:published_time" content="{{ $p.Date.Format "2006-01-02T15:04:05Z07:00" }}" />{{ end }}
+  {{ $mod := cond (not $p.Lastmod.IsZero) $p.Lastmod $p.Date }}
+  {{ if not $mod.IsZero }}<meta property="article:modified_time" content="{{ $mod.Format "2006-01-02T15:04:05Z07:00" }}" />{{ end }}
+  {{ $pillar := strings.TrimSpace (printf "%v" ($p.Params.pillar | default "")) }}
+  {{ if $pillar }}
+    {{ $pillarLabel := i18n (printf "blog_pillar_%s" (replace $pillar "-" "_")) | default ($pillar | humanize) }}
+    <meta property="article:section" content="{{ $pillarLabel }}" />
+  {{ end }}
+{{ end }}
 <meta property="og:locale" content="{{ $loc }}" />
 {{ if not (eq $ctx.kind "channel") }}{{ range $p.AllTranslations }}{{ if ne .Language.Lang site.Language.Lang }}<meta property="og:locale:alternate" content="{{ .Language.Locale | default .Language.Lang | replaceRE "-" "_" }}" />{{ end }}{{ end }}{{ end }}
 <meta property="og:image" content="{{ $img.url }}" />

@@ -1,4 +1,4 @@
-{{/* Home > League > Match (match) ; Home > Leagues > League ; Home > Teams > Team ; Home > Channels > Channel ; Home > Page (others). Args: Page, ctx */}}
+{{/* Home > League > Match (match) ; Home > Leagues > League ; Home > Teams > Team ; Home > Channels > Channel ; Home > Blog > Post (blog post) ; Home > Page (others). Args: Page, ctx */}}
 {{ $items := slice (dict "name" (i18n "menu_home" | default "Home") "url" site.Home.Permalink) }}
 {{ if eq .ctx.kind "match" }}
   {{ with .ctx.entity.match.league }}{{ if .url }}{{ $items = $items | append (dict "name" .name "url" (.url | absURL)) }}{{ end }}{{ end }}
@@ -8,10 +8,14 @@
   {{ $items = $items | append (dict "name" (i18n "teams" | default "Teams") "url" (("teams/" | relLangURL) | absURL)) }}
 {{ else if eq .ctx.kind "channel" }}
   {{ $items = $items | append (dict "name" (i18n "menu_channels" | default (i18n "channels") | default "Channels") "url" (("channels/" | relLangURL) | absURL)) }}
+{{ else if and (eq .page.Section "blog") .page.IsPage }}
+  {{ $items = $items | append (dict "name" (i18n "blog" | default "Blog") "url" (("blog/" | relLangURL) | absURL)) }}
 {{ end }}
 {{ if not .page.IsHome }}
   {{- $lastName := .page.Title -}}
-  {{- if and (not .ctx.kind) .page.Section -}}
+  {{- if and (eq .page.Section "blog") .page.IsPage -}}
+    {{- $lastName = .page.Title -}}
+  {{- else if and (not .ctx.kind) .page.Section -}}
     {{- $lastName = i18n .page.Section | default .page.Title -}}
   {{- else if eq .ctx.kind "leagues" -}}
     {{- $lastName = i18n "leagues" | default .page.Title -}}

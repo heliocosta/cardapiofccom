@@ -49,7 +49,7 @@
 {{ else if eq $kind "channels" }}
   {{- $title = i18n "seo_channels_title" (dict "In" $in) | default $title -}}
   {{- $desc = i18n "seo_channels_desc" (dict "In" $in) | default $desc -}}
-{{ else if not $p.IsHome }}
+{{ else if and (not $p.IsHome) $p.IsSection }}
   {{ $hubKey := $p.Params.app_feature | default ($p.Params.page_type | default $p.Section) }}
   {{ if $hubKey }}
     {{ with (i18n (printf "seo_%s_title" $hubKey)) }}{{ $title = . }}{{ end }}

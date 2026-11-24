@@ -1,17 +1,31 @@
-{{/* seo/og-image.html - returns dict url,width,height,alt. Cascade: per-entity card -> edition card -> global card. Args: Page, ctx */}}
+{{/* seo/og-image.html - returns dict url,width,height,alt. Cascade: blog post cover -> per-entity card -> edition card -> global card. Args: Page, ctx */}}
 {{ $p := .page }}{{ $ctx := .ctx }}
 {{ $ed := $ctx.ed }}
 {{ $url := "" }}
-{{ $slug := "" }}
-{{ with $p.Params.cfc }}{{ $slug = .slug | default "" }}{{ end }}
-{{ $dir := dict "match" "matches" "team" "teams" "league" "leagues" }}
-{{ with index $dir $ctx.kind }}
-  {{ $local := printf "og/%s/%s.png" . $slug }}
-  {{ if and $slug (fileExists (printf "static/%s" $local)) }}{{ $url = $local | absURL }}{{ end }}
+{{ $width := 1200 }}
+{{ $height := 630 }}
+{{ $alt := i18n "seo_og_alt" (dict "Title" $ctx.title) }}
+{{ if and $p.IsPage (eq $p.Section "blog") $p.Params.image }}
+  {{ $cover := partial "blog/cover.html" $p }}
+  {{ if and $cover.hasImage $cover.og.valid }}
+    {{ $url = $cover.og.url }}
+    {{ $width = $cover.og.width }}
+    {{ $height = $cover.og.height }}
+    {{ $alt = $p.Params.image_alt | default $ctx.title }}
+  {{ end }}
+{{ end }}
+{{ if not $url }}
+  {{ $slug := "" }}
+  {{ with $p.Params.cfc }}{{ $slug = .slug | default "" }}{{ end }}
+  {{ $dir := dict "match" "matches" "team" "teams" "league" "leagues" }}
+  {{ with index $dir $ctx.kind }}
+    {{ $local := printf "og/%s/%s.png" . $slug }}
+    {{ if and $slug (fileExists (printf "static/%s" $local)) }}{{ $url = $local | absURL }}{{ end }}
+  {{ end }}
 {{ end }}
 {{ if not $url }}
   {{ $card := printf "og/editions/og-%s.png" (cond $ed.isGlobal "global" $ed.code) }}
   {{ if not (fileExists (printf "static/%s" $card)) }}{{ $card = "og/editions/og-global.png" }}{{ end }}
   {{ $url = $card | absURL }}
 {{ end }}
-{{ return (dict "url" $url "width" 1200 "height" 630 "alt" (i18n "seo_og_alt" (dict "Title" $ctx.title))) }}
+{{ return (dict "url" $url "width" $width "height" $height "alt" $alt) }}

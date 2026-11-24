@@ -57,7 +57,7 @@
   - _Requirements: 2.3, 2.4, 2.5, 2.6, 3.2_
 
 - [ ] 3. Integration — SEO metadata, structured data, analytics, edge routing, and IndexNow
-- [ ] 3.1 Guard hub SEO overrides, fix three-level blog breadcrumbs, and wire blog OG and article tags
+- [x] 3.1 Guard hub SEO overrides, fix three-level blog breadcrumbs, and wire blog OG and article tags
   - Restrict section-level SEO hub metadata overrides to section hubs so individual blog posts retain their own titles and descriptions
   - Update the breadcrumb structured data builder to emit three levels (Home, Blog, Article Title) on blog posts and two levels on blog hubs
   - Wire the media pipeline's 1200x630 <= 300,000-byte JPEG social preview into the OG image resolver with safe edition-card fallback, and emit article Open Graph type with published, modified, and section tags on blog posts
