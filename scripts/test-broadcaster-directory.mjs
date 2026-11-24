@@ -279,8 +279,9 @@ function runHugoBuild({ sampleRelDir, destination, envVars = {} }) {
     ...process.env,
     HUGO_CFC_DATA_SOURCE: "sample",
     HUGO_CFC_DATA_SAMPLE: sampleRelDir,
-    ...envVars,
   };
+  delete env.HUGO_CFC_FILE_BUDGET;
+  Object.assign(env, envVars);
   const args = [
     "--minify",
     "--cleanDestinationDir",
@@ -735,7 +736,9 @@ export function runCurrentBuildChecks({ pubDir = DEFAULT_PUB_DIR, rootDir = ROOT
       );
     }
   }
-  expect(logoImgCount > 0, `Expected > 0 .cfc-broadcaster-logo <img> elements across hubs, detail pages, and /faq/`);
+  if (process.env.HUGO_CFC_DATA_SOURCE === "sample") {
+    expect(logoImgCount > 0, `Expected > 0 .cfc-broadcaster-logo <img> elements across hubs, detail pages, and /faq/`);
+  }
 
   // 8. 0 occurrences of cfc-channel-badge or cfc-match-card__channels outside public/**/match/**
   let nonMatchChecked = 0;
@@ -824,13 +827,19 @@ export function runSyntheticFixtureTests() {
   const expect = (cond, msg) => (cond ? pass() : fail(msg));
 
   const tempDest = path.join(os.tmpdir(), `cfc-broadcaster-fixture-${process.pid}-${Date.now()}`);
+  const hugoStatsPath = path.join(ROOT_DIR, "hugo_stats.json");
+  const origHugoStats = fs.existsSync(hugoStatsPath) ? fs.readFileSync(hugoStatsPath) : null;
   const cleanup = () => {
     fs.rmSync(FIXTURE_DIR, { recursive: true, force: true });
     fs.rmSync(tempDest, { recursive: true, force: true });
   };
+  const restoreHugoStats = () => {
+    if (origHugoStats !== null) fs.writeFileSync(hugoStatsPath, origHugoStats);
+  };
 
   const onSignal = () => {
     cleanup();
+    restoreHugoStats();
     process.exit(1);
   };
   process.on("SIGINT", onSignal);
@@ -1053,6 +1062,38 @@ export function runSyntheticFixtureTests() {
           }
         }
       }
+
+      // 6d. Broadcaster logo coverage & explicit numeric dimensions on synthetic sample build
+      let fixtureLogoImgCount = 0;
+      const fixtureLogoFiles = [];
+      for (const ed of SUITE_EDITIONS) {
+        const hubF = path.join(tempDest, ed.prefix, "channels", "index.html");
+        if (fs.existsSync(hubF)) fixtureLogoFiles.push(hubF);
+        const faqF = path.join(tempDest, ed.prefix, "faq", "index.html");
+        if (fs.existsSync(faqF)) fixtureLogoFiles.push(faqF);
+        if (!ed.isGlobal) {
+          for (const s of discoverChildSlugs(path.join(tempDest, ed.prefix, "channels"))) {
+            fixtureLogoFiles.push(path.join(tempDest, ed.prefix, "channels", s, "index.html"));
+          }
+        }
+      }
+      for (const lf of fixtureLogoFiles) {
+        const lHtml = fs.readFileSync(lf, "utf8");
+        for (const img of extractTags(lHtml, "img")) {
+          if (!hasClass(img.attrs.class, "cfc-broadcaster-logo")) continue;
+          fixtureLogoImgCount++;
+          const w = img.attrs.width || "";
+          const h = img.attrs.height || "";
+          expect(
+            /^[1-9]\d*$/.test(w) && /^[1-9]\d*$/.test(h),
+            `fixture ${path.relative(tempDest, lf)}: broadcaster logo lacks numeric width/height (width="${w}", height="${h}")`
+          );
+        }
+      }
+      expect(
+        fixtureLogoImgCount > 0,
+        "Expected > 0 .cfc-broadcaster-logo <img> elements across synthetic sample hubs, detail pages, and /faq/"
+      );
     }
 
     // 7. Combined Budget Overflow Failure Check (HUGO_CFC_FILE_BUDGET = base + 1)
@@ -1090,6 +1131,7 @@ export function runSyntheticFixtureTests() {
     process.removeListener("SIGINT", onSignal);
     process.removeListener("SIGTERM", onSignal);
     cleanup();
+    restoreHugoStats();
   }
 }
 
