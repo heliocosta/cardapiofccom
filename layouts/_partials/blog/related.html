@@ -1,0 +1,45 @@
+{{- /* layouts/_partials/blog/related.html */ -}}
+{{- /* Deterministic up-to-3 related blog posts within current edition (same pillar prioritized, newest-first). */ -}}
+{{- /* Accepts a Page or dict "page" $p "limit" $n (default 3). */ -}}
+{{- $p := . -}}
+{{- $limit := 3 -}}
+{{- if reflect.IsMap . -}}
+  {{- if and (isset . "page") (ne (index . "page") nil) -}}
+    {{- $p = index . "page" -}}
+  {{- end -}}
+  {{- if and (isset . "limit") (ne (index . "limit") nil) -}}
+    {{- $limit = int (index . "limit") -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if or (not $p) (le $limit 0) -}}
+  {{- return slice -}}
+{{- end -}}
+
+{{- $pillar := "" -}}
+{{- with $p.Params -}}
+  {{- $pillar = strings.TrimSpace (printf "%v" (index . "pillar" | default "")) -}}
+{{- end -}}
+
+{{- $blogPages := where site.RegularPages "Section" "eq" "blog" -}}
+{{- $sorted := $blogPages.ByDate.Reverse -}}
+
+{{- $samePillar := slice -}}
+{{- $otherPillar := slice -}}
+
+{{- range $sorted -}}
+  {{- if ne .Permalink $p.Permalink -}}
+    {{- $candPillar := "" -}}
+    {{- with .Params -}}
+      {{- $candPillar = strings.TrimSpace (printf "%v" (index . "pillar" | default "")) -}}
+    {{- end -}}
+    {{- if and (ne $pillar "") (eq $candPillar $pillar) -}}
+      {{- $samePillar = $samePillar | append . -}}
+    {{- else -}}
+      {{- $otherPillar = $otherPillar | append . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $combined := $samePillar | append $otherPillar -}}
+{{- return ($combined | first $limit) -}}

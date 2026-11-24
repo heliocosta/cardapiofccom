@@ -48,7 +48,7 @@
   - _Depends: 1.1, 1.2, 1.3, 1.4, 1.5_
   - _Requirements: 2.1, 2.2, 2.5, 2.6, 3.2_
 
-- [ ] 2.2 Implement deterministic related-posts selector and editorial article layout
+- [x] 2.2 Implement deterministic related-posts selector and editorial article layout
   - Implement a deterministic related-posts selector returning up to three sibling articles in the current edition, prioritizing matching editorial pillars and newest publication dates without relying on disabled Hugo taxonomies
   - Override the theme's blog single template at root to display a three-level breadcrumb trail, editorial pillar badge, title, locale-formatted publication and optional last-updated dates, estimated reading time, eager hero cover image with explicit numeric dimensions and alternative text, typography-styled long-form body, optional visible FAQ accordion matching structured data verbatim, related posts when available, mobile app download CTA, and back-to-blog link
   - Observable completion: Published seed articles render across all nine editions with three-level breadcrumbs, reading time, hero WebP images with explicit dimensions, visible FAQs matching declared items, and app-install CTAs
