@@ -111,7 +111,7 @@
   - _Depends: 1.4, 1.5, 2.1, 2.2, 2.3, 3.3_
   - _Requirements: 4.4, 6.5, 6.6_
 
-- [ ] 4. Validation — SEO Checks, Automated Test Suite, and Dual-Dataset Regression Gate
+- [x] 4. Validation — SEO Checks, Automated Test Suite, and Dual-Dataset Regression Gate
 - [x] 4.1 Extend `scripts/check-seo-social.mjs` to verify broadcaster hubs, detail pages, and sitemap isolation
   - Bucket `/channels/` hubs (`${key}|channels-hub`) separately from regional detail pages (`${key}|channel-detail`) so all 9 hubs and up to `SAMPLE` detail pages per populated edition are checked
   - Assert on `/channels/` hubs: `CollectionPage` (+ `ItemList` mainEntity) + `BreadcrumbList`, self-referencing canonical, reciprocal 9-edition `hreflang` + Global `x-default`, edition OG image <= 300 KB
@@ -128,7 +128,7 @@
   - _Boundary: BroadcasterTestSuite_
   - _Depends: 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 6.2, 6.4, 6.8, 7.1, 7.2, 8.1, 8.2, 8.3_
-- [ ] 4.3 Run full dual-dataset build and regression verification gate
+- [x] 4.3 Run full dual-dataset build and regression verification gate
   - Execute sample dataset build (`HUGO_CFC_DATA_SOURCE=sample pnpm build`) and run `node scripts/test-broadcaster-directory.mjs`, `pnpm check:seo`, `pnpm check`, `pnpm check:components`, and `pnpm test:indexnow`
   - Execute production/webhook dataset build (`pnpm build`) and run `node scripts/test-broadcaster-directory.mjs`, `pnpm check:seo`, `pnpm check`, and `pnpm test:indexnow`, confirming `broadcaster-directory: estimated total files` logs cleanly under 18,000, real placeholders (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed`) are excluded, live CTA suffixes & trailing spaces are normalized, zero duplicate broadcaster cards appear per country, and total `public/` files remain well under 20,000
   - Verify `layouts/_partials/cfcdata/budget.html`, `data/cfc/settings.yaml`, `themes/hugoplate/*`, `_vendor/*`, and `i18n/pt-br.yaml` symlink remain untouched/intact
