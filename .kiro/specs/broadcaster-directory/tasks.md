@@ -112,7 +112,7 @@
   - _Requirements: 4.4, 6.5, 6.6_
 
 - [ ] 4. Validation — SEO Checks, Automated Test Suite, and Dual-Dataset Regression Gate
-- [ ] 4.1 Extend `scripts/check-seo-social.mjs` to verify broadcaster hubs, detail pages, and sitemap isolation
+- [x] 4.1 Extend `scripts/check-seo-social.mjs` to verify broadcaster hubs, detail pages, and sitemap isolation
   - Bucket `/channels/` hubs (`${key}|channels-hub`) separately from regional detail pages (`${key}|channel-detail`) so all 9 hubs and up to `SAMPLE` detail pages per populated edition are checked
   - Assert on `/channels/` hubs: `CollectionPage` (+ `ItemList` mainEntity) + `BreadcrumbList`, self-referencing canonical, reciprocal 9-edition `hreflang` + Global `x-default`, edition OG image <= 300 KB
   - Assert on `/{ed}/channels/{slug}/` detail pages: `BroadcastService` (with `sameAs` if present pointing to an external non-`cardapiofc.com` official URL) + `BreadcrumbList` (+ `FAQPage` when visible `.cfc-faq__item` exists, matching visible `.cfc-faq__q` / `.cfc-faq__a` text verbatim 1:1), self-referencing canonical, 0 `hreflang` alternate links, 0 `og:locale:alternate` tags, edition OG image <= 300 KB
