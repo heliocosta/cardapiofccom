@@ -1,0 +1,143 @@
+# Implementation Plan: broadcaster-directory
+
+## Tasks
+
+- [ ] 1. Foundation — Overlay, Localization, Styles, Catalog Resolver, Adapter, and Shared Directory
+- [ ] 1.1 (P) Author curated broadcaster overlay (`data/cfc/broadcasters.yaml`)
+  - Define `denylist.slugs` (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed`, `tba`, `unknown`) and `denylist.namePatterns` (`(?i)^(canal a confirmar|não confirmado|nao confirmado|to be confirmed|tba|tbd)$`)
+  - Define `normalization.stripSuffixes` regexes stripping `(Watch it live)`, `(Ver ao vivo)`, `(Ver en vivo)`, `(Ver en directo)`, `(Míralo en vivo)`, `(Miralo en vivo)`, and `(Live)` alongside leading and trailing whitespace trimming
+  - Author `persistent: true` flagship entries aligned to actual live `ChannelId`s with localized `descriptions`, `faqs`, and display-name overrides (`GE TV`, `CazéTV`, `Amazon Prime Video`, `DAZN`) across populated countries: BR (`ge-tv`, `tv-globo`, `sportv`, `premiere`, `cazetv`, `espn`, `disney-premium`, `hbo-max`, `amazon-prime-video`), GB (`sky-sports`, `tnt-sports`, `bbc-sport`, `itv`, `amazon-prime-video-watch-it-live`, `dazn-watch-it-live`), IE (`sky-sports`, `tnt-sports`, `rte2`, `virgin-media-two`, `premier-sports-1-roi`), PT (`sport-tv-1`, `dazn-ver-ao-vivo`, `canal-11`, `rtp1`), AR (`espn`, `espn-premium`, `tnt-sports-premium`, `tyc-sports`, `dsports-610-1610`, `disney-premium`), plus `persistent: false` (enrich-if-present) entries for sample-only slugs (`disney-plus-br`, `sky-sports-main-event`, `tnt-sports-1`, `bbc-one`, `rte-two` with sample-distinct `name: "RTÉ Two"`, `premier-sports-1`, `dazn-1-pt`, `rtp-1`, `espn-argentina`, `disney-plus-ar`), 100% official licensed services only
+  - Guarantee zero duplicate normalized display names per country across BOTH live and sample datasets (specifically keeping sample `IE.rte-two` distinct from live `IE.rte2`, `PT.rtp-1` distinct from `PT.rtp1`, `IE.premier-sports-1` distinct from `IE.premier-sports-1-roi`, and `PT.dazn-1-pt` distinct from `PT.dazn-ver-ao-vivo`)
+  - Observable completed state: Valid YAML in `data/cfc/broadcasters.yaml` parses cleanly in Hugo and defines denylist rules, normalization regexes, and all curated entries with zero duplicate normalized display names per country in either sample or live datasets
+  - _Boundary: BroadcasterOverlay_
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.7_
+- [ ] 1.2 (P) Add localized broadcaster, FAQ, navigation, and SEO strings across all `i18n/*.yaml` tables
+  - Add all required broadcaster menu (`menu_channels`, `channels`), hub (`channels_badge`, `channels_title`, `channels_intro`, `channels_empty`, `channels_view_country`, `channels_upcoming_count` using `{{ .Count }}`), detail (`channel_overview_heading`, `channel_upcoming_heading`, `channel_no_upcoming`, `channel_official_site`, `channel_faq_heading`, `channel_app_title` using `{{ .Channel }}`, `channel_app_subtitle`), FAQ (`faq_broadcasters_heading`, `faq_broadcasters_intro`, `faq_broadcasters_all_link`, `faq_q12`, `faq_a12`), and SEO (`seo_channels_title` using `{{ .In }}`, `seo_channels_desc` using `{{ .In }}`, `seo_channel_title` using `{{ .Channel }}`/`{{ .In }}`, `seo_channel_desc` using `{{ .Channel }}`/`{{ .Type }}`/`{{ .In }}`/`{{ .Count }}`) keys across all 7 base tables (`i18n/en.yaml`, `i18n/pt.yaml`, `i18n/pt-pt.yaml`, `i18n/es.yaml`, `i18n/es-ar.yaml`, `i18n/zh-cn.yaml`, `i18n/ja.yaml`), keeping `i18n/pt-br.yaml -> pt.yaml` intact as a symlink
+  - Add country-tailored `faq_a12`, `seo_channels_title`, `seo_channels_desc`, `channels_title`, and `channels_intro` overrides in `i18n/en-gb.yaml`, `i18n/en-ie.yaml`, and `i18n/en-us.yaml` (using "Soccer" terminology in `en-us.yaml`), and ensure `i18n/pt.yaml` (`pt-br`), `pt-pt.yaml`, `es-ar.yaml`, `zh-cn.yaml`, and `ja.yaml` include country-specific `faq_a12` (explicitly naming TV Globo, GE TV, SporTV, Premiere, CazéTV in Brazil)
+  - Observable completed state: `test -L i18n/pt-br.yaml` passes, all placeholder variables (`{{ .Count }}`, `{{ .Channel }}`, `{{ .In }}`, `{{ .Type }}`) match downstream contracts, and after building `public/`, `pnpm check` passes Check C with zero missing i18n keys across all 7 base tables
+  - _Boundary: I18nStrings_
+  - _Requirements: 2.4, 4.3, 6.1, 7.1_
+- [ ] 1.3 (P) Create broadcaster directory and detail component styles (`assets/css/cfc/components/broadcaster.css`)
+  - Style `.cfc-broadcaster-group`, `.cfc-broadcaster-grid`, `.cfc-broadcaster-card`, `.cfc-broadcaster-logo`, `.cfc-broadcaster-chips`, `.cfc-broadcaster-chip`, `.cfc-broadcaster-editorial`, `.cfc-broadcaster-actions`, `.cfc-channel-card__link`, and scoped `.cfc-faq--numbered` CSS-counter numbering (so shared `.cfc-faq` on match/team/league pages is unaffected) using existing CFC design tokens (zero-radius, light/dark mode support, zero `cfc-channel-badge` reuse)
+  - Import `./cfc/components/broadcaster.css` in `assets/css/custom.css`
+  - Observable completed state: `HUGO_CFC_DATA_SOURCE=sample pnpm build && pnpm check` succeeds with home HTML + CSS/JS gzip remaining under 100 KB and `.cfc-faq--numbered` scoped away from match/team/league FAQs
+  - _Boundary: BroadcasterStyles_
+  - _Requirements: 2.2, 2.3, 3.3, 4.1, 5.4_
+- [ ] 1.4 Implement broadcaster URL/entity seams and adapter-safe catalog resolver
+  - Extend `layouts/_partials/cfcdata/url.html` to support `"channels"` (`{prefix}channels/`) and `"channel"` (`{prefix}channels/{slug}/`, requiring non-empty `slug`)
+  - Create `layouts/_partials/cfcdata/broadcasters.html` (adapter-safe, never calling `edition/current.html`, `edition/all.html`, or `site.Home`; callers cache with 3-part key `broadcasters|{country}|{editionCode}|{lang}`): probes `dataset.channels` (`$cc`, `upper $cc`, `channels/$cc.json`, `channels/<UPPER>.json`) silently with zero `warnf` when absent; filters `denylist.slugs` & `denylist.namePatterns`; strips `normalization.stripSuffixes` and trims leading/trailing whitespace; merges overlay entries (`persistent: true` inserted even with 0 matches; `persistent: false`/omitted enriches live matches only); resolves localized `description`/`faqs` (`lang` -> base lang -> `en` -> empty); inverts `dataset.order` (`scheduled|live|halftime|postponed|suspended`) into chronological `upcomingMatchSlugs`; sorts `list` ascending by normalized `name`; builds non-empty `groups` in fixed order (`free_tv`, `tv`, `streaming`)
+  - Extend `layouts/_partials/cfcdata/page-entity.html` to pass `site.Language.Lang` to `partialCached "edition/current.html" . site.Language.Lang` and resolve `"channel"` (`channel` record + `country`) and `"channels"` (`catalog` / Global summary) using the 3-part `broadcasters|...` cache key
+  - Observable completed state: `cfcdata/url.html`, `cfcdata/broadcasters.html`, and `cfcdata/page-entity.html` satisfy all design contracts and compile cleanly in `HUGO_CFC_DATA_SOURCE=sample pnpm build` with zero template errors (live execution verified when invoked by Task 1.5)
+  - _Boundary: BroadcasterCatalogResolver, UrlAndEntitySeams_
+  - _Depends: 1.1_
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 3.1, 5.1, 5.2, 5.3, 6.1, 6.5, 6.6_
+- [ ] 1.5 Implement broadcaster file-budget guard, channels section scaffold, and content adapter
+  - Create `layouts/_partials/cfcdata/broadcaster-budget.html` (invoked once via `partialCached` key `"broadcaster-budget"`): calls `cfcdata/budget.html` (leaving `budget.html` and `settings.yaml` untouched), sums `hubPages = len hugo.Sites` + regional `totalBroadcasters` across non-global `hugo.Sites` (checking both `isGlobal` and `isglobal` and using 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`), emits `warnf "broadcaster-directory: estimated total files %d/%d (broadcasters %d: %d hubs + %d detail, base %d)"`, and halts with `errorf` if `combined > budget`
+  - Create `content/en/channels/_index.md` with `sites.matrix.languages: ["**"]` and `params.cfc.kind: "channels"`
+  - Create `content/en/channels/_content.gotmpl` with `{{ .EnableAllLanguages }}`, returning immediately on Global (`isGlobal`/`isglobal` or empty `country`) for 0 Global child pages, calling `broadcaster-budget.html`, fetching `$catalog` with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`, and calling `$.AddPage` per regional broadcaster with `"translationKey": printf "channel-%s-%s" (lower $country) $b.slug`, `"dates"` from `dataset.generatedAt`, and `params.cfc = { kind: "channel", slug, country }`
+  - Observable completed state: `HUGO_CFC_DATA_SOURCE=sample pnpm build` emits all 9 `/channels/` hubs, 0 files under `public/channels/*/`, regional `public/{ed}/channels/{slug}/index.html` pages, zero missing-channel warnings for US/CN/JP from `broadcasters.html`, logs `broadcaster-directory: estimated total files <combined>/<budget> (... base <base>)`, and setting `HUGO_CFC_FILE_BUDGET=<base + 1>` (strictly between `base` and `combined`, e.g. `426`) passes `budget.html` and halts specifically in `broadcaster-budget.html` with `errorf` containing `broadcaster-directory:`
+  - _Boundary: BroadcasterBudgetGuard, ChannelsSectionContent, ChannelsContentAdapter_
+  - _Depends: 1.4_
+  - _Requirements: 2.1, 3.1, 3.2, 6.3, 6.4, 8.1, 8.2_
+- [ ] 1.6 Create reusable broadcaster directory partial (`layouts/_partials/cfcpage/broadcasters-directory.html`)
+  - Accept `dict "page" . "compact" (bool) "headingLevel" (int, default 2)`
+  - On regional editions: load `partialCached "cfcdata/broadcasters.html"` with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`; render category groups (`free_tv`, `tv`, `streaming`) using `.cfc-broadcaster-*` markup (full cards when `compact: false`, compact pills when `compact: true`) with normalized name, type label, optional logo via `cfc/img-src.html` with explicit numeric `width="32" height="32"` and `onerror="this.hidden=true"`, upcoming match count badge (`i18n "channels_upcoming_count" (dict "Count" .matchCount)`) when `matchCount > 0`, and link to `/{ed}/channels/{slug}/`; render `cfc/empty-state.html` + app link when `totalBroadcasters == 0`
+  - On Global edition: iterate `edition/all.html` where `not .isGlobal`; load each country's catalog with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}` (`lang: site.Language.Lang`); for each country with `totalBroadcasters > 0`, render country heading, link to `/{ed.code}/channels/`, and links to each regional detail page `/{ed.code}/channels/{slug}/`
+  - Observable completed state: Partial compiles cleanly in `HUGO_CFC_DATA_SOURCE=sample pnpm build` with explicit numeric `width="32" height="32"` on all logos, 3-part cache keys, and zero `cfc-channel-badge` classes (live rendered output verified in Tasks 2.1 and 2.3)
+  - _Boundary: BroadcastersDirectoryPartial_
+  - _Depends: 1.2, 1.3, 1.4_
+  - _Requirements: 2.2, 2.3, 2.4, 2.5, 4.1, 4.2, 7.1_
+
+- [ ] 2. Core — Broadcaster Hub, Broadcaster Detail Page, and Enriched FAQ
+- [ ] 2.1 (P) Implement broadcaster directory hub page layout (`layouts/channels/list.html`)
+  - Render breadcrumb (`Home > Channels`), `cfc/page-hero.html` with localized title/intro, `cfcpage/broadcasters-directory.html` (`compact: false`), and app download CTA
+  - Handle Global country-grouped view, regional category-grouped view, and empty-country state (`en-us`, `zh-cn`, `ja`) cleanly
+  - Observable completed state: Sample build renders non-empty `public/channels/index.html` (country-grouped) and all 8 `public/{ed}/channels/index.html` hubs (category-grouped for populated editions, localized empty state for US/CN/JP) with breadcrumbs and explicit logo dimensions
+  - _Boundary: ChannelsHubLayout_
+  - _Depends: 1.2, 1.3, 1.5, 1.6_
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 7.1_
+- [ ] 2.2 (P) Implement country-scoped broadcaster detail page layout (`layouts/channels/page.html`)
+  - Render breadcrumb (`Home > Channels > {Broadcaster}`), broadcaster header with normalized name, broadcast type pill, optional logo (`cfc/img-src.html`, explicit `width="48" height="48"`, `onerror="this.hidden=true"`), curated editorial overview when present, upcoming schedule via `cfcpage/match-days.html` (edition-local days & ascending kick-offs, zero match-list channel badges) or localized empty-schedule message when `matchCount == 0`, official website external button (`target="_blank" rel="noopener noreferrer"`) when `officialUrl` is set, CardápioFC mobile app CTA (`i18n "channel_app_title" (dict "Channel" $b.name)`), curated broadcaster-specific FAQ section when `$b.faqs` is non-empty using shared `.cfc-faq` / `.cfc-faq__item` / `<h3 class="cfc-faq__q">{{ .q }}</h3>` / `<p class="cfc-faq__a">{{ .a }}</p>` markup (matching `FAQPage` JSON-LD verbatim), and `cfcpage/freshness.html` timestamp in edition-local timezone
+  - Observable completed state: Sample build renders `public/pt-br/channels/ge-tv/index.html` and live regional channel pages with editorial overview, `.cfc-faq__item` FAQs, match days or empty-schedule state, `rel="noopener noreferrer"` official link, edition-local freshness timestamp, and zero `cfc-channel-badge` elements
+  - _Boundary: ChannelDetailLayout_
+  - _Depends: 1.2, 1.3, 1.4, 1.5_
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 5.4, 7.1, 7.2_
+- [ ] 2.3 (P) Extract shared FAQ items partial and enrich `/faq/` with "Included Broadcasters & Services"
+  - Create `layouts/_partials/cfcpage/faq-page-items.html` returning Q1–Q12 (`slice[dict "q" string "a" string]`) from `i18n` (`faq_q1..12` / `faq_a1..12`, skipping any empty entry)
+  - Refactor `layouts/faq/list.html` to render the accordion strictly from `cfcpage/faq-page-items.html` inside `<section class="cfc-faq cfc-faq--numbered cfc-section--tight">` with `<h2 class="cfc-faq__q">{{ .q }}</h2>` (no inline `"1. "` prefix so `.cfc-faq__q` text matches `FAQPage` JSON-LD verbatim 1:1) and add a visible "Included Broadcasters & Services" section powered by `cfcpage/broadcasters-directory.html` (`compact: true`) plus link to `/channels/`
+  - Observable completed state: Sample build renders `/faq/` across all 9 editions with 12 Q&As (including Q12 mentioning TV Globo, GE TV, SporTV, Premiere, CazéTV in `pt-br`), `.cfc-faq--numbered` scoped to `/faq/`, and the visible broadcasters directory section
+  - _Boundary: FaqPageItems, FaqListLayout_
+  - _Depends: 1.2, 1.3, 1.5, 1.6_
+  - _Requirements: 4.1, 4.2, 4.3, 4.4, 7.1_
+
+- [ ] 3. Integration — Navigation, Match Linking, SEO/Hreflang/Sitemap, Edge/IndexNow, and JSON-LD
+- [ ] 3.1 (P) Wire `/channels/` into site navigation menus and edition-switcher channel fallback
+  - Add `channels` entry (`url = "/channels/"`, localized via `menu_channels`) to both `[[main]]` and `[[footer]]` in `config/_default/menus.toml`
+  - Update `layouts/_partials/cfc/edition-switcher.html`: when current page has `Params.cfc.kind == "channel"`, set `$targetUrl` for non-current editions to `printf "%schannels/" $ed.prefix` (preserving current page URL for `$isCurrent`)
+  - Observable completed state: Sample build shows Channels link in header & footer across all 9 editions, and edition-switcher links on `public/pt-br/channels/ge-tv/index.html` point to `/channels/`, `/en-gb/channels/`, `/en-ie/channels/`, etc.
+  - _Boundary: SiteMenus, EditionSwitcher_
+  - _Depends: 1.2, 1.5_
+  - _Requirements: 2.6, 3.8, 7.1_
+- [ ] 3.2 (P) Link confirmed match-page channel names to regional broadcaster detail pages
+  - Update `layouts/_partials/cfcpage/channels.html` (both Global country-grouped loop and Regional loop): load `partialCached "cfcdata/broadcasters.html"` for the group's `country` and `edition` (`lang: site.Language.Lang`, 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`); if `.id` exists in `$catalog.bySlug`, render `<a href="{{ $rec.url }}" class="cfc-channel-card__name cfc-channel-card__link">{{ $rec.name }}</a>`; otherwise render plain `<span class="cfc-channel-card__name">{{ .name }}</span>`; keep the existing app-launcher CTA (`cfc-channel-card__action`) untouched
+  - Observable completed state: Sample match pages on both Global and regional editions link valid confirmed channels to `/{ed}/channels/{slug}/` with `.cfc-channel-card__link` while preserving the app-launcher CTA and leaving unknown/excluded channels unlinked
+  - _Boundary: MatchChannelsPanel_
+  - _Depends: 1.3, 1.4, 1.5_
+  - _Requirements: 5.1, 5.2, 5.3_
+- [ ] 3.3 (P) Integrate broadcaster SEO context, Open Graph, strict cross-country `hreflang`, and sitemap isolation
+  - Update `layouts/_partials/seo/context.html`: handle `kind == "channel"` using `seo_channel_title` (`Channel`, `In`) and `seo_channel_desc` (`Channel`, `Type`, `In`, `Count`, or curated description cleanly formatted); handle `kind == "channels"` passing `(dict "In" $in)` to `seo_channels_title` and `seo_channels_desc` so every edition emits unique `<title>` and `<meta name="description">`
+  - Update `layouts/_partials/seo/hreflang.html`: guard with `and (not .ctx.noindex) (not (eq .ctx.kind "channel")) (gt (len $p.AllTranslations) 1)`
+  - Update `layouts/_partials/seo/opengraph.html`: add `"channel"` to `og:type = "article"` slice and skip `og:locale:alternate` loop when `eq $ctx.kind "channel"`
+  - Update `layouts/sitemap.xml`: omit `<xhtml:link>` alternates when `.Params.cfc.kind == "channel"` while preserving all channel `<loc>` entries and hub alternates
+  - Observable completed state: Sample build emits unique localized title/desc across all 9 `/channels/` hubs (including distinct `en`, `en-gb`, `en-ie`, `en-us` metadata) and regional detail pages, edition OG image (`og-{ed}.png`), 0 `hreflang`/`og:locale:alternate` tags on regional channel detail pages, full 9-edition reciprocal `hreflang` + `x-default` on `/channels/` hubs, and clean `sitemap.xml`
+  - _Boundary: SeoContext, HreflangRenderer, OpenGraphRenderer, SitemapTemplate_
+  - _Depends: 1.2, 1.4, 1.5_
+  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.7_
+- [ ] 3.4 (P) Configure exact `/channels` Cloudflare geo-routing and IndexNow channel URL priorities
+  - Update `cloudflare/redirect-rules.json`: append `or http.request.uri.path eq "/channels" or http.request.uri.path eq "/channels/"` inside the path allowlist of all 8 country geo-routing rules (preserving bot exclusions; never matching `/channels/*`)
+  - Update `scripts/indexnow.mjs`: add `"channels"` to `HUB_SEGMENTS` (priority `0`) and return priority `2` for `/{ed}/channels/{slug}/` (`tailLen > 1`) in `urlPriority()`
+  - Update `scripts/test-indexnow.mjs`: add TDD unit assertions for `/channels/` (`0`), `/pt-br/channels/` (`0`), and `/pt-br/channels/ge-tv/` (`2`)
+  - Observable completed state: `cloudflare/redirect-rules.json` parses as valid JSON with exact `/channels` & `/channels/` matches across all 8 rules (zero `starts_with` `/channels`), and `pnpm test:indexnow` passes with the new assertions
+  - _Boundary: EdgeGeoRouting, IndexNowClassifier_
+  - _Depends: 1.5_
+  - _Requirements: 6.7, 6.8_
+- [ ] 3.5 Implement broadcaster JSON-LD builders, unified `/faq/` JSON-LD wiring, and channel breadcrumbs
+  - Create `layouts/_partials/seo/jsonld-channel.html` emitting Schema.org `BroadcastService` (`@id`, `name`, `broadcastDisplayName`, `url`, `areaServed` Country, `additionalType`, optional `sameAs` set strictly from `$b.officialUrl` when non-empty, optional `description`)
+  - Create `layouts/_partials/seo/jsonld-channels.html` emitting Schema.org `CollectionPage` + `ItemList` of listed regional broadcasters (or country hubs on Global)
+  - Update `layouts/_partials/seo/jsonld-breadcrumb.html` for `kind == "channel"` (`Home > Channels > {Broadcaster}`) and `kind == "channels"` (`Home > Channels`)
+  - Update `layouts/_partials/seo/jsonld.html` to append `jsonld-channel.html` (+ `seo/jsonld-faq.html` when `$b.faqs` non-empty) on `kind == "channel"`, `jsonld-channels.html` on `kind == "channels"`, and switch `Section == "faq"` from the inline `seq 1 11` loop to `partial "cfcpage/faq-page-items.html" .page`
+  - Observable completed state: Sample build emits valid `@graph` JSON-LD with `BroadcastService` (`sameAs` = `officialUrl`, not internal `url`) + `BreadcrumbList` (+ `FAQPage` on FAQ-bearing broadcasters) on detail pages, `CollectionPage` + `BreadcrumbList` on `/channels/` hubs, and 1:1 `FAQPage` parity on `/faq/`
+  - _Boundary: JsonLdOrchestrator, ChannelJsonLdBuilders, BreadcrumbBuilder_
+  - _Depends: 1.4, 1.5, 2.1, 2.2, 2.3, 3.3_
+  - _Requirements: 4.4, 6.5, 6.6_
+
+- [ ] 4. Validation — SEO Checks, Automated Test Suite, and Dual-Dataset Regression Gate
+- [ ] 4.1 Extend `scripts/check-seo-social.mjs` to verify broadcaster hubs, detail pages, and sitemap isolation
+  - Bucket `/channels/` hubs (`${key}|channels-hub`) separately from regional detail pages (`${key}|channel-detail`) so all 9 hubs and up to `SAMPLE` detail pages per populated edition are checked
+  - Assert on `/channels/` hubs: `CollectionPage` (+ `ItemList` mainEntity) + `BreadcrumbList`, self-referencing canonical, reciprocal 9-edition `hreflang` + Global `x-default`, edition OG image <= 300 KB
+  - Assert on `/{ed}/channels/{slug}/` detail pages: `BroadcastService` (with `sameAs` if present pointing to an external non-`cardapiofc.com` official URL) + `BreadcrumbList` (+ `FAQPage` when visible `.cfc-faq__item` exists, matching visible `.cfc-faq__q` / `.cfc-faq__a` text verbatim 1:1), self-referencing canonical, 0 `hreflang` alternate links, 0 `og:locale:alternate` tags, edition OG image <= 300 KB
+  - Assert in per-edition `sitemap.xml` files: `/channels/` hub `<loc>` exists across all 9 editions; Global `/` always has 0 channel detail `<loc>` entries; every regional edition's channel detail `<loc>` entries match generated `public/{ed}/channels/*/index.html` pages (with `pt-br`, `en-gb`, `en-ie`, `pt-pt`, `es-ar` non-empty); and every channel detail `<url>` entry contains 0 `<xhtml:link>` tags
+  - Observable completed state: `pnpm check:seo` exits 0 after a sample build and reports verified broadcaster hubs, detail pages (incl. visible-to-`FAQPage` parity), and sitemaps
+  - _Boundary: SeoVerificationScript_
+  - _Depends: 2.1, 2.2, 3.3, 3.5_
+  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 8.3_
+- [ ] 4.2 Create automated broadcaster directory verification suite (`scripts/test-broadcaster-directory.mjs`)
+  - Verify on current `public/` build (discovering match pages dynamically from `public/{ed}/match/*/index.html` with zero hardcoded sample match slugs so the suite passes on both sample and live production builds): `/channels/` hub in all 9 editions with distinct `<title>` & `<meta name="description">`; 0 child pages under Global `public/channels/`; regional `/{ed}/channels/{slug}/` pages with zero duplicate normalized display names per country; persistent flagship broadcasters (`ge-tv`, `tv-globo`, `sportv`, `sky-sports`) with editorial overview & valid empty-schedule or match-list state (and verbatim `.cfc-faq__item` <-> `FAQPage` JSON-LD parity when visible FAQs render); clean localized empty states for empty editions (verified for any edition lacking channels); `/faq/` "Included Broadcasters & Services" section + 1:1 verbatim visible-to-`FAQPage` JSON-LD parity across editions; dynamic match-page channel linking (regional & Global) with intact app-launcher CTA; edition switcher on channel detail pages pointing to `{prefix}channels/`; edition-local timezone labels on detail schedules & freshness; explicit numeric `width`/`height` on all broadcaster logo `<img>` tags; zero `cfc-channel-badge` / `cfc-match-card__channels` outside `public/**/match/**`; `cloudflare/redirect-rules.json` exact `/channels` & `/channels/` geo-routing with zero `starts_with` `/channels`; total `public/` file count < 20,000 and zero per-broadcaster PNGs in `static/og/`
+  - Run an isolated synthetic fixture test: copy `assets/cfc-data/sample/` to `assets/cfc-data/__broadcaster_fixture__/`, mutate `channels/BR.json` to add denylisted IDs (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed` with valid `type`) and un-overridden synthetic channel IDs with whitespace/CTA suffixes (`"fixture-watch-live"` -> `"  Fixture Watch Live (Watch it live)  "`, `"fixture-ver-ao-vivo"` -> `"Fixture Ao Vivo (Ver ao vivo)"`, `"fixture-miralo"` -> `"  Fixture Miralo (Míralo en vivo)  "`, valid `type: "streaming"`), attach `"nao-confirmado"` and `"fixture-watch-live"` to a discovered sample match in `BR.json`'s `matches` map, recompute `sha256` and `bytes` for `channels/BR.json` in the fixture's `index.json`, build with `HUGO_CFC_DATA_SOURCE=sample HUGO_CFC_DATA_SAMPLE=cfc-data/__broadcaster_fixture__/` into a temp `--destination`, and assert denylist exclusion (0 generated pages, absent from hub/FAQ, plain text on match page), leading/trailing whitespace & CTA suffix stripping on non-overridden channels (and linked `"Fixture Watch Live"` on the match page), and combined file-budget overflow failure (parsing `base` from the normal fixture build output and re-running with `HUGO_CFC_FILE_BUDGET=<base + 1>` so `budget.html` passes and `broadcaster-budget.html` exits non-zero with `broadcaster-directory:`); ALWAYS remove both `assets/cfc-data/__broadcaster_fixture__/` and the temp `--destination` in `finally`
+  - Observable completed state: `node scripts/test-broadcaster-directory.mjs` exits 0 with all current-build, synthetic fixture, and `broadcaster-budget.html` overflow assertions passing and zero leftover temp directories
+  - _Boundary: BroadcasterTestSuite_
+  - _Depends: 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5_
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 6.2, 6.4, 6.8, 7.1, 7.2, 8.1, 8.2, 8.3_
+- [ ] 4.3 Run full dual-dataset build and regression verification gate
+  - Execute sample dataset build (`HUGO_CFC_DATA_SOURCE=sample pnpm build`) and run `node scripts/test-broadcaster-directory.mjs`, `pnpm check:seo`, `pnpm check`, `pnpm check:components`, and `pnpm test:indexnow`
+  - Execute production/webhook dataset build (`pnpm build`) and run `node scripts/test-broadcaster-directory.mjs`, `pnpm check:seo`, `pnpm check`, and `pnpm test:indexnow`, confirming `broadcaster-directory: estimated total files` logs cleanly under 18,000, real placeholders (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed`) are excluded, live CTA suffixes & trailing spaces are normalized, zero duplicate broadcaster cards appear per country, and total `public/` files remain well under 20,000
+  - Verify `layouts/_partials/cfcdata/budget.html`, `data/cfc/settings.yaml`, `themes/hugoplate/*`, `_vendor/*`, and `i18n/pt-br.yaml` symlink remain untouched/intact
+  - Observable completed state: All verification commands exit 0 on both sample and production builds with zero regressions and clean workspace
+  - _Boundary: DualDatasetReleaseGate_
+  - _Depends: 3.4, 4.1, 4.2_
+  - _Requirements: 6.7, 7.1, 8.1, 8.2, 8.3_
+
+## Implementation Notes
+- Preserve the `i18n/pt-br.yaml -> pt.yaml` symlink when updating Portuguese strings; run `pnpm check` only after a build populates `public/`.
+- `partialCached "cfcdata/broadcasters.html"` must use the 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`; content-adapter code must never call `edition/current.html`, `edition/all.html`, or `site.Home`.
+- `.cfc-faq--numbered` must remain scoped strictly to `/faq/` so contextual FAQs on match/team/league/channel pages stay unnumbered and match `FAQPage` JSON-LD 1:1.
