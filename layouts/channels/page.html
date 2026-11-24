@@ -1,0 +1,143 @@
+{{/* layouts/channels/page.html */}}
+{{/* Country-scoped broadcaster detail page template. */}}
+{{ define "main" }}
+  {{- $slug := "" -}}
+  {{- with .Params.cfc -}}
+    {{- with .slug -}}
+      {{- $slug = . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $slug -}}
+    {{- with .File -}}
+      {{- $slug = .ContentBaseName -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $ed := partialCached "edition/current.html" . site.Language.Lang -}}
+  {{- $dataset := partialCached "cfcdata/dataset.html" . "dataset" -}}
+  {{- $cc := upper (strings.TrimSpace (printf "%v" ($ed.country | default ""))) -}}
+  {{- $edCode := $ed.code | default site.Language.Lang -}}
+  {{- $lang := site.Language.Lang -}}
+  {{- $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $cc "editionCode" $edCode "lang" $lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $cc $edCode $lang) -}}
+
+  {{- $b := index (dict) "nil" -}}
+  {{- if and (ne $slug "") (reflect.IsMap $catalog) (isset $catalog "bySlug") (reflect.IsMap $catalog.bySlug) -}}
+    {{- with index $catalog.bySlug $slug -}}
+      {{- $b = . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $bTitle := .Title -}}
+  {{- with $b -}}
+    {{- with .name -}}
+      {{- $bTitle = . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default (i18n "menu_home") | default "Home" -}}
+  {{- $channelsUrl := partial "cfcdata/url.html" (dict "kind" "channels" "edition" $ed) -}}
+  {{- $channelsLabel := i18n "channels" | default "Channels" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $channelsLabel "label" $channelsLabel "url" $channelsUrl) (dict "name" $bTitle "label" $bTitle) -}}
+
+  {{- $countryLabel := "" -}}
+  {{- if ne $cc "" -}}
+    {{- $countryLabel = i18n (printf "country_%s" (lower $cc)) | default $ed.label -}}
+  {{- end -}}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    {{- with $b -}}
+      {{- $type := .type | default "tv" -}}
+      {{- $typeLabel := i18n (printf "channel_type_%s" $type) | default $type -}}
+      {{- $typeIcon := cond (eq $type "streaming") "stream" "tv" -}}
+
+      <header class="cfc-entity-header">
+        {{- with .logo -}}
+          <span class="cfc-entity-header__logo"><img src="{{ partial "cfc/img-src.html" (dict "src" . "width" 48) }}" class="cfc-broadcaster-logo cfc-broadcaster-logo--lg" alt="" width="48" height="48" decoding="async" onerror="this.hidden=true" /></span>
+        {{- end -}}
+        <div>
+          <h1 class="cfc-entity-header__title">{{ .name }}</h1>
+          <p class="cfc-entity-header__meta flex flex-wrap items-center gap-2">
+            <span class="cfc-pill">{{ partial "cfc/icon.html" (dict "name" $typeIcon "class" "cfc-pill__icon") }}{{ $typeLabel }}</span>
+            {{- with $countryLabel -}}
+              <span>{{ . }}</span>
+            {{- end -}}
+          </p>
+        </div>
+      </header>
+
+      {{- with .description -}}
+        <section class="cfc-broadcaster-editorial" aria-labelledby="cfc-broadcaster-overview-title">
+          <h2 id="cfc-broadcaster-overview-title" class="cfc-broadcaster-editorial__title">{{ i18n "channel_overview_heading" | default "Broadcaster Overview" }}</h2>
+          <p>{{ . }}</p>
+        </section>
+      {{- end -}}
+
+      {{- with .officialUrl -}}
+        <div class="cfc-broadcaster-actions">
+          <a href="{{ . }}" target="_blank" rel="noopener noreferrer" class="cfc-btn cfc-btn--secondary cfc-btn--sm">
+            {{ partial "cfc/icon.html" (dict "name" "globe" "class" "cfc-btn__icon") }}
+            <span>{{ i18n "channel_official_site" | default "Visit Official Website" }}</span>
+          </a>
+        </div>
+      {{- end -}}
+
+      <section class="cfc-section--tight" aria-labelledby="cfc-broadcaster-upcoming-title">
+        {{ partial "cfc/section-head.html" (dict "align" "left" "title" (i18n "channel_upcoming_heading" | default "Upcoming Matches on This Channel") "id" "cfc-broadcaster-upcoming-title") }}
+        {{ partial "cfcpage/match-days.html" (dict "matches" (.upcomingMatchSlugs | default slice) "emptyMessage" (i18n "channel_no_upcoming") "headingLevel" 3 "showLeague" true) }}
+      </section>
+    {{- else -}}
+      <header class="cfc-entity-header">
+        <div>
+          <h1 class="cfc-entity-header__title">{{ $bTitle }}</h1>
+          {{- with $countryLabel -}}
+            <p class="cfc-entity-header__meta">{{ . }}</p>
+          {{- end -}}
+        </div>
+      </header>
+
+      <section class="cfc-section--tight" aria-labelledby="cfc-broadcaster-upcoming-title">
+        {{ partial "cfc/section-head.html" (dict "align" "left" "title" (i18n "channel_upcoming_heading" | default "Upcoming Matches on This Channel") "id" "cfc-broadcaster-upcoming-title") }}
+        {{ partial "cfcpage/match-days.html" (dict "matches" slice "emptyMessage" (i18n "channel_no_upcoming") "headingLevel" 3 "showLeague" true) }}
+      </section>
+    {{- end -}}
+
+    {{ partial "cfc/app-download.html" (dict
+      "page" .
+      "title" (i18n "channel_app_title" (dict "Channel" $bTitle))
+      "subtitle" (i18n "channel_app_subtitle")
+    ) }}
+
+    {{- with $b -}}
+      {{- with .faqs -}}
+        {{- if gt (len .) 0 -}}
+          <section class="cfc-section cfc-faq-section" aria-labelledby="cfc-broadcaster-faq-title">
+            {{ partial "cfc/section-head.html" (dict
+              "eyebrow" (i18n "faq_badge" | default "Frequently asked questions")
+              "title" (i18n "channel_faq_heading" | default "Frequently Asked Questions")
+              "id" "cfc-broadcaster-faq-title"
+            ) }}
+            <div class="cfc-faq">
+              {{- range . -}}
+                <div class="cfc-card cfc-card--compact cfc-card--static cfc-faq__item">
+                  <h3 class="cfc-faq__q">{{ .q }}</h3>
+                  <p class="cfc-faq__a">{{ .a }}</p>
+                </div>
+              {{- end -}}
+            </div>
+          </section>
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $genAt := "" -}}
+    {{- with $dataset -}}
+      {{- with .generatedAt -}}
+        {{- $genAt = . -}}
+      {{- end -}}
+    {{- end -}}
+    {{ partial "cfcpage/freshness.html" (dict "generatedAt" $genAt) }}
+  </div>
+{{ end }}

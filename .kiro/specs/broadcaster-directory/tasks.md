@@ -56,7 +56,7 @@
   - _Boundary: ChannelsHubLayout_
   - _Depends: 1.2, 1.3, 1.5, 1.6_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 7.1_
-- [ ] 2.2 (P) Implement country-scoped broadcaster detail page layout (`layouts/channels/page.html`)
+- [x] 2.2 (P) Implement country-scoped broadcaster detail page layout (`layouts/channels/page.html`)
   - Render breadcrumb (`Home > Channels > {Broadcaster}`), broadcaster header with normalized name, broadcast type pill, optional logo (`cfc/img-src.html`, explicit `width="48" height="48"`, `onerror="this.hidden=true"`), curated editorial overview when present, upcoming schedule via `cfcpage/match-days.html` (edition-local days & ascending kick-offs, zero match-list channel badges) or localized empty-schedule message when `matchCount == 0`, official website external button (`target="_blank" rel="noopener noreferrer"`) when `officialUrl` is set, CardápioFC mobile app CTA (`i18n "channel_app_title" (dict "Channel" $b.name)`), curated broadcaster-specific FAQ section when `$b.faqs` is non-empty using shared `.cfc-faq` / `.cfc-faq__item` / `<h3 class="cfc-faq__q">{{ .q }}</h3>` / `<p class="cfc-faq__a">{{ .a }}</p>` markup (matching `FAQPage` JSON-LD verbatim), and `cfcpage/freshness.html` timestamp in edition-local timezone
   - Observable completed state: Sample build renders `public/pt-br/channels/ge-tv/index.html` and live regional channel pages with editorial overview, `.cfc-faq__item` FAQs, match days or empty-schedule state, `rel="noopener noreferrer"` official link, edition-local freshness timestamp, and zero `cfc-channel-badge` elements
   - _Boundary: ChannelDetailLayout_
