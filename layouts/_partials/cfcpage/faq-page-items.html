@@ -1,0 +1,10 @@
+{{/* layouts/_partials/cfcpage/faq-page-items.html - returns Q1–Q12 slice for /faq/ shared by layouts/faq/list.html and seo/jsonld.html */}}
+{{- $items := slice -}}
+{{- range seq 1 12 -}}
+  {{- $q := i18n (printf "faq_q%d" .) | default "" -}}
+  {{- $a := i18n (printf "faq_a%d" .) | default "" -}}
+  {{- if and (ne $q "") (ne $a "") -}}
+    {{- $items = $items | append (dict "q" $q "a" $a) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $items -}}

@@ -48,7 +48,7 @@
   - _Depends: 1.2, 1.3, 1.4_
   - _Requirements: 2.2, 2.3, 2.4, 2.5, 4.1, 4.2, 7.1_
 
-- [ ] 2. Core — Broadcaster Hub, Broadcaster Detail Page, and Enriched FAQ
+- [x] 2. Core — Broadcaster Hub, Broadcaster Detail Page, and Enriched FAQ
 - [x] 2.1 (P) Implement broadcaster directory hub page layout (`layouts/channels/list.html`)
   - Render breadcrumb (`Home > Channels`), `cfc/page-hero.html` with localized title/intro, `cfcpage/broadcasters-directory.html` (`compact: false`), and app download CTA
   - Handle Global country-grouped view, regional category-grouped view, and empty-country state (`en-us`, `zh-cn`, `ja`) cleanly
@@ -62,7 +62,7 @@
   - _Boundary: ChannelDetailLayout_
   - _Depends: 1.2, 1.3, 1.4, 1.5_
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 5.4, 7.1, 7.2_
-- [ ] 2.3 (P) Extract shared FAQ items partial and enrich `/faq/` with "Included Broadcasters & Services"
+- [x] 2.3 (P) Extract shared FAQ items partial and enrich `/faq/` with "Included Broadcasters & Services"
   - Create `layouts/_partials/cfcpage/faq-page-items.html` returning Q1–Q12 (`slice[dict "q" string "a" string]`) from `i18n` (`faq_q1..12` / `faq_a1..12`, skipping any empty entry)
   - Refactor `layouts/faq/list.html` to render the accordion strictly from `cfcpage/faq-page-items.html` inside `<section class="cfc-faq cfc-faq--numbered cfc-section--tight">` with `<h2 class="cfc-faq__q">{{ .q }}</h2>` (no inline `"1. "` prefix so `.cfc-faq__q` text matches `FAQPage` JSON-LD verbatim 1:1) and add a visible "Included Broadcasters & Services" section powered by `cfcpage/broadcasters-directory.html` (`compact: true`) plus link to `/channels/`
   - Observable completed state: Sample build renders `/faq/` across all 9 editions with 12 Q&As (including Q12 mentioning TV Globo, GE TV, SporTV, Premiere, CazéTV in `pt-br`), `.cfc-faq--numbered` scoped to `/faq/`, and the visible broadcasters directory section
