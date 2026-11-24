@@ -20,7 +20,7 @@
 {{ end }}
 
 {{/* Clean slug */}}
-{{ $slug = strings.Trim $slug "/" }}
+{{ $slug = strings.Trim (strings.TrimSpace $slug) "/" }}
 
 {{/* Determine edition prefix */}}
 {{ $prefix := "" }}
@@ -90,8 +90,15 @@
   {{ $url = printf "%sleagues/%s/" $prefix $slug }}
 {{ else if eq $kind "leagues" }}
   {{ $url = printf "%sleagues/" $prefix }}
+{{ else if eq $kind "channel" }}
+  {{ if eq $slug "" }}
+    {{ errorf "cfcdata/url.html: slug is required for kind \"channel\"" }}
+  {{ end }}
+  {{ $url = printf "%schannels/%s/" $prefix $slug }}
+{{ else if eq $kind "channels" }}
+  {{ $url = printf "%schannels/" $prefix }}
 {{ else }}
-  {{ errorf "cfcdata/url.html: unsupported kind %q (allowed: match, team, league, leagues; lineups out of scope)" $kind }}
+  {{ errorf "cfcdata/url.html: unsupported kind %q (allowed: match, team, league, leagues, channel, channels; lineups out of scope)" $kind }}
 {{ end }}
 
 {{ return $url }}

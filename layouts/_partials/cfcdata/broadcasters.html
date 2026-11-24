@@ -1,0 +1,523 @@
+{{/* layouts/_partials/cfcdata/broadcasters.html */}}
+{{/* Adapter-safe broadcaster catalog resolver merging dataset.channels with data/cfc/broadcasters.yaml. */}}
+{{/* Safe inside _content.gotmpl: never accesses edition partials or Home page context. */}}
+{{/* Callers cache with 3-part key: (printf "broadcasters|%s|%s|%s" $cc $edCode $lang) */}}
+
+{{ $country := "" }}
+{{ $hasExplicitCountry := false }}
+{{ $editionCode := "" }}
+{{ $lang := "" }}
+{{ $dataset := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ if and (isset . "country") (ne (index . "country") nil) }}
+    {{ $country = strings.TrimSpace (printf "%v" (index . "country")) }}
+    {{ $hasExplicitCountry = true }}
+  {{ end }}
+  {{ if and (isset . "editionCode") (ne (index . "editionCode") nil) }}
+    {{ $editionCode = strings.TrimSpace (printf "%v" (index . "editionCode")) }}
+  {{ end }}
+  {{ if and (isset . "lang") (ne (index . "lang") nil) }}
+    {{ $lang = strings.TrimSpace (printf "%v" (index . "lang")) }}
+  {{ end }}
+  {{ if and (isset . "dataset") (reflect.IsMap (index . "dataset")) }}
+    {{ $dataset = index . "dataset" }}
+  {{ end }}
+{{ end }}
+
+{{ if not $hasExplicitCountry }}
+  {{ with site.Params.edition }}
+    {{ if reflect.IsMap . }}
+      {{ $isGlobal := or (index . "isGlobal") (index . "isglobal") }}
+      {{ if not $isGlobal }}
+        {{ with index . "country" }}
+          {{ $country = strings.TrimSpace (printf "%v" .) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ $country = upper $country }}
+
+{{ if eq $editionCode "" }}
+  {{ with site.Language }}
+    {{ $editionCode = .Lang | default "" }}
+  {{ end }}
+{{ end }}
+{{ if eq $editionCode "" }}
+  {{ $editionCode = "en" }}
+{{ end }}
+
+{{ if eq $lang "" }}
+  {{ with site.Language }}
+    {{ $lang = .Lang | default "" }}
+  {{ end }}
+{{ end }}
+{{ if eq $lang "" }}
+  {{ $lang = "en" }}
+{{ end }}
+
+{{ if eq $country "" }}
+  {{ return (dict
+    "country" ""
+    "editionCode" $editionCode
+    "bySlug" dict
+    "list" slice
+    "groups" slice
+    "totalBroadcasters" 0
+    "totalUpcoming" 0
+  ) }}
+{{ end }}
+
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{/* Load curated overlay (hugo.Data first, site.Data fallback) */}}
+{{ $overlay := dict }}
+{{ with hugo.Data }}
+  {{ with .cfc }}
+    {{ with .broadcasters }}
+      {{ if reflect.IsMap . }}
+        {{ $overlay = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ if not $overlay }}
+  {{ with site.Data }}
+    {{ with .cfc }}
+      {{ with .broadcasters }}
+        {{ if reflect.IsMap . }}
+          {{ $overlay = . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Parse denylist rules */}}
+{{ $denySlugs := dict }}
+{{ $denyPatterns := slice }}
+{{ with index $overlay "denylist" }}
+  {{ if reflect.IsMap . }}
+    {{ with index . "slugs" }}
+      {{ if reflect.IsSlice . }}
+        {{ range . }}
+          {{ $s := lower (strings.TrimSpace (printf "%v" .)) }}
+          {{ if ne $s "" }}
+            {{ $denySlugs = merge $denySlugs (dict $s true) }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    {{ with index . "namePatterns" }}
+      {{ if reflect.IsSlice . }}
+        {{ range . }}
+          {{ $pat := printf "%v" . }}
+          {{ if ne $pat "" }}
+            {{ $denyPatterns = $denyPatterns | append $pat }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Parse normalization suffix regexes */}}
+{{ $stripSuffixes := slice }}
+{{ with index $overlay "normalization" }}
+  {{ if reflect.IsMap . }}
+    {{ with index . "stripSuffixes" }}
+      {{ if reflect.IsSlice . }}
+        {{ range . }}
+          {{ $pat := printf "%v" . }}
+          {{ if ne $pat "" }}
+            {{ $stripSuffixes = $stripSuffixes | append $pat }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Resolve country overlay map */}}
+{{ $countryOverlay := dict }}
+{{ with index $overlay "countries" }}
+  {{ if reflect.IsMap . }}
+    {{ with index . $country }}
+      {{ if reflect.IsMap . }}
+        {{ $countryOverlay = . }}
+      {{ end }}
+    {{ else }}
+      {{ with index . (lower $country) }}
+        {{ if reflect.IsMap . }}
+          {{ $countryOverlay = . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Probe dataset.channels silently when absent */}}
+{{ $chFile := index (dict) "nil" }}
+{{ if and (reflect.IsMap $dataset) (reflect.IsMap $dataset.channels) }}
+  {{ $dc := $dataset.channels }}
+  {{ $ccLower := lower $country }}
+  {{ with index $dc $country }}
+    {{ $chFile = . }}
+  {{ else }}
+    {{ with index $dc $ccLower }}
+      {{ $chFile = . }}
+    {{ else }}
+      {{ with index $dc (printf "channels/%s.json" $country) }}
+        {{ $chFile = . }}
+      {{ else }}
+        {{ with index $dc (printf "channels/%s.json" $ccLower) }}
+          {{ $chFile = . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Invert dataset.order into chronological upcomingMatchSlugs per ChannelId */}}
+{{ $upcomingStatuses := slice "scheduled" "live" "halftime" "postponed" "suspended" }}
+{{ $upScratch := newScratch }}
+{{ if and $chFile (reflect.IsMap $chFile) (isset $chFile "matches") (reflect.IsMap $chFile.matches) (reflect.IsMap $dataset) (reflect.IsSlice $dataset.order) (reflect.IsMap $dataset.matches) }}
+  {{ $chMatches := $chFile.matches }}
+  {{ $allMatches := $dataset.matches }}
+  {{ range $mSlug := $dataset.order }}
+    {{ $mSlugStr := printf "%v" $mSlug }}
+    {{ $m := index $allMatches $mSlugStr }}
+    {{ if and $m (reflect.IsMap $m) }}
+      {{ $status := printf "%v" ($m.status | default "") }}
+      {{ if in $upcomingStatuses $status }}
+        {{ $chIds := index $chMatches $mSlugStr }}
+        {{ if reflect.IsSlice $chIds }}
+          {{ range $chId := $chIds }}
+            {{ $chIdStr := strings.Trim (strings.TrimSpace (printf "%v" $chId)) "/" }}
+            {{ if ne $chIdStr "" }}
+              {{ $existing := $upScratch.Get $chIdStr | default slice }}
+              {{ if not (in $existing $mSlugStr) }}
+                {{ $upScratch.Set $chIdStr ($existing | append $mSlugStr) }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Language fallback order: exact lang -> base lang -> en */}}
+{{ $langLower := replace (lower $lang) "_" "-" }}
+{{ $langParts := split $langLower "-" }}
+{{ $langBase := "" }}
+{{ if gt (len $langParts) 1 }}
+  {{ $langBase = index $langParts 0 }}
+{{ end }}
+{{ $langKeys := slice $langLower }}
+{{ if and (ne $langBase "") (ne $langBase $langLower) }}
+  {{ $langKeys = $langKeys | append $langBase }}
+{{ end }}
+{{ if not (in $langKeys "en") }}
+  {{ $langKeys = $langKeys | append "en" }}
+{{ end }}
+
+{{/* Collect candidate entries from live channels + persistent overlay-only entries */}}
+{{ $seenSlugs := dict }}
+{{ $candidates := slice }}
+
+{{ if and $chFile (reflect.IsMap $chFile) (isset $chFile "channels") (reflect.IsMap $chFile.channels) }}
+  {{ range $rawKey, $chObj := $chFile.channels }}
+    {{ $slug := strings.Trim (strings.TrimSpace (printf "%v" $rawKey)) "/" }}
+    {{ if eq $slug "" }}
+      {{ continue }}
+    {{ end }}
+    {{ $slugLower := lower $slug }}
+    {{ $seenSlugs = merge $seenSlugs (dict $slugLower true) }}
+    {{ if isset $denySlugs $slugLower }}
+      {{ continue }}
+    {{ end }}
+
+    {{ $rawName := "" }}
+    {{ $liveType := "" }}
+    {{ $liveUrl := "" }}
+    {{ $liveLogo := "" }}
+    {{ if reflect.IsMap $chObj }}
+      {{ if and (isset $chObj "name") (ne (index $chObj "name") nil) }}
+        {{ $rawName = printf "%v" (index $chObj "name") }}
+      {{ end }}
+      {{ if and (isset $chObj "type") (ne (index $chObj "type") nil) }}
+        {{ $liveType = strings.TrimSpace (printf "%v" (index $chObj "type")) }}
+      {{ end }}
+      {{ if and (isset $chObj "url") (ne (index $chObj "url") nil) }}
+        {{ $liveUrl = strings.TrimSpace (printf "%v" (index $chObj "url")) }}
+      {{ end }}
+      {{ if and (isset $chObj "logo") (ne (index $chObj "logo") nil) }}
+        {{ $liveLogo = strings.TrimSpace (printf "%v" (index $chObj "logo")) }}
+      {{ end }}
+    {{ end }}
+
+    {{ $trimmedRaw := strings.TrimSpace $rawName }}
+    {{ $isDenied := false }}
+    {{ if ne $trimmedRaw "" }}
+      {{ range $pat := $denyPatterns }}
+        {{ if gt (len (findRE $pat $trimmedRaw 1)) 0 }}
+          {{ $isDenied = true }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    {{ if $isDenied }}
+      {{ continue }}
+    {{ end }}
+
+    {{ $ovEntry := index (dict) "nil" }}
+    {{ with index $countryOverlay $slug }}
+      {{ if reflect.IsMap . }}
+        {{ $ovEntry = . }}
+      {{ end }}
+    {{ else }}
+      {{ with index $countryOverlay $slugLower }}
+        {{ if reflect.IsMap . }}
+          {{ $ovEntry = . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{ $candidates = $candidates | append (dict
+      "slug" $slug
+      "rawName" $rawName
+      "liveType" $liveType
+      "liveUrl" $liveUrl
+      "liveLogo" $liveLogo
+      "ovEntry" $ovEntry
+    ) }}
+  {{ end }}
+{{ end }}
+
+{{ range $rawOvSlug, $ovEntry := $countryOverlay }}
+  {{ $slug := strings.Trim (strings.TrimSpace (printf "%v" $rawOvSlug)) "/" }}
+  {{ $slugLower := lower $slug }}
+  {{ if or (eq $slug "") (isset $seenSlugs $slugLower) (isset $denySlugs $slugLower) }}
+    {{ continue }}
+  {{ end }}
+  {{ if not (reflect.IsMap $ovEntry) }}
+    {{ continue }}
+  {{ end }}
+  {{ if not (and (isset $ovEntry "persistent") (index $ovEntry "persistent")) }}
+    {{ continue }}
+  {{ end }}
+
+  {{ $seenSlugs = merge $seenSlugs (dict $slugLower true) }}
+  {{ $candidates = $candidates | append (dict
+    "slug" $slug
+    "rawName" ""
+    "liveType" ""
+    "liveUrl" ""
+    "liveLogo" ""
+    "ovEntry" $ovEntry
+  ) }}
+{{ end }}
+
+{{/* Normalize, enrich, filter, and index candidates uniformly */}}
+{{ $allowedTypes := slice "free_tv" "tv" "streaming" }}
+{{ $sortable := slice }}
+
+{{ range $cand := $candidates }}
+  {{ $slug := $cand.slug }}
+  {{ $ovEntry := $cand.ovEntry }}
+
+  {{ $name := $cand.rawName }}
+  {{ range $pat := $stripSuffixes }}
+    {{ $name = replaceRE $pat "" $name }}
+  {{ end }}
+  {{ $name = strings.TrimSpace $name }}
+
+  {{ $ovType := "" }}
+  {{ $ovUrl := "" }}
+  {{ $ovLogo := "" }}
+  {{ $persistent := false }}
+  {{ $description := "" }}
+  {{ $faqs := slice }}
+
+  {{ if and $ovEntry (reflect.IsMap $ovEntry) }}
+    {{ if and (isset $ovEntry "name") (ne (index $ovEntry "name") nil) }}
+      {{ $ovName := strings.TrimSpace (printf "%v" (index $ovEntry "name")) }}
+      {{ if ne $ovName "" }}
+        {{ $name = $ovName }}
+      {{ end }}
+    {{ end }}
+    {{ if and (isset $ovEntry "type") (ne (index $ovEntry "type") nil) }}
+      {{ $ovType = strings.TrimSpace (printf "%v" (index $ovEntry "type")) }}
+    {{ end }}
+    {{ if and (isset $ovEntry "url") (ne (index $ovEntry "url") nil) }}
+      {{ $ovUrl = strings.TrimSpace (printf "%v" (index $ovEntry "url")) }}
+    {{ end }}
+    {{ if and (isset $ovEntry "logo") (ne (index $ovEntry "logo") nil) }}
+      {{ $ovLogo = strings.TrimSpace (printf "%v" (index $ovEntry "logo")) }}
+    {{ end }}
+    {{ if and (isset $ovEntry "persistent") (index $ovEntry "persistent") }}
+      {{ $persistent = true }}
+    {{ end }}
+
+    {{/* Localized description: exact lang -> base lang -> en -> empty */}}
+    {{ with index $ovEntry "descriptions" }}
+      {{ if reflect.IsMap . }}
+        {{ $descMap := . }}
+        {{ range $lk := $langKeys }}
+          {{ if eq $description "" }}
+            {{ $candidate := index $descMap $lk }}
+            {{ if and (ne $candidate nil) (ne (strings.TrimSpace (printf "%v" $candidate)) "") }}
+              {{ $description = strings.TrimSpace (printf "%v" $candidate) }}
+            {{ else }}
+              {{ range $dk, $dv := $descMap }}
+                {{ if and (eq $description "") (eq (replace (lower (printf "%v" $dk)) "_" "-") $lk) (ne $dv nil) (ne (strings.TrimSpace (printf "%v" $dv)) "") }}
+                  {{ $description = strings.TrimSpace (printf "%v" $dv) }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{/* Localized FAQs: exact lang -> base lang -> en -> empty */}}
+    {{ with index $ovEntry "faqs" }}
+      {{ if reflect.IsMap . }}
+        {{ $faqsMap := . }}
+        {{ range $lk := $langKeys }}
+          {{ if eq (len $faqs) 0 }}
+            {{ $rawFaqs := index $faqsMap $lk }}
+            {{ if not (reflect.IsSlice $rawFaqs) }}
+              {{ range $fk, $fv := $faqsMap }}
+                {{ if and (not (reflect.IsSlice $rawFaqs)) (eq (replace (lower (printf "%v" $fk)) "_" "-") $lk) (reflect.IsSlice $fv) }}
+                  {{ $rawFaqs = $fv }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
+            {{ if reflect.IsSlice $rawFaqs }}
+              {{ $normFaqs := slice }}
+              {{ range $item := $rawFaqs }}
+                {{ if reflect.IsMap $item }}
+                  {{ $q := "" }}
+                  {{ $ans := "" }}
+                  {{ if and (isset $item "q") (ne (index $item "q") nil) }}
+                    {{ $q = strings.TrimSpace (printf "%v" (index $item "q")) }}
+                  {{ end }}
+                  {{ if and (isset $item "a") (ne (index $item "a") nil) }}
+                    {{ $ans = strings.TrimSpace (printf "%v" (index $item "a")) }}
+                  {{ end }}
+                  {{ if and (ne $q "") (ne $ans "") }}
+                    {{ $normFaqs = $normFaqs | append (dict "q" $q "a" $ans) }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+              {{ if gt (len $normFaqs) 0 }}
+                {{ $faqs = $normFaqs }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if eq $name "" }}
+    {{ $name = $slug }}
+  {{ end }}
+
+  {{ $isDenied := false }}
+  {{ if ne $name "" }}
+    {{ range $pat := $denyPatterns }}
+      {{ if gt (len (findRE $pat $name 1)) 0 }}
+        {{ $isDenied = true }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if $isDenied }}
+    {{ continue }}
+  {{ end }}
+
+  {{ $type := "tv" }}
+  {{ if in $allowedTypes $cand.liveType }}
+    {{ $type = $cand.liveType }}
+  {{ else if in $allowedTypes $ovType }}
+    {{ $type = $ovType }}
+  {{ end }}
+
+  {{ $officialUrl := $cand.liveUrl }}
+  {{ if eq $officialUrl "" }}
+    {{ $officialUrl = $ovUrl }}
+  {{ end }}
+
+  {{ $logo := $cand.liveLogo }}
+  {{ if eq $logo "" }}
+    {{ $logo = $ovLogo }}
+  {{ end }}
+
+  {{ $upcoming := $upScratch.Get $slug | default slice }}
+  {{ $internalUrl := partial "cfcdata/url.html" (dict "kind" "channel" "slug" $slug "edition" $editionCode) }}
+
+  {{ $rec := dict
+    "slug" $slug
+    "name" $name
+    "type" $type
+    "logo" $logo
+    "url" $internalUrl
+    "officialUrl" $officialUrl
+    "description" $description
+    "faqs" $faqs
+    "persistent" $persistent
+    "upcomingMatchSlugs" $upcoming
+    "matchCount" (len $upcoming)
+  }}
+  {{ $sortable = $sortable | append (dict "lowerName" (lower $name) "slug" $slug "rec" $rec) }}
+{{ end }}
+
+{{/* Sort ascending by case-insensitive normalized name (two-pass stable sort: slug then lowerName, since Hugo UCA ignores NUL/control delimiters), index bySlug, and build non-empty category groups */}}
+{{ $list := slice }}
+{{ $bySlug := dict }}
+{{ $freeTv := slice }}
+{{ $tv := slice }}
+{{ $streaming := slice }}
+{{ $totalUpcoming := 0 }}
+
+{{ if gt (len $sortable) 0 }}
+  {{ $bySlugSorted := sort $sortable "slug" "asc" }}
+  {{ range (sort $bySlugSorted "lowerName" "asc") }}
+    {{ $rec := .rec }}
+    {{ $list = $list | append $rec }}
+    {{ $bySlug = merge $bySlug (dict $rec.slug $rec) }}
+    {{ $totalUpcoming = add $totalUpcoming $rec.matchCount }}
+    {{ if eq $rec.type "free_tv" }}
+      {{ $freeTv = $freeTv | append $rec }}
+    {{ else if eq $rec.type "streaming" }}
+      {{ $streaming = $streaming | append $rec }}
+    {{ else }}
+      {{ $tv = $tv | append $rec }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $groups := slice }}
+{{ if gt (len $freeTv) 0 }}
+  {{ $groups = $groups | append (dict "type" "free_tv" "items" $freeTv) }}
+{{ end }}
+{{ if gt (len $tv) 0 }}
+  {{ $groups = $groups | append (dict "type" "tv" "items" $tv) }}
+{{ end }}
+{{ if gt (len $streaming) 0 }}
+  {{ $groups = $groups | append (dict "type" "streaming" "items" $streaming) }}
+{{ end }}
+
+{{ return (dict
+  "country" $country
+  "editionCode" $editionCode
+  "bySlug" $bySlug
+  "list" $list
+  "groups" $groups
+  "totalBroadcasters" (len $list)
+  "totalUpcoming" $totalUpcoming
+) }}

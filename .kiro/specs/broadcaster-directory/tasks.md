@@ -23,7 +23,7 @@
   - Observable completed state: `HUGO_CFC_DATA_SOURCE=sample pnpm build && pnpm check` succeeds with home HTML + CSS/JS gzip remaining under 100 KB and `.cfc-faq--numbered` scoped away from match/team/league FAQs
   - _Boundary: BroadcasterStyles_
   - _Requirements: 2.2, 2.3, 3.3, 4.1, 5.4_
-- [ ] 1.4 Implement broadcaster URL/entity seams and adapter-safe catalog resolver
+- [x] 1.4 Implement broadcaster URL/entity seams and adapter-safe catalog resolver
   - Extend `layouts/_partials/cfcdata/url.html` to support `"channels"` (`{prefix}channels/`) and `"channel"` (`{prefix}channels/{slug}/`, requiring non-empty `slug`)
   - Create `layouts/_partials/cfcdata/broadcasters.html` (adapter-safe, never calling `edition/current.html`, `edition/all.html`, or `site.Home`; callers cache with 3-part key `broadcasters|{country}|{editionCode}|{lang}`): probes `dataset.channels` (`$cc`, `upper $cc`, `channels/$cc.json`, `channels/<UPPER>.json`) silently with zero `warnf` when absent; filters `denylist.slugs` & `denylist.namePatterns`; strips `normalization.stripSuffixes` and trims leading/trailing whitespace; merges overlay entries (`persistent: true` inserted even with 0 matches; `persistent: false`/omitted enriches live matches only); resolves localized `description`/`faqs` (`lang` -> base lang -> `en` -> empty); inverts `dataset.order` (`scheduled|live|halftime|postponed|suspended`) into chronological `upcomingMatchSlugs`; sorts `list` ascending by normalized `name`; builds non-empty `groups` in fixed order (`free_tv`, `tv`, `streaming`)
   - Extend `layouts/_partials/cfcdata/page-entity.html` to pass `site.Language.Lang` to `partialCached "edition/current.html" . site.Language.Lang` and resolve `"channel"` (`channel` record + `country`) and `"channels"` (`catalog` / Global summary) using the 3-part `broadcasters|...` cache key
@@ -141,3 +141,4 @@
 - Preserve the `i18n/pt-br.yaml -> pt.yaml` symlink when updating Portuguese strings; run `pnpm check` only after a build populates `public/`.
 - `partialCached "cfcdata/broadcasters.html"` must use the 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`; content-adapter code must never call `edition/current.html`, `edition/all.html`, or `site.Home`.
 - `.cfc-faq--numbered` must remain scoped strictly to `/faq/` so contextual FAQs on match/team/league/channel pages stay unnumbered and match `FAQPage` JSON-LD 1:1.
+- Hugo `0.169.0` `collections.Sort` uses Unicode collation (which ignores NUL/punctuation in prefix comparisons); `cfcdata/broadcasters.html` uses two-pass stable sort (`slug` ascending then `lowerName` ascending) so prefix names always sort before longer variants.

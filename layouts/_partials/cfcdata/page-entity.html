@@ -34,13 +34,20 @@
   {{ $slug = printf "%v" . }}
 {{ end }}
 
-{{ $edition := partialCached "edition/current.html" . }}
+{{ $edition := partialCached "edition/current.html" . site.Language.Lang }}
 {{ $dataset := partialCached "cfcdata/dataset.html" . "dataset" }}
 
 {{ $editionCode := "" }}
+{{ $edCountry := "" }}
 {{ with $edition }}
   {{ with .code }}
     {{ $editionCode = printf "%v" . }}
+  {{ end }}
+  {{ $isGlobal := or (index . "isGlobal") (index . "isglobal") }}
+  {{ if not $isGlobal }}
+    {{ with .country }}
+      {{ $edCountry = upper (strings.TrimSpace (printf "%v" .)) }}
+    {{ end }}
   {{ end }}
 {{ end }}
 
@@ -84,6 +91,31 @@
     "edition" $editionCode
     "generatedAt" $generatedAt
     "leagues" $leagues
+  ) }}
+{{ else if eq $kind "channel" }}
+  {{ $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $edCountry "editionCode" $editionCode "lang" site.Language.Lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $edCountry $editionCode site.Language.Lang) }}
+  {{ $cleanSlug := strings.Trim (strings.TrimSpace $slug) "/" }}
+  {{ $channel := index (dict) "nil" }}
+  {{ if and (ne $cleanSlug "") (reflect.IsMap $catalog) (isset $catalog "bySlug") (reflect.IsMap $catalog.bySlug) }}
+    {{ with index $catalog.bySlug $cleanSlug }}
+      {{ $channel = . }}
+    {{ end }}
+  {{ end }}
+  {{ return (dict
+    "kind" "channel"
+    "edition" $editionCode
+    "country" $edCountry
+    "generatedAt" $generatedAt
+    "channel" $channel
+  ) }}
+{{ else if eq $kind "channels" }}
+  {{ $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $edCountry "editionCode" $editionCode "lang" site.Language.Lang "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $edCountry $editionCode site.Language.Lang) }}
+  {{ return (dict
+    "kind" "channels"
+    "edition" $editionCode
+    "country" $edCountry
+    "generatedAt" $generatedAt
+    "catalog" $catalog
   ) }}
 {{ else }}
   {{ return nil }}
