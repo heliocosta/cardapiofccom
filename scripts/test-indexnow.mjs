@@ -323,6 +323,43 @@ test("urlPriority and computeDiff prioritize channels hubs (0) and regional chan
   );
 });
 
+test("urlPriority and computeDiff prioritize blog hubs (0) and blog articles (2)", () => {
+  assert.equal(urlPriority("/blog/"), 0);
+  assert.equal(urlPriority("/pt-br/blog/"), 0);
+  assert.equal(urlPriority("/ja/blog/"), 0);
+  assert.equal(urlPriority("/blog/where-to-watch-live-football-official-channels-guide/"), 2);
+  assert.equal(urlPriority("/pt-br/blog/where-to-watch-live-football-official-channels-guide/"), 2);
+  assert.equal(urlPriority("/blog/seed/"), 2);
+  assert.equal(urlPriority("/pt-br/blog/seed/"), 2);
+
+  const diff = computeDiff(
+    {},
+    {
+      "/unknown/page/": "h0",
+      "/team/arsenal/": "h1",
+      "/pt-br/blog/where-to-watch-live-football-official-channels-guide/": "h2",
+      "/blog/where-to-watch-live-football-official-channels-guide/": "h3",
+      "/match/m1/": "h4",
+      "/pt-br/blog/": "h5",
+      "/blog/": "h6",
+    },
+    { baseUrl: "https://cardapiofc.com/" }
+  );
+
+  assert.deepEqual(
+    diff.changes.map((c) => c.relPath),
+    [
+      "/blog/",
+      "/pt-br/blog/",
+      "/match/m1/",
+      "/blog/where-to-watch-live-football-official-channels-guide/",
+      "/pt-br/blog/where-to-watch-live-football-official-channels-guide/",
+      "/team/arsenal/",
+      "/unknown/page/",
+    ]
+  );
+});
+
 // 5. verifyLiveKey
 test("verifyLiveKey checks HTTP 200, text/plain, exact key match, and rejects 404/302/newline", async () => {
   const key = "0123456789abcdef0123456789abcdef";

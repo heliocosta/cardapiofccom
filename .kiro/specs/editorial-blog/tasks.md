@@ -80,7 +80,7 @@
   - _Depends: 1.2, 2.1, 2.2_
   - _Requirements: 5.3_
 
-- [ ] 3.4 (P) Configure blog geo-routing rules and IndexNow URL priority classification
+- [x] 3.4 (P) Configure blog geo-routing rules and IndexNow URL priority classification
   - Add unprefixed blog hub and article path matching across all eight regional Cloudflare redirect rules while preserving search/AI crawler exclusions and edition opt-outs
   - Add the blog hub segment and article priority rules to the IndexNow classifier and expand its unit test suite to cover Global and regional blog hubs and posts
   - Observable completion: Edge redirect configuration parses cleanly with blog geo-routing across all eight country rules, and IndexNow unit tests pass with blog hub priority 0 and article priority 2
