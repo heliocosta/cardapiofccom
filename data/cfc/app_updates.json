@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "app": {
+    "iosId": "6745226833",
+    "androidPackage": "br.com.cardapiofutebol"
+  },
+  "latest": {
+    "ios": null,
+    "android": null
+  },
+  "releases": []
+}
