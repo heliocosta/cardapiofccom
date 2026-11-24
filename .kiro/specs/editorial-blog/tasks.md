@@ -23,7 +23,7 @@
   - _Boundary: BlogPresentation_
   - _Requirements: 2.6_
 
-- [ ] 1.4 (P) Implement the additive build-time blog budget guard and restore the post-build static file-count guard
+- [x] 1.4 (P) Implement the additive build-time blog budget guard and restore the post-build static file-count guard
   - Create an additive build-time blog file-budget estimator layering blog hubs, published articles, and five processed image outputs per unique cover illustration onto the existing broadcaster budget baseline (warning at 18,001–20,000 and failing above 20,000 under the default budget while honoring explicit `HUGO_CFC_FILE_BUDGET` overrides) without altering the upstream data-pages budget estimator or its unit assertions
   - Restore the empty post-build static file-count guard script to count every file in the generated output directory, log a breakdown and AI full-text summary file size, emit a warning above 18,000 files, and exit non-zero above 20,000 files
   - Observable completion: Build-time budget accounting logs combined totals without regressing upstream dataset budget tests, and the post-build file-count guard passes under 18,000, warns between 18,001 and 20,000, and exits non-zero above 20,000

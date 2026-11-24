@@ -1,0 +1,78 @@
+{{/* layouts/_partials/cfcdata/blog-budget.html */}}
+{{/* Additive build-time file-budget guard layering editorial blog hubs, posts, and processed cover images onto broadcaster-budget.html. */}}
+{{/* Signature: partialCached "cfcdata/blog-budget.html" . "blog-budget" */}}
+
+{{ $broadcasterBudget := partialCached "cfcdata/broadcaster-budget.html" . "broadcaster-budget" }}
+{{ $broadcasterCombined := 0 }}
+{{ $budget := 18000 }}
+{{ if reflect.IsMap $broadcasterBudget }}
+  {{ if isset $broadcasterBudget "combined" }}
+    {{ $broadcasterCombined = int (index $broadcasterBudget "combined") }}
+  {{ else if isset $broadcasterBudget "total" }}
+    {{ $broadcasterCombined = int (index $broadcasterBudget "total") }}
+  {{ end }}
+  {{ if isset $broadcasterBudget "budget" }}
+    {{ $budget = int (index $broadcasterBudget "budget") }}
+  {{ end }}
+{{ end }}
+
+{{ $envBudget := strings.TrimSpace (os.Getenv "HUGO_CFC_FILE_BUDGET") }}
+{{ $hasExplicitBudget := ne $envBudget "" }}
+{{ if $hasExplicitBudget }}
+  {{ $budget = int $envBudget }}
+{{ end }}
+
+{{ $hardBudget := 20000 }}
+{{ $blogHubs := 0 }}
+{{ $blogPosts := 0 }}
+{{ $uniqueImages := dict }}
+
+{{ with hugo.Sites }}
+  {{ $blogHubs = len . }}
+  {{ range . }}
+    {{ range (where .RegularPages "Section" "blog") }}
+      {{ if not .Draft }}
+        {{ $blogPosts = add $blogPosts 1 }}
+        {{ with .Params.image }}
+          {{ $imgPath := strings.TrimPrefix "/" (strings.TrimSpace (printf "%v" .)) }}
+          {{ if ne $imgPath "" }}
+            {{ $uniqueImages = merge $uniqueImages (dict $imgPath true) }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $uniqueImageCount := len $uniqueImages }}
+{{/* 5 processed outputs per unique cover image: 2 card WebPs + 2 hero WebPs + 1 1200x630 JPEG OG */}}
+{{ $blogImageFiles := mul 5 $uniqueImageCount }}
+{{ $blogTotal := add $blogHubs (add $blogPosts $blogImageFiles) }}
+{{ $combined := add $broadcasterCombined $blogTotal }}
+
+{{ warnf "editorial-blog: estimated total files %d/%d (blog %d: %d hubs + %d posts + %d images, broadcaster+base %d)" $combined $budget $blogTotal $blogHubs $blogPosts $blogImageFiles $broadcasterCombined }}
+
+{{ if or $hasExplicitBudget (ne $budget 18000) }}
+  {{ if gt $combined $budget }}
+    {{ errorf "editorial-blog: file budget exceeded: estimated %d files exceeds budget %d (blog %d: %d hubs + %d posts + %d images, broadcaster+base %d)" $combined $budget $blogTotal $blogHubs $blogPosts $blogImageFiles $broadcasterCombined }}
+  {{ end }}
+{{ else }}
+  {{ if gt $combined $hardBudget }}
+    {{ errorf "editorial-blog: file budget exceeded: estimated %d files exceeds hard limit %d (soft %d, blog %d: %d hubs + %d posts + %d images, broadcaster+base %d)" $combined $hardBudget $budget $blogTotal $blogHubs $blogPosts $blogImageFiles $broadcasterCombined }}
+  {{ else if gt $combined $budget }}
+    {{ warnf "editorial-blog: file budget warning: estimated %d files exceeds soft budget %d (hard limit %d, blog %d: %d hubs + %d posts + %d images, broadcaster+base %d)" $combined $budget $hardBudget $blogTotal $blogHubs $blogPosts $blogImageFiles $broadcasterCombined }}
+  {{ end }}
+{{ end }}
+
+{{ return (dict
+  "broadcasterCombined" $broadcasterCombined
+  "blogHubs" $blogHubs
+  "blogPosts" $blogPosts
+  "uniqueImages" $uniqueImageCount
+  "blogImages" $blogImageFiles
+  "blogTotal" $blogTotal
+  "combined" $combined
+  "total" $combined
+  "budget" $budget
+  "hardBudget" $hardBudget
+) }}
