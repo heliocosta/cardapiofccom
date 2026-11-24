@@ -40,7 +40,7 @@
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
 - [ ] 2. Core — blog hub and editorial article templates
-- [ ] 2.1 Implement blog summary card partial and blog hub layout
+- [x] 2.1 Implement blog summary card partial and blog hub layout
   - Build the reusable sharp-corner blog summary card partial displaying the responsive WebP cover image with explicit numeric dimensions, editorial pillar pill, title, summary description, locale-formatted publication date, and estimated reading time with zero FontAwesome icons
   - Override the theme's blog list template at root without touching vendored theme directories, rendering breadcrumbs, a localized page hero, the additive build-time blog budget check, a newest-first grid of summary cards, a localized empty state when zero articles are published, and an app download call to action
   - Observable completion: All nine editions render a styled blog hub at their localized paths displaying the seed post card newest-first with zero FontAwesome icons or disabled taxonomy/author links

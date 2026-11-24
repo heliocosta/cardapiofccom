@@ -1,0 +1,74 @@
+{{- /* layouts/_partials/blog/card.html */ -}}
+{{- /* Sharp-corner editorial blog summary card. Accepts a Page or dict "page" $p "headingLevel" (2..6). */ -}}
+{{- $p := . -}}
+{{- $headingLevel := 2 -}}
+{{- if reflect.IsMap . -}}
+  {{- if and (isset . "page") (ne (index . "page") nil) -}}
+    {{- $p = index . "page" -}}
+  {{- end -}}
+  {{- if and (isset . "headingLevel") (ne (index . "headingLevel") nil) -}}
+    {{- $headingLevel = int (index . "headingLevel") -}}
+  {{- end -}}
+{{- end -}}
+{{- if lt $headingLevel 2 -}}{{- $headingLevel = 2 -}}{{- end -}}
+{{- if gt $headingLevel 6 -}}{{- $headingLevel = 6 -}}{{- end -}}
+
+{{- $cover := partial "blog/cover.html" $p -}}
+{{- $pillar := strings.TrimSpace (printf "%v" ($p.Params.pillar | default "")) -}}
+{{- $desc := $p.Params.description | default ($p.Summary | plainify) -}}
+{{- $hasDate := not $p.Date.IsZero -}}
+{{- $readingMinutes := $p.ReadingTime | default 0 -}}
+
+<article class="cfc-blog-card">
+  <a href="{{ $p.RelPermalink }}" class="cfc-blog-card__link">
+    {{- if $cover.hasImage -}}
+      <div class="cfc-blog-card__media">
+        <img
+          class="cfc-blog-card__img"
+          src="{{ $cover.card.src }}"
+          srcset="{{ $cover.card.srcset }}"
+          width="{{ $cover.card.width }}"
+          height="{{ $cover.card.height }}"
+          alt="{{ $cover.card.alt }}"
+          loading="lazy"
+          decoding="async" />
+      </div>
+    {{- end -}}
+
+    <div class="cfc-blog-card__body">
+      {{- if $pillar -}}
+        {{- $pillarKey := printf "blog_pillar_%s" (replace $pillar "-" "_") -}}
+        {{- $pillarLabel := i18n $pillarKey | default ($pillar | humanize) -}}
+        <span class="cfc-blog-card__pillar">{{ $pillarLabel }}</span>
+      {{- end -}}
+
+      <h{{ $headingLevel }} class="cfc-blog-card__title">{{ $p.Title }}</h{{ $headingLevel }}>
+
+      {{- with $desc -}}
+        <p class="cfc-blog-card__desc">{{ . }}</p>
+      {{- end -}}
+
+      {{- if or $hasDate (gt $readingMinutes 0) -}}
+        <div class="cfc-blog-card__meta">
+          {{- if $hasDate -}}
+            {{- $isoDate := partial "time/format.html" (dict "t" $p.Date "style" "iso") -}}
+            {{- $formattedDate := partial "time/format.html" (dict "t" $p.Date "style" "dateShort") -}}
+            <span class="cfc-blog-card__meta-item">
+              {{ partial "cfc/icon.html" (dict "name" "calendar" "class" "cfc-blog-card__icon") }}
+              <time datetime="{{ $isoDate }}">{{ $formattedDate }}</time>
+            </span>
+          {{- end -}}
+          {{- if and $hasDate (gt $readingMinutes 0) -}}
+            <span class="cfc-blog-card__meta-sep" aria-hidden="true">·</span>
+          {{- end -}}
+          {{- if gt $readingMinutes 0 -}}
+            <span class="cfc-blog-card__meta-item">
+              {{ partial "cfc/icon.html" (dict "name" "clock" "class" "cfc-blog-card__icon") }}
+              <span>{{ i18n "blog_reading_time" (dict "Minutes" $readingMinutes) | default (printf "%d min read" $readingMinutes) }}</span>
+            </span>
+          {{- end -}}
+        </div>
+      {{- end -}}
+    </div>
+  </a>
+</article>
