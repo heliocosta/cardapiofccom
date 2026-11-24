@@ -207,7 +207,6 @@ const forbiddenPaths = [
   'public/tags',
   'public/categories',
   'public/index.xml',
-  'public/blog',
   'public/authors',
   'public/elements',
   'public/styleguide',
@@ -220,7 +219,7 @@ for (const fp of forbiddenPaths) {
   }
 }
 
-// Check for markdown files or icon-font/search/preloader assets in public
+// Check for markdown files, icon-font/search/preloader assets, or leaked taxonomy/fa-* references in public
 function scanPublicDir(dir) {
   const entries = fs.readdirSync(dir);
   for (const entry of entries) {
@@ -241,6 +240,15 @@ function scanPublicDir(dir) {
       }
       if (lower.includes('preloader')) {
         fail(`Preloader asset leaked into output: ${path.relative(rootDir, full)}`);
+      }
+      if (entry.endsWith('.html')) {
+        const html = fs.readFileSync(full, 'utf8');
+        if (/(?:^|\s)class=(?:"(?:[^"]*\s)?(?:fa-[a-z0-9-]+|fas|far|fab|fal|fad)(?:\s[^"]*)?"|'(?:[^']*\s)?(?:fa-[a-z0-9-]+|fas|far|fab|fal|fad)(?:\s[^']*)?'|(?:fa-[a-z0-9-]+|fas|far|fab|fal|fad)(?=\s|\/?>))/i.test(html)) {
+          fail(`Icon-font class (fa-*) leaked into built HTML: ${path.relative(rootDir, full)}`);
+        }
+        if (/(?:^|\s)href=(?:"(?:https?:\/\/(?:www\.)?cardapiofc\.com)?\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(?:tags|categories|authors)\/[^"]*"|'(?:https?:\/\/(?:www\.)?cardapiofc\.com)?\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(?:tags|categories|authors)\/[^']*'|(?:https?:\/\/(?:www\.)?cardapiofc\.com)?\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(?:tags|categories|authors)\/[^\s>]*)/i.test(html)) {
+          fail(`Forbidden taxonomy/author link leaked into built HTML: ${path.relative(rootDir, full)}`);
+        }
       }
     }
   }

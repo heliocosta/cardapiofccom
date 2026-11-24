@@ -95,7 +95,7 @@
   - _Depends: 1.2_
   - _Requirements: 1.2, 1.3, 1.4, 1.5, 6.2_
 
-- [ ] 4.2 Extend site validation and SEO/social verification suites for blog hubs and articles
+- [x] 4.2 Extend site validation and SEO/social verification suites for blog hubs and articles
   - Permit blog output in site validation while continuing to forbid taxonomy, author, RSS, demo, and icon-font outputs
   - Extend the SEO/social verification script to bucket blog hubs and blog articles separately, asserting all nine blog hubs exist, canonicals are self-referencing, reciprocal nine-edition hreflang + x-default exist in both HTML and XML sitemaps, article Open Graph timestamps and 1200x630 <= 300,000-byte OG images are valid, and Blog/BlogPosting/BreadcrumbList/FAQPage parity holds
   - Observable completion: Both site validation and SEO/social verification execute against the built site and explicitly report verified blog hubs and sampled blog articles with zero failures
