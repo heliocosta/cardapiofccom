@@ -40,3 +40,12 @@ seo_channels_title: "Official US Soccer TV & Streaming Channels | CardápioFC"
 seo_channels_desc: "Explore official US soccer TV channels and legal streaming services, plus download the CardápioFC app for live soccer schedules and kickoff alerts."
 seo_channel_title: "{{ .Channel }}: US Soccer TV Schedule & Live Streams"
 seo_channel_desc: "Watch live soccer on {{ .Channel }} ({{ .Type }}) {{ .In }}. {{ .Count }} upcoming match(es) scheduled with local kickoff times and official links."
+
+# Editorial Blog
+blog_title: "CardápioFC Blog: Soccer TV & Streaming Guides"
+blog_intro: "Broadcasting rights changes, official watch guides, mobile app tips, and soccer TV market analysis."
+blog_empty: "No articles published yet. Browse today's live soccer match schedules or download the CardápioFC mobile app."
+seo_blog_title: "Soccer TV & Streaming Blog | CardápioFC"
+seo_blog_desc: "Read official soccer watch guides, broadcasting rights updates, app tutorials, and TV market analysis on the CardápioFC Blog."
+blog_app_title: "Never Miss Kickoff with CardápioFC"
+blog_app_subtitle: "Get official US TV and streaming channel alerts, live scores, and kickoff reminders free on iOS and Android."

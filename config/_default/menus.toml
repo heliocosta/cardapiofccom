@@ -29,16 +29,22 @@ url = "/channels/"
 weight = 5
 
 [[main]]
+identifier = "blog"
+name = "Blog"
+url = "/blog/"
+weight = 6
+
+[[main]]
 identifier = "faq"
 name = "FAQ"
 url = "/faq/"
-weight = 6
+weight = 7
 
 [[main]]
 identifier = "about"
 name = "About"
 url = "/about/"
-weight = 7
+weight = 8
 
 [[footer]]
 identifier = "home"
@@ -71,19 +77,25 @@ url = "/channels/"
 weight = 5
 
 [[footer]]
+identifier = "blog"
+name = "Blog"
+url = "/blog/"
+weight = 6
+
+[[footer]]
 identifier = "faq"
 name = "FAQ"
 url = "/faq/"
-weight = 6
+weight = 7
 
 [[footer]]
 identifier = "about"
 name = "About"
 url = "/about/"
-weight = 7
+weight = 8
 
 [[footer]]
 identifier = "updates"
 name = "App Updates"
 url = "/updates/"
-weight = 8
+weight = 9

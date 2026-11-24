@@ -9,7 +9,11 @@
 {{- $curr := partialCached "edition/current.html" $p site.Language.Lang -}}
 {{- $all := partialCached "edition/all.html" $p -}}
 {{- $isChannelPage := false -}}
+{{- $isBlogPost := false -}}
 {{- with $p -}}
+  {{- if and (eq .Section "blog") .IsPage -}}
+    {{- $isBlogPost = true -}}
+  {{- end -}}
   {{- with .Params -}}
     {{- with .cfc -}}
       {{- if and (reflect.IsMap .) (isset . "kind") .kind (eq (printf "%v" .kind) "channel") -}}
@@ -34,6 +38,9 @@
       {{- if and $isChannelPage (not $isCurrent) -}}
         {{- $targetUrl = printf "%schannels/" $ed.prefix -}}
       {{- else -}}
+        {{- if and $isBlogPost (not $isCurrent) -}}
+          {{- $targetUrl = printf "%sblog/" $ed.prefix -}}
+        {{- end -}}
         {{- if $isCurrent -}}
           {{- with $p -}}
             {{- with .RelPermalink -}}
