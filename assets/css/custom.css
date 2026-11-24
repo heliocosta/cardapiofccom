@@ -21,6 +21,7 @@
 @import "./cfc/components/app-download.css";
 @import "./cfc/components/match-page.css";
 @import "./cfc/components/consent.css";
+@import "./cfc/components/broadcaster.css";
 
 /* Metric-matched local fallbacks so the Google Fonts swap does not shift layout (CLS).
    Measured against Arial: Saira Condensed 700 is 68% as wide; Inter 400 is 107.6% as wide. */

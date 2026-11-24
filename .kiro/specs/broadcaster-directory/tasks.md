@@ -17,7 +17,7 @@
   - Observable completed state: `test -L i18n/pt-br.yaml` passes, all placeholder variables (`{{ .Count }}`, `{{ .Channel }}`, `{{ .In }}`, `{{ .Type }}`) match downstream contracts, and after building `public/`, `pnpm check` passes Check C with zero missing i18n keys across all 7 base tables
   - _Boundary: I18nStrings_
   - _Requirements: 2.4, 4.3, 6.1, 7.1_
-- [ ] 1.3 (P) Create broadcaster directory and detail component styles (`assets/css/cfc/components/broadcaster.css`)
+- [x] 1.3 (P) Create broadcaster directory and detail component styles (`assets/css/cfc/components/broadcaster.css`)
   - Style `.cfc-broadcaster-group`, `.cfc-broadcaster-grid`, `.cfc-broadcaster-card`, `.cfc-broadcaster-logo`, `.cfc-broadcaster-chips`, `.cfc-broadcaster-chip`, `.cfc-broadcaster-editorial`, `.cfc-broadcaster-actions`, `.cfc-channel-card__link`, and scoped `.cfc-faq--numbered` CSS-counter numbering (so shared `.cfc-faq` on match/team/league pages is unaffected) using existing CFC design tokens (zero-radius, light/dark mode support, zero `cfc-channel-badge` reuse)
   - Import `./cfc/components/broadcaster.css` in `assets/css/custom.css`
   - Observable completed state: `HUGO_CFC_DATA_SOURCE=sample pnpm build && pnpm check` succeeds with home HTML + CSS/JS gzip remaining under 100 KB and `.cfc-faq--numbered` scoped away from match/team/league FAQs
