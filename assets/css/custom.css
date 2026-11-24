@@ -76,3 +76,4 @@ input[type="radio"],
   border-radius: 0;
 }
 @import "./cfc/components/app-deeplinks.css";
+@import "./cfc/components/updates.css";

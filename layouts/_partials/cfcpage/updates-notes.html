@@ -1,0 +1,68 @@
+{{- /* cfcpage/updates-notes.html - Resolves localized release notes with regional English fallback. */ -}}
+{{- $notes := .notes -}}
+{{- $lang := lower (printf "%v" (.lang | default site.Language.Lang | default "en")) -}}
+{{- $result := dict -}}
+
+{{- if and $notes (reflect.IsMap $notes) (gt (len $notes) 0) -}}
+  {{- $candidates := slice $lang -}}
+  {{- if in (slice "en-gb" "en-ie" "en-us") $lang -}}
+    {{- $candidates = $candidates | append "en" -}}
+  {{- else if eq $lang "pt-pt" -}}
+    {{- $candidates = $candidates | append "pt-br" "pt" "en" -}}
+  {{- else if eq $lang "pt-br" -}}
+    {{- $candidates = $candidates | append "pt" "en" -}}
+  {{- else if eq $lang "es-ar" -}}
+    {{- $candidates = $candidates | append "es" "en" -}}
+  {{- else if in (slice "zh-cn" "ja") $lang -}}
+    {{- $candidates = $candidates | append "en" -}}
+  {{- end -}}
+  {{- $candidates = ($candidates | append "en") | uniq -}}
+
+  {{- $normalizedNotes := dict -}}
+  {{- range $k, $v := $notes -}}
+    {{- if and $v (reflect.IsMap $v) -}}
+      {{- $hasSummary := ne (strings.TrimSpace (printf "%v" ($v.summary | default ""))) "" -}}
+      {{- $hasItems := and $v.items (gt (len $v.items) 0) -}}
+      {{- if or $hasSummary $hasItems -}}
+        {{- $normalizedNotes = merge $normalizedNotes (dict (lower $k) $v) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $resolvedKey := "" -}}
+  {{- $resolved := dict -}}
+  {{- range $cand := $candidates -}}
+    {{- if and (eq $resolvedKey "") (isset $normalizedNotes $cand) -}}
+      {{- $resolvedKey = $cand -}}
+      {{- $resolved = index $normalizedNotes $cand -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if eq $resolvedKey "" -}}
+    {{- range $k, $v := $normalizedNotes -}}
+      {{- if eq $resolvedKey "" -}}
+        {{- $resolvedKey = $k -}}
+        {{- $resolved = $v -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if ne $resolvedKey "" -}}
+    {{- $summary := strings.TrimSpace (printf "%v" ($resolved.summary | default "")) -}}
+    {{- $items := slice -}}
+    {{- with $resolved.items -}}
+      {{- range . -}}
+        {{- $line := strings.TrimSpace (printf "%v" .) -}}
+        {{- if $line -}}
+          {{- $items = $items | append $line -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if and (eq $summary "") (gt (len $items) 0) -}}
+      {{- $summary = index $items 0 -}}
+    {{- end -}}
+    {{- $result = dict "summary" $summary "items" $items "resolvedLocale" $resolvedKey -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $result -}}

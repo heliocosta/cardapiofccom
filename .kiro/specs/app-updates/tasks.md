@@ -16,7 +16,7 @@
   - _Boundary: NavigationSeoI18n_
   - _Requirements: 1.2, 1.3, 3.1_
 
-- [ ] 2. Core feature — store monitoring and multilingual updates page
+- [x] 2. Core feature — store monitoring and multilingual updates page
 - [x] 2.1 (P) Implement zero-secret multi-store update extractor and fail-safe release merge logic
   - Query public Apple App Store and Google Play Store listings across active regional storefronts using built-in HTTP requests paced to avoid rate limits and requiring zero API secrets
   - Extract version, release date, and localized notes from Apple Store responses, and extract release date, localized notes, and optional version from Google Play listings while gracefully handling omitted version values and unsupported storefronts
@@ -26,7 +26,7 @@
   - _Depends: 1.1_
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 2.2 (P) Build the multilingual app updates page, localized note fallback resolver, and sharp-corner styles
+- [x] 2.2 (P) Build the multilingual app updates page, localized note fallback resolver, and sharp-corner styles
   - Create the multilingual section entry across all nine site editions (`/{edition}/updates/` and Global `/updates/`) without registering the route in app deep-link manifests
   - Render the Latest Releases summary for iOS and Android with UTM-attributed store download badges, followed by the newest-first chronological release timeline with platform pills, clean omitted-version handling, structured note formatting, empty-state fallback, and final download call to action without embedding daily-changing check timestamps in primary content
   - Implement a localized note resolver that selects the edition's language and falls back cleanly to English for unsupported locales or regions

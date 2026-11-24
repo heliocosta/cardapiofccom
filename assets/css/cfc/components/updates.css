@@ -1,0 +1,227 @@
+/* ---------- App Updates & Changelog page ---------- */
+
+.cfc-updates-section {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cfc-updates-latest {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .cfc-updates-latest {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.cfc-updates-latest__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.875rem;
+  border-radius: 0;
+  border-left: 3px solid var(--cfc-ink);
+}
+
+.cfc-updates-latest__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  padding-bottom: 0.625rem;
+  border-bottom: var(--cfc-hairline);
+}
+
+.cfc-updates-latest__platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.dark .cfc-updates-latest__platform {
+  color: var(--color-darkmode-text-dark);
+}
+
+.cfc-updates-latest__icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--cfc-ink);
+  flex-shrink: 0;
+}
+
+.cfc-updates-latest__date {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.dark .cfc-updates-latest__date {
+  color: var(--color-darkmode-muted);
+}
+
+.cfc-updates-latest__body {
+  min-width: 0;
+}
+
+.cfc-updates-latest__version {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.cfc-updates-latest__ver-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.dark .cfc-updates-latest__ver-label {
+  color: var(--color-darkmode-muted);
+}
+
+.cfc-updates-latest__ver-num {
+  font-family: var(--font-secondary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--color-text-dark);
+}
+
+.dark .cfc-updates-latest__ver-num {
+  color: var(--color-darkmode-text-dark);
+}
+
+.cfc-updates-latest__noversion {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.dark .cfc-updates-latest__noversion {
+  color: var(--color-darkmode-muted);
+}
+
+.cfc-updates-latest__badges {
+  margin-top: 1.25rem;
+}
+
+/* ---------- Chronological release timeline ---------- */
+
+.cfc-updates-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.cfc-updates-timeline__item {
+  margin: 0;
+}
+
+.cfc-updates-release {
+  border-radius: 0;
+}
+
+.cfc-updates-release__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem 1rem;
+  padding-bottom: 0.875rem;
+  border-bottom: var(--cfc-hairline);
+}
+
+.cfc-updates-release__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cfc-updates-release__date {
+  font-family: var(--font-secondary);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-text-dark);
+}
+
+.dark .cfc-updates-release__date {
+  color: var(--color-darkmode-text-dark);
+}
+
+.cfc-updates-release__platforms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.cfc-updates-platform-pill {
+  border-radius: 0;
+  background-color: var(--cfc-tint);
+  color: var(--cfc-ink);
+}
+
+.cfc-updates-release__body {
+  margin-top: 0.875rem;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.dark .cfc-updates-release__body {
+  color: var(--color-darkmode-text);
+}
+
+.cfc-updates-release__summary {
+  margin: 0;
+}
+
+.cfc-updates-release__summary + .cfc-updates-release__list {
+  margin-top: 0.625rem;
+}
+
+.cfc-updates-release__list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.375rem;
+  list-style-type: square;
+}
+
+.cfc-updates-release__list li::marker {
+  color: var(--cfc-ink);
+}
+
+/* ---------- Empty state ---------- */
+
+.cfc-updates-empty__title {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.cfc-updates-empty__badges {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+}

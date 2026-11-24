@@ -1,0 +1,200 @@
+{{ define "main" }}
+  {{- $page := . -}}
+  {{- $homeUrl := "/" | relLangURL -}}
+  {{- $homeLabel := i18n "home" | default "Home" -}}
+  {{- $updatesLabel := i18n "updates" | default "App Updates" -}}
+  {{- $breadcrumbs := slice (dict "name" $homeLabel "label" $homeLabel "url" $homeUrl) (dict "name" $updatesLabel "label" $updatesLabel) -}}
+
+  {{- $appData := hugo.Data.cfc.app_updates | default site.Data.cfc.app_updates | default dict -}}
+  {{- $latest := $appData.latest | default dict -}}
+  {{- $releases := $appData.releases | default slice -}}
+  {{- $iosLatest := index $latest "ios" -}}
+  {{- $androidLatest := index $latest "android" -}}
+  {{- $hasLatest := or $iosLatest $androidLatest -}}
+
+  <div class="cfc-container py-6">
+    {{ partial "cfc/breadcrumb.html" (dict "items" $breadcrumbs) }}
+
+    {{ partial "cfc/page-hero.html" (dict
+      "eyebrow" (i18n "updates_badge" | default "Release Notes")
+      "title" (i18n "updates_title" | default .Title | default "CardápioFC App Updates & Changelog")
+      "intro" (i18n "updates_intro" | default .Description | default "Track the latest releases, new features, and improvements for the CardápioFC mobile app on iOS and Android.")
+    ) }}
+
+    {{- if or $hasLatest (gt (len $releases) 0) -}}
+      <section class="cfc-section--tight cfc-updates-section" aria-labelledby="cfc-updates-latest-title">
+        {{ partial "cfc/section-head.html" (dict
+          "align" "left"
+          "title" (i18n "updates_latest_heading" | default "Latest Releases")
+          "id" "cfc-updates-latest-title"
+          "level" 2
+        ) }}
+
+        {{- if $hasLatest -}}
+          {{- $platforms := slice
+            (dict "key" "ios" "data" $iosLatest "icon" "apple" "label" (i18n "updates_platform_ios" | default "iOS"))
+            (dict "key" "android" "data" $androidLatest "icon" "google-play" "label" (i18n "updates_platform_android" | default "Android"))
+          -}}
+          <div class="cfc-updates-latest">
+            {{- range $platforms -}}
+              {{- if .data -}}
+                {{- $rawVer := index .data "version" -}}
+                {{- $ver := "" -}}
+                {{- if and $rawVer (ne (printf "%v" $rawVer) "<nil>") -}}
+                  {{- $trimmed := strings.TrimSpace (printf "%v" $rawVer) -}}
+                  {{- if and $trimmed (ne (lower $trimmed) "null") (ne (lower $trimmed) "undefined") -}}
+                    {{- $ver = $trimmed -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- $rawDate := index .data "releaseDate" | default "" -}}
+                {{- $dateStr := "" -}}
+                {{- if $rawDate -}}
+                  {{- $dateStr = time.Format ":date_medium" (time.AsTime $rawDate) -}}
+                {{- end -}}
+                <div class="cfc-card cfc-card--static cfc-updates-latest__card">
+                  <div class="cfc-updates-latest__head">
+                    <span class="cfc-updates-latest__platform">
+                      {{ partial "cfc/icon.html" (dict "name" .icon "class" "cfc-updates-latest__icon") }}
+                      <span>{{ .label }}</span>
+                    </span>
+                    {{- if $dateStr -}}
+                      <time class="cfc-updates-latest__date" datetime="{{ $rawDate }}">
+                        {{ i18n "updates_released_label" | default "Released" }}: {{ $dateStr }}
+                      </time>
+                    {{- end -}}
+                  </div>
+                  <div class="cfc-updates-latest__body">
+                    {{- if $ver -}}
+                      <p class="cfc-updates-latest__version">
+                        <span class="cfc-updates-latest__ver-label">{{ i18n "updates_version_label" | default "Version" }}</span>
+                        <span class="cfc-updates-latest__ver-num">{{ $ver }}</span>
+                      </p>
+                    {{- else -}}
+                      <p class="cfc-updates-latest__noversion">
+                        {{ i18n "updates_no_version_note" | default "Latest release on store (version varies by device)" }}
+                      </p>
+                    {{- end -}}
+                  </div>
+                </div>
+              {{- end -}}
+            {{- end -}}
+          </div>
+        {{- end -}}
+
+        <div class="cfc-updates-latest__badges">
+          {{ partial "cfc/store-badges.html" (dict "page" $page "size" "md") }}
+        </div>
+      </section>
+    {{- end -}}
+
+    {{- if gt (len $releases) 0 -}}
+      <section class="cfc-section--tight cfc-updates-section" aria-labelledby="cfc-updates-history-title">
+        {{ partial "cfc/section-head.html" (dict
+          "align" "left"
+          "title" (i18n "updates_history_heading" | default "Release History")
+          "id" "cfc-updates-history-title"
+          "level" 2
+        ) }}
+
+        <ol class="cfc-updates-timeline">
+          {{- range $idx, $rel := $releases -}}
+            {{- $relDate := $rel.releaseDate | default "" -}}
+            {{- $relDateFmt := "" -}}
+            {{- if $relDate -}}
+              {{- $relDateFmt = time.Format ":date_medium" (time.AsTime $relDate) -}}
+            {{- end -}}
+            {{- $rawRelVer := $rel.version -}}
+            {{- $relVersion := "" -}}
+            {{- if and $rawRelVer (ne (printf "%v" $rawRelVer) "<nil>") -}}
+              {{- $trimmedRelVer := strings.TrimSpace (printf "%v" $rawRelVer) -}}
+              {{- if and $trimmedRelVer (ne (lower $trimmedRelVer) "null") (ne (lower $trimmedRelVer) "undefined") -}}
+                {{- $relVersion = $trimmedRelVer -}}
+              {{- end -}}
+            {{- end -}}
+            {{- $plats := $rel.platforms | default dict -}}
+            {{- $platIos := index $plats "ios" -}}
+            {{- $platAndroid := index $plats "android" -}}
+            {{- $resolved := partial "cfcpage/updates-notes.html" (dict "notes" $rel.notes "lang" site.Language.Lang) -}}
+            {{- $summary := $resolved.summary | default "" -}}
+            {{- $items := $resolved.items | default slice -}}
+
+            <li class="cfc-updates-timeline__item">
+              <article class="cfc-card cfc-card--static cfc-updates-release">
+                <header class="cfc-updates-release__head">
+                  <div class="cfc-updates-release__meta">
+                    {{- if $relDateFmt -}}
+                      <time class="cfc-updates-release__date" datetime="{{ $relDate }}">{{ $relDateFmt }}</time>
+                    {{- end -}}
+                    {{- if eq $idx 0 -}}
+                      <span class="cfc-pill cfc-pill--solid cfc-pill--label">{{ i18n "updates_latest_badge" | default "Latest" }}</span>
+                    {{- end -}}
+                    {{- if $relVersion -}}
+                      <span class="cfc-pill cfc-pill--muted">{{ i18n "updates_version_label" | default "Version" }} {{ $relVersion }}</span>
+                    {{- end -}}
+                  </div>
+                  <div class="cfc-updates-release__platforms">
+                    {{- if $platIos -}}
+                      <span class="cfc-pill cfc-updates-platform-pill">
+                        {{ partial "cfc/icon.html" (dict "name" "apple" "class" "cfc-pill__icon") }}
+                        <span>{{ i18n "updates_platform_ios" | default "iOS" }}</span>
+                      </span>
+                    {{- end -}}
+                    {{- if $platAndroid -}}
+                      <span class="cfc-pill cfc-updates-platform-pill">
+                        {{ partial "cfc/icon.html" (dict "name" "google-play" "class" "cfc-pill__icon") }}
+                        <span>{{ i18n "updates_platform_android" | default "Android" }}</span>
+                      </span>
+                    {{- end -}}
+                  </div>
+                </header>
+
+                {{- if or $summary (gt (len $items) 0) -}}
+                  <div class="cfc-updates-release__body">
+                    {{- if gt (len $items) 1 -}}
+                      {{- if and $summary (ne $summary (index $items 0)) -}}
+                        <p class="cfc-updates-release__summary">{{ $summary }}</p>
+                      {{- end -}}
+                      <ul class="cfc-updates-release__list">
+                        {{- range $items -}}
+                          <li>{{ . }}</li>
+                        {{- end -}}
+                      </ul>
+                    {{- else if eq (len $items) 1 -}}
+                      {{- $firstItem := index $items 0 -}}
+                      {{- if and $summary (ne $summary $firstItem) -}}
+                        <p class="cfc-updates-release__summary">{{ $summary }}</p>
+                        <ul class="cfc-updates-release__list">
+                          <li>{{ $firstItem }}</li>
+                        </ul>
+                      {{- else -}}
+                        <p class="cfc-updates-release__summary">{{ $firstItem }}</p>
+                      {{- end -}}
+                    {{- else if $summary -}}
+                      <p class="cfc-updates-release__summary">{{ $summary }}</p>
+                    {{- end -}}
+                  </div>
+                {{- end -}}
+              </article>
+            </li>
+          {{- end -}}
+        </ol>
+      </section>
+    {{- else -}}
+      <section class="cfc-section--tight cfc-updates-section cfc-updates-empty" aria-labelledby="cfc-updates-empty-title">
+        <h2 id="cfc-updates-empty-title" class="cfc-section-head__title cfc-updates-empty__title">
+          {{ i18n "updates_empty_title" | default "No Release History Yet" }}
+        </h2>
+        {{ partial "cfc/empty-state.html" (dict "message" (i18n "updates_empty_desc" | default "Release notes are being synced. Download the CardápioFC app on the App Store or Google Play for the latest version.")) }}
+        <div class="cfc-updates-empty__badges">
+          {{ partial "cfc/store-badges.html" (dict "page" $page "size" "md") }}
+        </div>
+      </section>
+    {{- end -}}
+
+    {{ partial "cfc/app-download.html" (dict
+      "page" $page
+      "title" (i18n "updates_cta_title" | default "Get the Latest CardápioFC App")
+      "subtitle" (i18n "updates_cta_subtitle" | default "Download CardápioFC free on iOS and Android for live TV guides, kick-off reminders, and official streaming links.")
+    ) }}
+  </div>
+{{ end }}
