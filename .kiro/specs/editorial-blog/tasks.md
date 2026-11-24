@@ -9,7 +9,7 @@
   - _Boundary: BlogNavigationAndI18n_
   - _Requirements: 5.1, 5.4_
 
-- [ ] 1.2 (P) Create nine-edition blog section scaffolds, shared cover illustration, and localized launch seed article
+- [x] 1.2 (P) Create nine-edition blog section scaffolds, shared cover illustration, and localized launch seed article
   - Create the blog section index pages across all nine editions linked by a shared hub translation identifier
   - Author one localized launch seed article across all nine editions using an identical lowercase ASCII slug and matching translation identifier, complete required metadata, a valid editorial pillar, official-broadcasters-only/zero-ads content, and structured FAQ items, paired with one central editorial cover illustration
   - Observable completion: All nine editions contain localized blog hub and launch seed article content referencing one shared cover illustration, ready for media processing, template rendering, and contract validation
@@ -122,3 +122,4 @@
 - Preserve the `i18n/pt-br.yaml -> pt.yaml` symlink when adding localization strings, and verify `pnpm check` Check C after `pnpm build`.
 - Leave `layouts/_partials/cfcdata/budget.html` untouched so `scripts/test-cfc-dataset-budget.mjs` remains green; layer blog file estimates in `layouts/_partials/cfcdata/blog-budget.html`.
 - Task-graph sanity review (`kiro-spec-tasks` Step 3.5) verdict: `PASS` (mode: `independent`).
+- Pre-Task 2.2 expected build note: Once Task `1.2` creates `content/*/blog/`, `pnpm build` falls back to `themes/hugoplate/layouts/blog/single.html` (`partial "toc.html" not found`) until Task `2.2` adds root `layouts/blog/single.html` (and `pnpm check` flags `public/blog` until Task `4.2`); use `hugo list all` for content parsing checks until Task `2.2` lands.
