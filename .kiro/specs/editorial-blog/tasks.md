@@ -88,7 +88,7 @@
   - _Requirements: 4.5, 5.2_
 
 - [ ] 4. Validation — contract validator, site/SEO suite extensions, and full release gate
-- [ ] 4.1 Implement the nine-edition blog contract validator CLI and validation script alias
+- [x] 4.1 Implement the nine-edition blog contract validator CLI and validation script alias
   - Build a zero-dependency Node ESM validator that verifies all nine blog hub pages exist, every non-draft article exists across all nine editions with identical lowercase ASCII slugs and matching translation identifiers, required metadata fields and pillar values are valid with last-modified >= published date, body content is non-empty, shared cover image files exist on disk, are readable, and have source header dimensions >= 1200x630 (with the processed 1200x630 <= 300,000-byte JPEG OG check enforced post-build by SEO/social verification), optional FAQ items are well-formed, and zero banned taxonomy links or FontAwesome classes appear; expose the validation alias in package scripts
   - Observable completion: Running the blog contract validator passes against the nine-edition launch seed post and exits non-zero when tested against missing editions, invalid pillars, or missing cover images
   - _Boundary: BlogBudgetAndValidation_
