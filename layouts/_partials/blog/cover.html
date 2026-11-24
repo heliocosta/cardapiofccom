@@ -1,0 +1,57 @@
+{{/* layouts/_partials/blog/cover.html */}}
+{{/* Single-source cover image and OG preview resolver. */}}
+{{/* Accepts: dict "image" $path "alt" $alt (or a Page context). */}}
+{{/* Caches Hugo Pipes variants strictly by normalized image path and attaches alt per-call outside partialCached. */}}
+{{- $rawPath := "" -}}
+{{- $alt := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- $rawPath = index . "image" | default "" -}}
+  {{- $alt = printf "%v" (index . "alt" | default "") -}}
+{{- else if . -}}
+  {{- with .Params -}}
+    {{- $rawPath = index . "image" | default "" -}}
+    {{- $alt = printf "%v" (index . "image_alt" | default "") -}}
+  {{- end -}}
+  {{- if eq $alt "" -}}
+    {{- $alt = printf "%v" (.Title | default "") -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $normPath := strings.TrimPrefix "/" (strings.TrimSpace (printf "%v" ($rawPath | default ""))) -}}
+{{- if eq $normPath "" -}}
+  {{- return (dict
+    "hasImage" false
+    "card" (dict "src" "" "srcset" "" "width" 0 "height" 0 "alt" $alt)
+    "hero" (dict "src" "" "srcset" "" "width" 0 "height" 0 "alt" $alt)
+    "og" (dict "url" "" "width" 0 "height" 0 "bytes" 0 "valid" false)
+  ) -}}
+{{- end -}}
+
+{{- $base := partialCached "blog/cover-variants.html" $normPath $normPath -}}
+{{- if not $base.hasImage -}}
+  {{- return (dict
+    "hasImage" false
+    "card" (dict "src" "" "srcset" "" "width" 0 "height" 0 "alt" $alt)
+    "hero" (dict "src" "" "srcset" "" "width" 0 "height" 0 "alt" $alt)
+    "og" (dict "url" "" "width" 0 "height" 0 "bytes" 0 "valid" false)
+  ) -}}
+{{- end -}}
+
+{{- return (dict
+  "hasImage" true
+  "card" (dict
+    "src" $base.card.src
+    "srcset" $base.card.srcset
+    "width" $base.card.width
+    "height" $base.card.height
+    "alt" $alt
+  )
+  "hero" (dict
+    "src" $base.hero.src
+    "srcset" $base.hero.srcset
+    "width" $base.hero.width
+    "height" $base.hero.height
+    "alt" $alt
+  )
+  "og" $base.og
+) -}}

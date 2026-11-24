@@ -1,0 +1,53 @@
+{{/* layouts/_partials/blog/cover-variants.html */}}
+{{/* Cached Hugo Pipes image processor keyed strictly on normalized asset path ($normPath). */}}
+{{/* Returns dict without edition-specific alt text so variants are shared across all editions. */}}
+{{- $normPath := strings.TrimPrefix "/" (strings.TrimSpace (printf "%v" (. | default ""))) -}}
+{{- $empty := dict
+  "hasImage" false
+  "card" (dict "src" "" "srcset" "" "width" 0 "height" 0)
+  "hero" (dict "src" "" "srcset" "" "width" 0 "height" 0)
+  "og" (dict "url" "" "width" 0 "height" 0 "bytes" 0 "valid" false)
+-}}
+{{- if eq $normPath "" -}}
+  {{- return $empty -}}
+{{- end -}}
+
+{{- $img := resources.Get $normPath -}}
+{{- if not $img -}}
+  {{- return $empty -}}
+{{- end -}}
+{{- if or (ne $img.MediaType.MainType "image") (eq $img.MediaType.SubType "svg") -}}
+  {{- return $empty -}}
+{{- end -}}
+
+{{- $card1x := ($img.Fill "480x270 Center webp q80") | fingerprint -}}
+{{- $card2x := ($img.Fill "800x450 Center webp q80") | fingerprint -}}
+{{- $hero640 := ($img.Fill "640x360 Center webp q80") | fingerprint -}}
+{{- $hero1200 := ($img.Fill "1200x675 Center webp q80") | fingerprint -}}
+{{- $og := ($img.Fill "1200x630 Center jpeg q80") | fingerprint -}}
+
+{{- $ogBytes := len $og.Content -}}
+{{- $ogValid := le $ogBytes 300000 -}}
+
+{{- return (dict
+  "hasImage" true
+  "card" (dict
+    "src" $card2x.RelPermalink
+    "srcset" (printf "%s 1x, %s 2x" $card1x.RelPermalink $card2x.RelPermalink)
+    "width" (int $card2x.Width)
+    "height" (int $card2x.Height)
+  )
+  "hero" (dict
+    "src" $hero1200.RelPermalink
+    "srcset" (printf "%s 640w, %s 1200w" $hero640.RelPermalink $hero1200.RelPermalink)
+    "width" (int $hero1200.Width)
+    "height" (int $hero1200.Height)
+  )
+  "og" (dict
+    "url" $og.Permalink
+    "width" (int $og.Width)
+    "height" (int $og.Height)
+    "bytes" $ogBytes
+    "valid" $ogValid
+  )
+) -}}

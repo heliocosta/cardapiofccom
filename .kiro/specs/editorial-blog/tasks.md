@@ -30,7 +30,7 @@
   - _Boundary: BlogBudgetAndValidation_
   - _Requirements: 4.5, 6.1_
 
-- [ ] 1.5 Build the single-source cover image and social preview media pipeline with immutable cache headers
+- [x] 1.5 Build the single-source cover image and social preview media pipeline with immutable cache headers
   - Implement a cached media resolver that accepts the central editorial cover illustration path, crops and encodes fingerprinted responsive WebP variants for article cards and hero banners with explicit numeric width and height attributes, and generates a 1200x630 JPEG social preview image compressed within the 300,000-byte ceiling
   - Provide safe fallback behavior when a source cover illustration is absent or exceeds the social preview byte ceiling so page generation never fails unexpectedly
   - Add a long-lived immutable response caching rule for fingerprinted blog image assets in the edge headers configuration
