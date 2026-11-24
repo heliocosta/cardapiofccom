@@ -30,3 +30,13 @@ coverage_domestic_4: "LaLiga, Serie A, Bundesliga & Ligue 1"
 coverage_domestic_5: "Brasileirão, Copa Libertadores & Argentine Primera División"
 app_feat_6_title: "Personalized Favorites & Watchlist"
 app_feat_6_desc: "Follow your favorite clubs, leagues, and channels, and bookmark upcoming games in My Agenda."
+
+# Broadcaster Directory
+channels_title: "Official US Soccer TV & Streaming Channels"
+channels_intro: "Explore official US soccer television networks and legal streaming platforms broadcasting live soccer matches."
+channels_empty: "Official US soccer broadcaster listings are currently being added. Download the CardápioFC mobile app for real-time schedules and kickoff alerts."
+faq_a12: "CardápioFC is actively expanding official US soccer TV and streaming channel listings. Browse our Channels directory or download the CardápioFC mobile app for real-time US soccer schedules, kickoff times, and broadcast alerts."
+seo_channels_title: "Official US Soccer TV & Streaming Channels | CardápioFC"
+seo_channels_desc: "Explore official US soccer TV channels and legal streaming services, plus download the CardápioFC app for live soccer schedules and kickoff alerts."
+seo_channel_title: "{{ .Channel }}: US Soccer TV Schedule & Live Streams"
+seo_channel_desc: "Watch live soccer on {{ .Channel }} ({{ .Type }}) {{ .In }}. {{ .Count }} upcoming match(es) scheduled with local kickoff times and official links."
