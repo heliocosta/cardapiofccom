@@ -37,7 +37,7 @@
   - _Requirements: 1.1, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.2, 3.3, 3.4, 7.1_
 
 - [ ] 3. Testing, SEO wiring, and full-site verification
-- [ ] 3.1 (P) Build offline fixture unit tests covering store parsing, deduplication, fallback, and fail-safe merge
+- [x] 3.1 (P) Build offline fixture unit tests covering store parsing, deduplication, fallback, and fail-safe merge
   - Write offline test fixtures covering active Apple storefronts, empty unsupported storefronts, Google Play payloads with omitted version strings, malformed/consent-blocked responses, cross-platform release grouping, Android deduplication, manual-entry preservation, and no-op unchanged comparisons
   - Observable completion: Offline test suite executes via the package test command and all assertions pass without network access
   - _Boundary: StoreUpdateFetcher_
