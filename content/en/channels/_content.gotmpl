@@ -1,0 +1,54 @@
+{{ .EnableAllLanguages }}
+{{ $settings := partialCached "cfcdata/settings.html" . "settings" }}
+{{ $dataset := partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ $_budget := partialCached "cfcdata/broadcaster-budget.html" (dict "dataset" $dataset "settings" $settings) "broadcaster-budget" }}
+{{ $edParams := site.Params.edition }}
+{{ $isGlobal := false }}
+{{ $country := "" }}
+{{ if reflect.IsMap $edParams }}
+  {{ $isGlobal = or (index $edParams "isGlobal") (index $edParams "isglobal") }}
+  {{ with index $edParams "country" }}
+    {{ $country = upper (strings.TrimSpace (printf "%v" .)) }}
+  {{ end }}
+{{ end }}
+{{ if and (not $isGlobal) (ne $country "") }}
+  {{ $edCode := "" }}
+  {{ with site.Language }}
+    {{ $edCode = .Lang | default "" }}
+  {{ end }}
+  {{ if eq $edCode "" }}
+    {{ $edCode = "en" }}
+  {{ end }}
+  {{ $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $country "editionCode" $edCode "lang" $edCode "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $country $edCode $edCode) }}
+  {{ $dates := dict }}
+  {{ if and (reflect.IsMap $dataset) (isset $dataset "generatedAt") }}
+    {{ with index $dataset "generatedAt" }}
+      {{ $genStr := strings.TrimSpace (printf "%v" .) }}
+      {{ if ne $genStr "" }}
+        {{ $dt := time.AsTime $genStr }}
+        {{ $dates = dict "date" $dt "lastmod" $dt "publishDate" $dt }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if and (reflect.IsMap $catalog) (reflect.IsSlice $catalog.list) }}
+    {{ range $b := $catalog.list }}
+      {{ $page := dict
+        "kind" "page"
+        "path" $b.slug
+        "title" $b.name
+        "translationKey" (printf "channel-%s-%s" (lower $country) $b.slug)
+        "params" (dict
+          "cfc" (dict
+            "kind" "channel"
+            "slug" $b.slug
+            "country" $country
+          )
+        )
+      }}
+      {{ if gt (len $dates) 0 }}
+        {{ $page = merge $page (dict "dates" $dates) }}
+      {{ end }}
+      {{ $.AddPage $page }}
+    {{ end }}
+  {{ end }}
+{{ end }}

@@ -31,7 +31,7 @@
   - _Boundary: BroadcasterCatalogResolver, UrlAndEntitySeams_
   - _Depends: 1.1_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 3.1, 5.1, 5.2, 5.3, 6.1, 6.5, 6.6_
-- [ ] 1.5 Implement broadcaster file-budget guard, channels section scaffold, and content adapter
+- [x] 1.5 Implement broadcaster file-budget guard, channels section scaffold, and content adapter
   - Create `layouts/_partials/cfcdata/broadcaster-budget.html` (invoked once via `partialCached` key `"broadcaster-budget"`): calls `cfcdata/budget.html` (leaving `budget.html` and `settings.yaml` untouched), sums `hubPages = len hugo.Sites` + regional `totalBroadcasters` across non-global `hugo.Sites` (checking both `isGlobal` and `isglobal` and using 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`), emits `warnf "broadcaster-directory: estimated total files %d/%d (broadcasters %d: %d hubs + %d detail, base %d)"`, and halts with `errorf` if `combined > budget`
   - Create `content/en/channels/_index.md` with `sites.matrix.languages: ["**"]` and `params.cfc.kind: "channels"`
   - Create `content/en/channels/_content.gotmpl` with `{{ .EnableAllLanguages }}`, returning immediately on Global (`isGlobal`/`isglobal` or empty `country`) for 0 Global child pages, calling `broadcaster-budget.html`, fetching `$catalog` with 3-part cache key `broadcasters|{country}|{editionCode}|{lang}`, and calling `$.AddPage` per regional broadcaster with `"translationKey": printf "channel-%s-%s" (lower $country) $b.slug`, `"dates"` from `dataset.generatedAt`, and `params.cfc = { kind: "channel", slug, country }`

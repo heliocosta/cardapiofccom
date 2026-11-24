@@ -1,0 +1,86 @@
+{{/* layouts/_partials/cfcdata/broadcaster-budget.html */}}
+{{/* Additive combined file-budget guard for broadcaster hub and regional detail pages. */}}
+{{/* Signature: partialCached "cfcdata/broadcaster-budget.html" (dict "dataset" $dataset "settings" $settings) "broadcaster-budget" */}}
+
+{{ $dataset := index (dict) "nil" }}
+{{ $settings := index (dict) "nil" }}
+
+{{ if reflect.IsMap . }}
+  {{ if isset . "dataset" }}
+    {{ $dataset = .dataset }}
+  {{ else if and (isset . "matches") (isset . "teams") }}
+    {{ $dataset = . }}
+  {{ end }}
+  {{ if isset . "settings" }}
+    {{ $settings = .settings }}
+  {{ end }}
+{{ end }}
+
+{{ if not $settings }}
+  {{ $settings = partialCached "cfcdata/settings.html" . "settings" }}
+{{ end }}
+
+{{ if not $dataset }}
+  {{ $dataset = partialCached "cfcdata/dataset.html" . "dataset" }}
+{{ end }}
+
+{{ $baseBudget := partialCached "cfcdata/budget.html" (dict "dataset" $dataset "settings" $settings) "budget" }}
+{{ $baseTotal := 0 }}
+{{ $budget := 18000 }}
+{{ if reflect.IsMap $baseBudget }}
+  {{ if isset $baseBudget "total" }}
+    {{ $baseTotal = int (index $baseBudget "total") }}
+  {{ end }}
+  {{ if isset $baseBudget "budget" }}
+    {{ $budget = int (index $baseBudget "budget") }}
+  {{ end }}
+{{ end }}
+
+{{ $hubPages := 0 }}
+{{ $detailPages := 0 }}
+{{ with hugo.Sites }}
+  {{ $hubPages = len . }}
+  {{ range . }}
+    {{ $edParams := .Params.edition }}
+    {{ $isGlobal := false }}
+    {{ $cc := "" }}
+    {{ if reflect.IsMap $edParams }}
+      {{ $isGlobal = or (index $edParams "isGlobal") (index $edParams "isglobal") }}
+      {{ with index $edParams "country" }}
+        {{ $cc = upper (strings.TrimSpace (printf "%v" .)) }}
+      {{ end }}
+    {{ end }}
+    {{ if and (not $isGlobal) (ne $cc "") }}
+      {{ $edCode := "" }}
+      {{ with .Language }}
+        {{ $edCode = .Lang | default "" }}
+      {{ end }}
+      {{ if eq $edCode "" }}
+        {{ $edCode = "en" }}
+      {{ end }}
+      {{ $catalog := partialCached "cfcdata/broadcasters.html" (dict "country" $cc "editionCode" $edCode "lang" $edCode "dataset" $dataset) (printf "broadcasters|%s|%s|%s" $cc $edCode $edCode) }}
+      {{ if and (reflect.IsMap $catalog) (isset $catalog "totalBroadcasters") }}
+        {{ $detailPages = add $detailPages (int (index $catalog "totalBroadcasters")) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $broadcastersTotal := add $hubPages $detailPages }}
+{{ $combined := add $baseTotal $broadcastersTotal }}
+
+{{ warnf "broadcaster-directory: estimated total files %d/%d (broadcasters %d: %d hubs + %d detail, base %d)" $combined $budget $broadcastersTotal $hubPages $detailPages $baseTotal }}
+
+{{ if gt $combined $budget }}
+  {{ errorf "broadcaster-directory: file budget exceeded: estimated %d files exceeds budget %d (broadcasters %d: %d hubs + %d detail, base %d)" $combined $budget $broadcastersTotal $hubPages $detailPages $baseTotal }}
+{{ end }}
+
+{{ return (dict
+  "baseTotal" $baseTotal
+  "hubPages" $hubPages
+  "detailPages" $detailPages
+  "broadcastersTotal" $broadcastersTotal
+  "combined" $combined
+  "total" $combined
+  "budget" $budget
+) }}
