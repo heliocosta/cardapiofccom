@@ -1,0 +1,698 @@
+# Curated broadcaster overlay for CardápioFC Broadcaster Directory.
+# Merged at Hugo build time with dataset.channels without altering Data Contract v1.
+# Official, licensed broadcasters and streaming services only (zero ads).
+
+denylist:
+  slugs:
+    - "canal-a-confirmar"
+    - "nao-confirmado"
+    - "to-be-confirmed"
+    - "tba"
+    - "unknown"
+  namePatterns:
+    - "(?i)^(canal a confirmar|não confirmado|nao confirmado|to be confirmed|tba|tbd)$"
+
+normalization:
+  stripSuffixes:
+    - "(?i)\\s*\\((?:Watch it live|Ver ao vivo|Ver en vivo|Ver en directo|Míralo en vivo|Miralo en vivo|Live)\\)\\s*$"
+    - "^\\s+|\\s+$"
+
+countries:
+  BR:
+    ge-tv:
+      name: "GE TV"
+      type: "streaming"
+      persistent: true
+      url: "https://ge.globo.com/"
+      descriptions:
+        pt: "GE TV é o canal digital gratuito de esportes da Globo, com transmissões ao vivo de futebol, programas e cobertura esportiva oficial."
+        en: "GE TV is Globo's official free digital sports channel in Brazil, featuring live football broadcasts and sports coverage."
+      faqs:
+        pt:
+          - q: "O que é a GE TV da Globo?"
+            a: "A GE TV é o canal esportivo digital gratuito do Grupo Globo, disponível no YouTube e nas plataformas digitais do ge, com transmissões oficiais de futebol."
+          - q: "A GE TV é gratuita?"
+            a: "Sim. A programação ao vivo da GE TV é transmitida oficialmente de forma gratuita nas plataformas digitais da Globo."
+        en:
+          - q: "What is GE TV by Globo?"
+            a: "GE TV is Globo's free official digital sports channel in Brazil, streaming licensed football matches and coverage on YouTube and ge platforms."
+          - q: "Is GE TV free to watch?"
+            a: "Yes. GE TV streams live programming free of charge on Globo's official digital channels."
+
+    tv-globo:
+      name: "TV Globo"
+      type: "free_tv"
+      persistent: true
+      url: "https://globoplay.globo.com"
+      descriptions:
+        pt: "TV Globo é a principal emissora aberta do Brasil, com transmissões gratuitas de partidas do Brasileirão, Copa do Brasil, Libertadores e jogos da Seleção Brasileira."
+        en: "TV Globo is Brazil's flagship free-to-air television network, broadcasting selected Brasileirão, Copa do Brasil, Copa Libertadores, and Brazil national team matches."
+      faqs:
+        pt:
+          - q: "Quais campeonatos passam na TV Globo?"
+            a: "A TV Globo exibe partidas selecionadas em TV aberta do Brasileirão, Copa do Brasil, Copa Libertadores, campeonatos estaduais e jogos da Seleção Brasileira."
+          - q: "Como assistir à TV Globo ao vivo pela internet?"
+            a: "É possível acompanhar o sinal aberto da TV Globo ao vivo e gratuitamente pelo Globoplay com conta Globo nas regiões com cobertura."
+        en:
+          - q: "Which football competitions air on TV Globo?"
+            a: "TV Globo broadcasts selected Brasileirão, Copa do Brasil, Copa Libertadores, state championship, and Brazil national team matches free to air."
+          - q: "Can I stream TV Globo online?"
+            a: "Yes. TV Globo's live broadcast is available to stream for free via Globoplay in covered Brazilian regions with a free Globo account."
+
+    sportv:
+      name: "SporTV"
+      type: "tv"
+      persistent: true
+      url: "https://ge.globo.com/sportv"
+      descriptions:
+        pt: "SporTV é a rede de canais esportivos por assinatura do Grupo Globo, exibindo jogos ao vivo do Brasileirão, Copa do Brasil, estaduais e futebol internacional."
+        en: "SporTV is Globo's pay-TV sports network in Brazil, carrying live coverage of the Brasileirão, Copa do Brasil, state leagues, and international football."
+      faqs:
+        pt:
+          - q: "O que o SporTV transmite no futebol?"
+            a: "O SporTV exibe jogos ao vivo das Séries A e B do Brasileirão, Copa do Brasil, campeonatos estaduais, futebol feminino e torneios internacionais."
+          - q: "Como assistir ao SporTV online?"
+            a: "Os canais SporTV estão disponíveis pela operadora de TV por assinatura ou em streaming pelo pacote Globoplay + Canais."
+        en:
+          - q: "What football airs on SporTV?"
+            a: "SporTV broadcasts live Brasileirão Série A and B matches, Copa do Brasil, state championships, women's football, and international fixtures."
+          - q: "How can I watch SporTV online?"
+            a: "SporTV is accessible via participating Brazilian pay-TV providers and through the Globoplay + Canais streaming bundle."
+
+    premiere:
+      name: "Premiere"
+      type: "tv"
+      persistent: true
+      url: "https://premiere.globo.com"
+      descriptions:
+        pt: "Premiere é o canal pay-per-view oficial do futebol brasileiro, com cobertura ampla do Brasileirão Série A e Série B e de campeonatos estaduais."
+        en: "Premiere is Brazil's official pay-per-view football service, showing live Brasileirão Série A and Série B fixtures alongside major state championships."
+      faqs:
+        pt:
+          - q: "Quais jogos passam no Premiere?"
+            a: "O Premiere transmite partidas do Brasileirão Série A e Série B e dos principais campeonatos estaduais licenciados pelo Grupo Globo."
+          - q: "Preciso de TV a cabo para assinar o Premiere?"
+            a: "Não. O Premiere pode ser assinado diretamente pela internet via Globoplay ou contratado junto a operadoras de TV por assinatura parceiras."
+        en:
+          - q: "What matches does Premiere broadcast?"
+            a: "Premiere broadcasts Brasileirão Série A and Série B fixtures as well as selected Brazilian state championship matches."
+          - q: "Can I subscribe to Premiere without cable TV?"
+            a: "Yes. Premiere is available both as a standalone streaming subscription via Globoplay and through cable or satellite operators."
+
+    cazetv:
+      name: "CazéTV"
+      type: "streaming"
+      persistent: true
+      url: "https://www.youtube.com/@CazeTV"
+      descriptions:
+        pt: "CazéTV é o canal digital esportivo gratuito no YouTube e plataformas parceiras, com transmissões oficiais ao vivo de ligas nacionais, copas e torneios internacionais."
+        en: "CazéTV is a free digital sports channel in Brazil streaming licensed domestic and international football matches live on YouTube and partner platforms."
+      faqs:
+        pt:
+          - q: "Onde assistir à CazéTV ao vivo?"
+            a: "A CazéTV transmite jogos ao vivo gratuitamente em seu canal oficial no YouTube e em plataformas digitais parceiras no Brasil."
+          - q: "A CazéTV cobra assinatura?"
+            a: "Não. As transmissões da CazéTV no YouTube são gratuitas e abertas ao público no Brasil."
+        en:
+          - q: "Where can I watch CazéTV live?"
+            a: "CazéTV broadcasts live football matches on its official YouTube channel and partner streaming platforms in Brazil."
+          - q: "Is CazéTV free to watch?"
+            a: "Yes. CazéTV's official YouTube broadcasts are free to watch in Brazil."
+
+    espn:
+      name: "ESPN"
+      type: "tv"
+      persistent: true
+      url: "https://www.espn.com.br/"
+      descriptions:
+        pt: "ESPN Brasil exibe partidas ao vivo da Premier League, LaLiga, Copa Libertadores, Copa Sul-Americana e grandes copas europeias na TV por assinatura e no Disney+."
+        en: "ESPN in Brazil airs live Premier League, LaLiga, Copa Libertadores, Copa Sudamericana, and European cup matches across pay TV and Disney+."
+      faqs:
+        pt:
+          - q: "Quais ligas de futebol passam na ESPN no Brasil?"
+            a: "A ESPN transmite competições como Premier League, LaLiga, Serie A, Copa Libertadores, Copa Sul-Americana e copas europeias."
+          - q: "Onde assistir aos canais ESPN pelo streaming?"
+            a: "A programação ao vivo dos canais ESPN no Brasil está integrada ao streaming do Disney+ nos planos compatíveis."
+        en:
+          - q: "Which football leagues air on ESPN in Brazil?"
+            a: "ESPN broadcasts the Premier League, LaLiga, Serie A, Copa Libertadores, Copa Sudamericana, and European domestic cups in Brazil."
+          - q: "How do I stream ESPN in Brazil?"
+            a: "Live ESPN channels in Brazil are available via pay-TV operators and included within eligible Disney+ streaming plans."
+
+    disney-premium:
+      name: "Disney+ Premium"
+      type: "streaming"
+      persistent: true
+      url: "https://www.disneyplus.com/pt-br"
+      descriptions:
+        pt: "Disney+ Premium no Brasil reúne todos os canais ESPN ao vivo e o catálogo completo de transmissões esportivas de ligas europeias e torneios da CONMEBOL."
+        en: "Disney+ Premium in Brazil bundles all live ESPN channels and full streaming rights for European leagues and CONMEBOL club competitions."
+      faqs:
+        pt:
+          - q: "O que o Disney+ Premium inclui de futebol?"
+            a: "O plano Disney+ Premium inclui os canais ESPN ao vivo e todos os jogos exclusivos da Premier League, LaLiga, Libertadores e Sul-Americana no catálogo."
+          - q: "Qual a diferença entre Disney+ Padrão e Premium para esportes?"
+            a: "O Disney+ Premium dá acesso completo a todos os canais lineares da ESPN e a todas as partidas esportivas transmitidas na plataforma."
+        en:
+          - q: "What football is included with Disney+ Premium in Brazil?"
+            a: "Disney+ Premium includes live ESPN linear channels plus exclusive streaming matches from the Premier League, LaLiga, Copa Libertadores, and Sudamericana."
+          - q: "Why choose Disney+ Premium for live sports?"
+            a: "Disney+ Premium unlocks the complete ESPN sports catalog and every live stream carried on the service in Brazil."
+
+    hbo-max:
+      name: "HBO Max"
+      type: "streaming"
+      persistent: true
+      url: "https://www.hbomax.com/"
+      descriptions:
+        pt: "HBO Max é o serviço de streaming da Warner Bros. Discovery no Brasil com transmissões ao vivo da UEFA Champions League e de competições selecionadas da TNT Sports."
+        en: "HBO Max is Warner Bros. Discovery's streaming platform in Brazil, broadcasting live UEFA Champions League and selected TNT Sports football coverage."
+      faqs:
+        pt:
+          - q: "Quais torneios de futebol passam na HBO Max no Brasil?"
+            a: "A plataforma exibe todos os jogos da UEFA Champions League ao vivo no Brasil, além de partidas selecionadas transmitidas em conjunto com a TNT Sports."
+          - q: "Preciso de TV a cabo para ver a Champions League na HBO Max?"
+            a: "Não. A assinatura direta do serviço de streaming dá acesso às partidas ao vivo transmitidas na plataforma."
+        en:
+          - q: "Which football competitions stream on HBO Max in Brazil?"
+            a: "In Brazil, the platform streams every UEFA Champions League fixture live alongside selected TNT Sports football matches."
+          - q: "Can I watch without a cable subscription?"
+            a: "Yes. A direct streaming subscription includes live access to covered matches."
+
+    amazon-prime-video:
+      name: "Amazon Prime Video"
+      type: "streaming"
+      persistent: true
+      url: "https://www.primevideo.com/"
+      descriptions:
+        pt: "Amazon Prime Video exibe jogos exclusivos da Copa do Brasil e do Brasileirão ao vivo para assinantes Prime no Brasil, além de canais esportivos adicionais opcionais."
+        en: "Amazon Prime Video streams live Copa do Brasil and selected Brasileirão fixtures for Amazon Prime members in Brazil, alongside optional sports add-ons."
+      faqs:
+        pt:
+          - q: "Qual futebol está incluído no Amazon Prime Video no Brasil?"
+            a: "A assinatura Amazon Prime inclui transmissões ao vivo exclusivas de jogos da Copa do Brasil e do Campeonato Brasileiro no Prime Video."
+          - q: "O Prime Video cobra extra pela Copa do Brasil?"
+            a: "Não. As partidas da Copa do Brasil e do Brasileirão com direitos do Prime Video fazem parte da assinatura padrão do Amazon Prime."
+        en:
+          - q: "Which matches are included with Amazon Prime Video in Brazil?"
+            a: "Amazon Prime Video includes live Copa do Brasil and selected Brasileirão broadcasts as part of standard Amazon Prime membership."
+          - q: "Do Copa do Brasil games cost extra on Prime Video?"
+            a: "No. Copa do Brasil and Brasileirão fixtures licensed to Prime Video are included with a regular Prime subscription."
+
+    disney-plus-br:
+      name: "Disney+"
+      type: "streaming"
+      persistent: false
+      url: "https://www.disneyplus.com/pt-br"
+      descriptions:
+        pt: "Disney+ no Brasil oferece transmissões esportivas da ESPN selecionadas e acesso aos principais eventos de futebol internacional conforme o plano contratado."
+        en: "Disney+ in Brazil carries live ESPN football broadcasts and international leagues depending on the selected subscription tier."
+      faqs:
+        pt:
+          - q: "O Disney+ transmite futebol ao vivo no Brasil?"
+            a: "Sim. O Disney+ reúne transmissões da ESPN no Brasil, incluindo ligas europeias e competições da CONMEBOL conforme o plano escolhido."
+        en:
+          - q: "Does Disney+ stream live football in Brazil?"
+            a: "Yes. Disney+ integrates ESPN football broadcasts in Brazil across eligible subscription plans."
+
+  GB:
+    sky-sports:
+      name: "Sky Sports"
+      type: "tv"
+      persistent: true
+      url: "https://www.skysports.com/"
+      descriptions:
+        en: "Sky Sports is the UK's flagship subscription sports broadcaster, showing live Premier League, EFL Championship, League One, League Two, Scottish Premiership, and WSL football."
+      faqs:
+        en:
+          - q: "Which football leagues are on Sky Sports in the UK?"
+            a: "Sky Sports broadcasts live Premier League fixtures, all EFL leagues and Carabao Cup matches, the Scottish Premiership, and the Women's Super League."
+          - q: "How can I stream Sky Sports without a Sky dish?"
+            a: "Sky Sports channels can be streamed live in the UK through NOW Sports memberships or via Sky Stream and Sky Glass."
+
+    tnt-sports:
+      name: "TNT Sports"
+      type: "tv"
+      persistent: true
+      url: "https://www.tntsports.co.uk/"
+      descriptions:
+        en: "TNT Sports is a UK pay-TV sports network holding live rights to the Premier League, UEFA Champions League, Europa League, Conference League, and FA Cup."
+      faqs:
+        en:
+          - q: "What live football does TNT Sports show in the UK?"
+            a: "TNT Sports airs live Premier League matches, the UEFA Champions League, UEFA Europa League, UEFA Conference League, and FA Cup ties."
+          - q: "Where can I stream TNT Sports online in the UK?"
+            a: "TNT Sports is streamed online in the UK via discovery+ with a TNT Sports subscription, or through the discovery+ app for pay-TV customers."
+
+    bbc-sport:
+      name: "BBC Sport"
+      type: "free_tv"
+      persistent: true
+      url: "https://www.bbc.co.uk/sport"
+      descriptions:
+        en: "BBC Sport delivers free-to-air UK television and live digital football coverage across BBC TV channels, BBC iPlayer, and the BBC Sport website and app."
+      faqs:
+        en:
+          - q: "What football matches are live on BBC Sport?"
+            a: "BBC Sport shows free-to-air live FA Cup ties, Women's Super League games, Scottish Cup matches, and major international tournament fixtures."
+          - q: "Is BBC Sport free to watch in the UK?"
+            a: "Yes. Live BBC Sport broadcasts on BBC television and BBC iPlayer are free to watch in the UK with a valid TV Licence."
+
+    itv:
+      name: "ITV"
+      type: "free_tv"
+      persistent: true
+      url: "https://www.itv.com/"
+      descriptions:
+        en: "ITV is a free-to-air UK commercial broadcaster showing live England national team qualifiers, FA Cup matches, EFL Cup ties, and major tournament football on TV and ITVX."
+      faqs:
+        en:
+          - q: "What live football airs on ITV in the UK?"
+            a: "ITV airs free-to-air England men's and women's internationals, FA Cup ties, selected EFL Cup fixtures, and World Cup or Euro matches."
+          - q: "Can I stream ITV football online?"
+            a: "Yes. All live ITV football broadcasts stream free in the UK on ITVX."
+
+    amazon-prime-video-watch-it-live:
+      name: "Amazon Prime Video"
+      type: "streaming"
+      persistent: true
+      url: "https://www.primevideo.com/"
+      descriptions:
+        en: "Amazon Prime Video holds live UK streaming rights for top-pick Tuesday UEFA Champions League matches, included at no extra cost with an Amazon Prime subscription."
+      faqs:
+        en:
+          - q: "Which football matches does Amazon Prime Video show in the UK?"
+            a: "Amazon Prime Video streams first-pick Tuesday night UEFA Champions League fixtures live across the UK."
+          - q: "Is Champions League football included in standard Amazon Prime?"
+            a: "Yes. Tuesday UEFA Champions League broadcasts on Prime Video are included in standard UK Amazon Prime memberships."
+
+    dazn-watch-it-live:
+      name: "DAZN"
+      type: "streaming"
+      persistent: true
+      url: "https://www.dazn.com/en-GB"
+      descriptions:
+        en: "DAZN is an international sports streaming service in the UK carrying live women's football, selected international club competitions, and football highlights."
+      faqs:
+        en:
+          - q: "What football does DAZN stream in the UK?"
+            a: "DAZN offers live coverage of selected women's football competitions, international tournaments, and club football events in the UK."
+          - q: "How do I watch DAZN in the UK?"
+            a: "DAZN is available to stream directly via the DAZN app on smart TVs, mobile devices, consoles, and web browsers."
+
+    sky-sports-main-event:
+      name: "Sky Sports Main Event"
+      type: "tv"
+      persistent: false
+      url: "https://www.skysports.com/"
+      descriptions:
+        en: "Sky Sports Main Event is the flagship linear channel of Sky Sports in the UK, featuring headline live Premier League, EFL, and Scottish Premiership matches."
+      faqs:
+        en:
+          - q: "What airs on Sky Sports Main Event?"
+            a: "Sky Sports Main Event carries Sky Sports' headline live Premier League, EFL, and major domestic cup fixtures in the UK."
+
+    tnt-sports-1:
+      name: "TNT Sports 1"
+      type: "tv"
+      persistent: false
+      url: "https://www.tntsports.co.uk/"
+      descriptions:
+        en: "TNT Sports 1 is the primary broadcast channel for TNT Sports in the UK, airing live Premier League, UEFA Champions League, and FA Cup coverage."
+      faqs:
+        en:
+          - q: "How can I watch TNT Sports 1 in the UK?"
+            a: "TNT Sports 1 is available through UK pay-TV packages on Sky, Virgin Media, and EE TV, and streams online via discovery+."
+
+    bbc-one:
+      name: "BBC One"
+      type: "free_tv"
+      persistent: false
+      url: "https://www.bbc.co.uk/iplayer"
+      descriptions:
+        en: "BBC One is the BBC's primary free-to-air UK television channel, broadcasting headline FA Cup fixtures and major international tournament matches."
+      faqs:
+        en:
+          - q: "How do I watch live football on BBC One?"
+            a: "BBC One broadcasts free to air across UK television platforms and streams live online via BBC iPlayer for UK viewers with a TV Licence."
+
+  IE:
+    sky-sports:
+      name: "Sky Sports"
+      type: "tv"
+      persistent: true
+      url: "https://www.skysports.com/"
+      descriptions:
+        en: "Sky Sports broadcasts live Premier League, EFL, Scottish Premiership, and Women's Super League football across Ireland via Sky, Virgin Media, and NOW."
+      faqs:
+        en:
+          - q: "What football does Sky Sports show in Ireland?"
+            a: "Sky Sports carries live Premier League, EFL Championship, Carabao Cup, Scottish Premiership, and WSL coverage in the Republic of Ireland."
+          - q: "Can I stream Sky Sports in Ireland without a satellite dish?"
+            a: "Yes. Sky Sports channels stream live in Ireland with a NOW Sports membership or through Sky Stream."
+
+    tnt-sports:
+      name: "TNT Sports"
+      type: "tv"
+      persistent: true
+      url: "https://www.tntsports.co.uk/"
+      descriptions:
+        en: "TNT Sports in Ireland provides live coverage of the Premier League, UEFA Champions League, Europa League, and Conference League via pay-TV Sports Extra packs and discovery+."
+      faqs:
+        en:
+          - q: "How can I watch TNT Sports in Ireland?"
+            a: "TNT Sports in Ireland is available through the Sports Extra pack on Sky, NOW, and Vodafone TV, or via discovery+."
+          - q: "Which European competitions air on TNT Sports in Ireland?"
+            a: "TNT Sports shows live matches from the UEFA Champions League, Europa League, and Conference League alongside Premier League fixtures."
+
+    rte2:
+      name: "RTÉ2"
+      type: "free_tv"
+      persistent: true
+      url: "https://www.rte.ie/player/"
+      descriptions:
+        en: "RTÉ2 is Ireland's free-to-air public television sports channel, broadcasting Republic of Ireland internationals, League of Ireland matches, UEFA Champions League ties, and major tournaments."
+      faqs:
+        en:
+          - q: "What live football airs on RTÉ2?"
+            a: "RTÉ2 broadcasts Republic of Ireland men's and women's internationals, live League of Ireland fixtures, UEFA Champions League Tuesday matches, and World Cup or Euro games."
+          - q: "Is RTÉ2 available to stream free online in Ireland?"
+            a: "Yes. Live RTÉ2 football broadcasts stream free of charge within Ireland on the RTÉ Player."
+
+    virgin-media-two:
+      name: "Virgin Media Two"
+      type: "free_tv"
+      persistent: true
+      url: "https://www.virginmediatelevision.ie/"
+      descriptions:
+        en: "Virgin Media Two is a free-to-air Irish television channel broadcasting live UEFA Champions League, Europa League, Conference League, and international football."
+      faqs:
+        en:
+          - q: "What football does Virgin Media Two show in Ireland?"
+            a: "Virgin Media Two airs free-to-air live UEFA Champions League, Europa League, Conference League, and selected international matches in Ireland."
+          - q: "How can I stream Virgin Media Two online?"
+            a: "Virgin Media Two is available to stream free in the Republic of Ireland via Virgin Media Play."
+
+    premier-sports-1-roi:
+      name: "Premier Sports 1 ROI"
+      type: "tv"
+      persistent: true
+      url: "https://www.premiersports.com/ie"
+      descriptions:
+        en: "Premier Sports 1 ROI is a subscription sports channel in the Republic of Ireland showing live Saturday 3pm Premier League kick-offs, FA Cup ties, and European leagues."
+      faqs:
+        en:
+          - q: "Does Premier Sports 1 ROI show Saturday 3pm Premier League matches?"
+            a: "Yes. Premier Sports holds exclusive rights in the Republic of Ireland to broadcast a live Premier League match every Saturday at 3pm."
+          - q: "How do I get Premier Sports 1 ROI in Ireland?"
+            a: "Premier Sports 1 ROI is included in the Sports Extra pack on Sky, NOW, and participating Irish TV operators."
+
+    rte-two:
+      name: "RTÉ Two"
+      type: "free_tv"
+      persistent: false
+      url: "https://www.rte.ie/player/"
+      descriptions:
+        en: "RTÉ Two is Ireland's free-to-air public service sports broadcaster for Republic of Ireland internationals, League of Ireland football, and live European club games."
+      faqs:
+        en:
+          - q: "Where can I stream RTÉ Two live in Ireland?"
+            a: "Live RTÉ Two broadcasts are streamed free across the Republic of Ireland via RTÉ Player."
+
+    premier-sports-1:
+      name: "Premier Sports 1"
+      type: "tv"
+      persistent: false
+      url: "https://www.premiersports.com/ie"
+      descriptions:
+        en: "Premier Sports 1 carries live Saturday 3pm Premier League matches, FA Cup ties, and European football in the Republic of Ireland."
+      faqs:
+        en:
+          - q: "What football airs on Premier Sports 1 in Ireland?"
+            a: "Premier Sports 1 broadcasts live Saturday 3pm Premier League fixtures alongside FA Cup, Scottish football, and Spanish LaLiga matches."
+
+  PT:
+    sport-tv-1:
+      name: "Sport TV 1"
+      type: "tv"
+      persistent: true
+      url: "https://www.sporttv.pt/"
+      descriptions:
+        pt: "Sport TV 1 é o canal principal de desporto por subscrição em Portugal, com transmissões em direto da Liga Portugal Betclic, Taça de Portugal, Taça da Liga e principais ligas internacionais."
+        en: "Sport TV 1 is Portugal's flagship subscription sports channel, broadcasting live Liga Portugal Betclic, Taça de Portugal, Taça da Liga, and international football."
+      faqs:
+        pt:
+          - q: "O que passa em direto na Sport TV 1?"
+            a: "A Sport TV 1 transmite jogos em direto da Liga Portugal Betclic, Liga Portugal 2, Taça de Portugal, Taça da Liga, Serie A e UEFA Europa League."
+          - q: "Como subscrever a Sport TV em Portugal?"
+            a: "A Sport TV pode ser subscrita através dos operadores de televisão MEO, NOS, Vodafone e NOWO ou diretamente na plataforma Sport TV."
+        en:
+          - q: "Which football competitions air on Sport TV 1?"
+            a: "Sport TV 1 carries live Liga Portugal Betclic, Taça de Portugal, Taça da Liga, Serie A, and UEFA Europa League fixtures in Portugal."
+          - q: "How can I watch Sport TV 1 in Portugal?"
+            a: "Sport TV 1 is available by subscription across MEO, NOS, Vodafone, and NOWO TV packages as well as Sport TV Multiscreen."
+
+    dazn-ver-ao-vivo:
+      name: "DAZN"
+      type: "streaming"
+      persistent: true
+      url: "https://www.dazn.com/pt-PT"
+      descriptions:
+        pt: "DAZN em Portugal (anteriormente Eleven) transmite em direto a UEFA Champions League, Premier League, LaLiga e Bundesliga por streaming e canais de TV."
+        en: "DAZN in Portugal (formerly Eleven) broadcasts live UEFA Champions League, Premier League, LaLiga, and Bundesliga football via streaming and pay-TV channels."
+      faqs:
+        pt:
+          - q: "Que competições de futebol tem a DAZN em Portugal?"
+            a: "A DAZN Portugal detém os direitos de transmissão em direto da UEFA Champions League, Premier League, LaLiga EA Sports, Bundesliga e UEFA Youth League."
+          - q: "Como ver a DAZN em direto em Portugal?"
+            a: "Pode assistir na app DAZN por subscrição digital ou através dos canais lineares DAZN nos operadores MEO, NOS, Vodafone e NOWO."
+        en:
+          - q: "Which football leagues does DAZN broadcast in Portugal?"
+            a: "DAZN Portugal holds live broadcast rights for the UEFA Champions League, Premier League, LaLiga, and Bundesliga."
+          - q: "How can I watch DAZN live in Portugal?"
+            a: "DAZN streams live via the DAZN app and website or through linear DAZN channels on Portuguese pay-TV operators."
+
+    canal-11:
+      name: "Canal 11"
+      type: "tv"
+      persistent: true
+      url: "https://www.canal11.pt/"
+      descriptions:
+        pt: "Canal 11 é o canal oficial de televisão da Federação Portuguesa de Futebol, dedicado às seleções portuguesas, Liga 3, futebol feminino, futsal e escalões de formação."
+        en: "Canal 11 is the official television channel of the Portuguese Football Federation (FPF), showcasing Portuguese national teams, Liga 3, women's football, and futsal."
+      faqs:
+        pt:
+          - q: "O que transmite o Canal 11?"
+            a: "O Canal 11 exibe jogos das seleções portuguesas de formação e femininas, Liga 3, Campeonato de Portugal, Liga BPI e futsal oficial."
+          - q: "Onde está disponível o Canal 11 em Portugal?"
+            a: "O Canal 11 está incluído nos pacotes base dos principais operadores de televisão por cabo em Portugal (MEO, NOS, Vodafone e NOWO)."
+        en:
+          - q: "What does Canal 11 broadcast in Portugal?"
+            a: "Canal 11 airs Portuguese youth and women's national team games, Liga 3, Liga BPI women's football, and official Portuguese futsal."
+          - q: "Where can viewers watch Canal 11?"
+            a: "Canal 11 is carried on standard Portuguese cable and IPTV packages including MEO, NOS, Vodafone, and NOWO."
+
+    rtp1:
+      name: "RTP1"
+      type: "free_tv"
+      persistent: true
+      url: "https://www.rtp.pt/play/"
+      descriptions:
+        pt: "RTP1 é o canal principal em sinal aberto da televisão pública portuguesa, transmitindo jogos da Seleção Portuguesa, Taça de Portugal e grandes torneios internacionais."
+        en: "RTP1 is Portugal's flagship free-to-air public broadcaster, showing live Portugal national team matches, Taça de Portugal ties, and major international tournaments."
+      faqs:
+        pt:
+          - q: "Que jogos de futebol dão na RTP1 em sinal aberto?"
+            a: "A RTP1 transmite jogos da Seleção Nacional Portuguesa, partidas selecionadas da Taça de Portugal e jogos de grandes torneios internacionais em sinal aberto."
+          - q: "Posso ver a RTP1 em direto online?"
+            a: "Sim. A emissão em direto da RTP1 está disponível gratuitamente online na plataforma RTP Play em Portugal."
+        en:
+          - q: "Which football matches air free to air on RTP1?"
+            a: "RTP1 broadcasts Portugal national team games, selected Taça de Portugal fixtures, and major international tournaments free to air."
+          - q: "Can I stream RTP1 live online in Portugal?"
+            a: "Yes. RTP1 streams live and free in Portugal through RTP Play."
+
+    dazn-1-pt:
+      name: "DAZN 1"
+      type: "tv"
+      persistent: false
+      url: "https://www.dazn.com/pt-PT"
+      descriptions:
+        pt: "DAZN 1 é o canal linear principal da DAZN em Portugal, exibindo os grandes jogos em direto da Champions League, Premier League, LaLiga e Bundesliga."
+        en: "DAZN 1 is DAZN Portugal's primary linear television channel, featuring headline live UEFA Champions League, Premier League, LaLiga, and Bundesliga fixtures."
+      faqs:
+        pt:
+          - q: "Como ver o canal DAZN 1 em Portugal?"
+            a: "O canal DAZN 1 está disponível nos pacotes desportivos da MEO, NOS, Vodafone e NOWO e em streaming na aplicação DAZN."
+        en:
+          - q: "How do I watch DAZN 1 in Portugal?"
+            a: "DAZN 1 is available via sports add-ons on Portuguese pay-TV operators and on the DAZN streaming app."
+
+    rtp-1:
+      name: "RTP 1"
+      type: "free_tv"
+      persistent: false
+      url: "https://www.rtp.pt/play/"
+      descriptions:
+        pt: "RTP 1 é o canal generalista em sinal aberto da RTP em Portugal com transmissões em direto da Seleção Portuguesa, Taça de Portugal e competições internacionais."
+        en: "RTP 1 is RTP's free-to-air flagship channel in Portugal, carrying live Portugal national team and Taça de Portugal matches on TV and RTP Play."
+      faqs:
+        pt:
+          - q: "Onde assistir à RTP 1 em direto?"
+            a: "A RTP 1 emite em sinal aberto na TDT e operadoras em Portugal, bem como gratuitamente na RTP Play."
+        en:
+          - q: "Where can I watch RTP 1 live?"
+            a: "RTP 1 is free to air on Portuguese television and streams live via RTP Play."
+
+  AR:
+    espn:
+      name: "ESPN"
+      type: "tv"
+      persistent: true
+      url: "https://www.espn.com.ar/"
+      descriptions:
+        es: "ESPN en Argentina transmite en vivo la CONMEBOL Libertadores, la Copa Sudamericana, las principales ligas europeas y torneos internacionales por TV paga y Disney+."
+        en: "ESPN in Argentina broadcasts live CONMEBOL Libertadores, Copa Sudamericana, and major European leagues across pay TV and Disney+."
+      faqs:
+        es:
+          - q: "¿Qué torneos de fútbol transmite ESPN en Argentina?"
+            a: "ESPN emite partidos en vivo de la CONMEBOL Libertadores, Copa Sudamericana, Premier League, LaLiga, Serie A, Bundesliga y Champions League."
+          - q: "¿Dónde ver ESPN en vivo online en Argentina?"
+            a: "Los canales ESPN de Argentina se pueden ver en vivo a través de cableoperadores y mediante la plataforma de streaming Disney+."
+        en:
+          - q: "Which football competitions air on ESPN in Argentina?"
+            a: "ESPN broadcasts the CONMEBOL Libertadores, Copa Sudamericana, UEFA Champions League, Premier League, LaLiga, and Serie A in Argentina."
+          - q: "How can I stream ESPN live in Argentina?"
+            a: "ESPN channels stream live in Argentina through Disney+ subscriptions and participating pay-TV streaming apps."
+
+    espn-premium:
+      name: "ESPN Premium"
+      type: "tv"
+      persistent: true
+      url: "https://www.espn.com.ar/"
+      descriptions:
+        es: "ESPN Premium es una de las señales oficiales del Pack Fútbol en Argentina, dedicada a la transmisión en vivo de la Liga Profesional de Fútbol."
+        en: "ESPN Premium is an official Pack Fútbol subscription channel in Argentina broadcasting live Liga Profesional Argentina matches."
+      faqs:
+        es:
+          - q: "¿Qué partidos transmite ESPN Premium en Argentina?"
+            a: "ESPN Premium transmite la mitad de los partidos de cada fecha de la Liga Profesional Argentina y el Trofeo de Campeones junto con TNT Sports Premium."
+          - q: "¿Cómo contratar ESPN Premium en Argentina?"
+            a: "ESPN Premium se habilita activando el Pack Fútbol a través de tu operador de TV paga o servicio compatible en Argentina."
+        en:
+          - q: "What matches air on ESPN Premium in Argentina?"
+            a: "ESPN Premium broadcasts live Liga Profesional de Fútbol matches in Argentina as part of the Pack Fútbol subscription."
+          - q: "How do viewers subscribe to ESPN Premium?"
+            a: "ESPN Premium requires the Pack Fútbol add-on through a participating Argentine cable, satellite, or streaming TV provider."
+
+    tnt-sports-premium:
+      name: "TNT Sports Premium"
+      type: "tv"
+      persistent: true
+      url: "https://tntsports.com.ar/"
+      descriptions:
+        es: "TNT Sports Premium es la señal oficial de Warner Bros. Discovery incluida en el Pack Fútbol para ver en vivo los partidos de la Liga Profesional Argentina."
+        en: "TNT Sports Premium is Warner Bros. Discovery's official Pack Fútbol channel in Argentina carrying live Liga Profesional Argentina football."
+      faqs:
+        es:
+          - q: "¿Qué fútbol se ve por TNT Sports Premium?"
+            a: "TNT Sports Premium transmite en vivo partidos de la Liga Profesional Argentina y competiciones oficiales del fútbol argentino dentro del Pack Fútbol."
+          - q: "¿Se puede ver TNT Sports Premium por streaming?"
+            a: "Sí, quienes tienen el Pack Fútbol activo pueden verlo en las apps de su cableoperador y mediante la integración en HBO Max según cobertura."
+        en:
+          - q: "What football airs on TNT Sports Premium in Argentina?"
+            a: "TNT Sports Premium airs live Liga Profesional Argentina matches as part of the Pack Fútbol package."
+          - q: "Can I stream TNT Sports Premium online in Argentina?"
+            a: "Yes. Pack Fútbol subscribers can stream live via participating TV operator apps and supported streaming integrations."
+
+    tyc-sports:
+      name: "TyC Sports"
+      type: "tv"
+      persistent: true
+      url: "https://www.tycsports.com/"
+      descriptions:
+        es: "TyC Sports es el canal deportivo de TV paga en Argentina con los derechos en vivo de la Copa Argentina, la Primera Nacional, la Primera B y partidos de la Selección Argentina."
+        en: "TyC Sports is an Argentine pay-TV sports channel holding live rights to the Copa Argentina, Primera Nacional, and Argentina national team matches."
+      faqs:
+        es:
+          - q: "¿Qué torneos transmite TyC Sports en vivo?"
+            a: "TyC Sports transmite la Copa Argentina, Primera Nacional, Primera B Metropolitana, Eliminatorias Sudamericanas y amistosos de la Selección Argentina."
+          - q: "¿Cómo ver TyC Sports en vivo por internet?"
+            a: "La señal en vivo se puede ver mediante TyC Sports Play iniciando sesión con tu operador de TV paga en Argentina."
+        en:
+          - q: "What football does TyC Sports broadcast?"
+            a: "TyC Sports broadcasts the Copa Argentina, Primera Nacional, CONMEBOL World Cup qualifiers, and Argentina national team matches."
+          - q: "How do I stream TyC Sports online?"
+            a: "TyC Sports streams live on TyC Sports Play using an eligible Argentine pay-TV provider login."
+
+    dsports-610-1610:
+      name: "DSports (610/1610)"
+      type: "tv"
+      persistent: true
+      url: "https://www.directv.com.ar/"
+      descriptions:
+        es: "DSports (canales 610 y 1610 HD) es la señal deportiva exclusiva de DIRECTV y DGO en Argentina con cobertura en vivo de ligas europeas, Copa del Rey, Sudamericana y torneos FIFA."
+        en: "DSports (channels 610 and 1610 HD) is DIRECTV and DGO's exclusive sports network in Argentina, airing European leagues, Copa del Rey, Copa Sudamericana, and FIFA tournaments."
+      faqs:
+        es:
+          - q: "¿Qué partidos transmite DSports en Argentina?"
+            a: "DSports transmite en vivo encuentros de LaLiga, Copa del Rey, Copa Sudamericana, fútbol internacional y torneos FIFA."
+          - q: "¿Se puede ver DSports sin antena de DIRECTV?"
+            a: "Sí. DSports está disponible por streaming en todo el país mediante la plataforma DGO de DIRECTV."
+        en:
+          - q: "Which competitions air on DSports in Argentina?"
+            a: "DSports carries live LaLiga, Copa del Rey, Copa Sudamericana, and FIFA international tournaments in Argentina."
+          - q: "Can I watch DSports without satellite TV?"
+            a: "Yes. DSports is available to stream directly in Argentina through the DGO platform."
+
+    disney-premium:
+      name: "Disney+ Premium"
+      type: "streaming"
+      persistent: true
+      url: "https://www.disneyplus.com/es-ar"
+      descriptions:
+        es: "Disney+ Premium en Argentina reúne todas las señales de ESPN en vivo y transmisiones exclusivas de Copa Libertadores, Sudamericana, Premier League y ligas europeas."
+        en: "Disney+ Premium in Argentina combines every live ESPN channel with exclusive streaming of the Copa Libertadores, Sudamericana, Premier League, and European leagues."
+      faqs:
+        es:
+          - q: "¿Qué incluye Disney+ Premium de fútbol en Argentina?"
+            a: "Disney+ Premium incluye todos los canales ESPN en vivo y acceso completo a los partidos de Libertadores, Sudamericana, Premier League, LaLiga y Serie A."
+          - q: "¿El Pack Fútbol viene incluido en Disney+ Premium?"
+            a: "No. La Liga Profesional Argentina se transmite aparte mediante el Pack Fútbol (ESPN Premium y TNT Sports Premium)."
+        en:
+          - q: "What football is included in Disney+ Premium in Argentina?"
+            a: "Disney+ Premium includes live ESPN channels and full streaming coverage of the Copa Libertadores, Sudamericana, Premier League, LaLiga, and Serie A."
+          - q: "Does Disney+ Premium include Argentine Primera División Pack Fútbol matches?"
+            a: "No. Liga Profesional Argentina matches require a separate Pack Fútbol subscription through ESPN Premium and TNT Sports Premium."
+
+    espn-argentina:
+      name: "ESPN Argentina"
+      type: "tv"
+      persistent: false
+      url: "https://www.espn.com.ar/"
+      descriptions:
+        es: "ESPN Argentina ofrece transmisiones en vivo de competiciones CONMEBOL, ligas europeas y torneos internacionales por TV paga y Disney+."
+        en: "ESPN Argentina broadcasts live CONMEBOL tournaments, European leagues, and international football across pay TV and Disney+."
+      faqs:
+        es:
+          - q: "¿Cómo ver ESPN Argentina en vivo?"
+            a: "Está disponible en los principales operadores de cable y satélite de Argentina y por streaming en Disney+."
+        en:
+          - q: "How can I watch ESPN Argentina live?"
+            a: "ESPN Argentina is available via Argentine cable and satellite operators as well as Disney+ streaming."
+
+    disney-plus-ar:
+      name: "Disney+ Argentina"
+      type: "streaming"
+      persistent: false
+      url: "https://www.disneyplus.com/es-ar"
+      descriptions:
+        es: "Disney+ Argentina integra las transmisiones deportivas de ESPN en vivo y el catálogo de fútbol internacional según el plan suscrito."
+        en: "Disney+ Argentina integrates live ESPN sports broadcasts and international football coverage based on your subscription tier."
+      faqs:
+        es:
+          - q: "¿Disney+ transmite fútbol en vivo en Argentina?"
+            a: "Sí. Disney+ incluye las transmisiones de ESPN en Argentina, con acceso completo a todas las señales en vivo en el plan Premium."
+        en:
+          - q: "Does Disney+ stream live football in Argentina?"
+            a: "Yes. Disney+ carries ESPN football streams in Argentina, with full live channel access included in Disney+ Premium."

@@ -3,7 +3,7 @@
 ## Tasks
 
 - [ ] 1. Foundation — Overlay, Localization, Styles, Catalog Resolver, Adapter, and Shared Directory
-- [ ] 1.1 (P) Author curated broadcaster overlay (`data/cfc/broadcasters.yaml`)
+- [x] 1.1 (P) Author curated broadcaster overlay (`data/cfc/broadcasters.yaml`)
   - Define `denylist.slugs` (`canal-a-confirmar`, `nao-confirmado`, `to-be-confirmed`, `tba`, `unknown`) and `denylist.namePatterns` (`(?i)^(canal a confirmar|não confirmado|nao confirmado|to be confirmed|tba|tbd)$`)
   - Define `normalization.stripSuffixes` regexes stripping `(Watch it live)`, `(Ver ao vivo)`, `(Ver en vivo)`, `(Ver en directo)`, `(Míralo en vivo)`, `(Miralo en vivo)`, and `(Live)` alongside leading and trailing whitespace trimming
   - Author `persistent: true` flagship entries aligned to actual live `ChannelId`s with localized `descriptions`, `faqs`, and display-name overrides (`GE TV`, `CazéTV`, `Amazon Prime Video`, `DAZN`) across populated countries: BR (`ge-tv`, `tv-globo`, `sportv`, `premiere`, `cazetv`, `espn`, `disney-premium`, `hbo-max`, `amazon-prime-video`), GB (`sky-sports`, `tnt-sports`, `bbc-sport`, `itv`, `amazon-prime-video-watch-it-live`, `dazn-watch-it-live`), IE (`sky-sports`, `tnt-sports`, `rte2`, `virgin-media-two`, `premier-sports-1-roi`), PT (`sport-tv-1`, `dazn-ver-ao-vivo`, `canal-11`, `rtp1`), AR (`espn`, `espn-premium`, `tnt-sports-premium`, `tyc-sports`, `dsports-610-1610`, `disney-premium`), plus `persistent: false` (enrich-if-present) entries for sample-only slugs (`disney-plus-br`, `sky-sports-main-event`, `tnt-sports-1`, `bbc-one`, `rte-two` with sample-distinct `name: "RTÉ Two"`, `premier-sports-1`, `dazn-1-pt`, `rtp-1`, `espn-argentina`, `disney-plus-ar`), 100% official licensed services only
