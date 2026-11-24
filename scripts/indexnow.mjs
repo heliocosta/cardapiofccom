@@ -18,7 +18,7 @@ export const DEFAULT_VERIFICATION_RETRY_DELAY_MS = 15000;
 export const DEFAULT_STATE_PATH = path.join(ROOT_DIR, ".tmp", "indexnow-state.json");
 export const DEFAULT_PUBLIC_DIR = path.join(ROOT_DIR, "public");
 
-const HUB_SEGMENTS = new Set(["matches", "leagues", "teams", "about", "faq", "privacy"]);
+const HUB_SEGMENTS = new Set(["matches", "leagues", "teams", "channels", "about", "faq", "privacy"]);
 const EDITION_PREFIX_RE = /^[a-z]{2}(?:-[a-z]{2})?$/;
 const XML_ENTITIES = {
   "&amp;": "&",
@@ -617,6 +617,7 @@ export function urlPriority(relPath) {
   if (!section) return 0;
   if (section === "match") return 1;
   if (section === "leagues") return tailLen > 1 ? 2 : 0;
+  if (section === "channels") return tailLen > 1 ? 2 : 0;
   if (section === "team") return 3;
   if (tailLen === 1 && HUB_SEGMENTS.has(section)) return 0;
   return 4;

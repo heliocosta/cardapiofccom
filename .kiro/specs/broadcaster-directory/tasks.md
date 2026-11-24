@@ -93,7 +93,7 @@
   - _Boundary: SeoContext, HreflangRenderer, OpenGraphRenderer, SitemapTemplate_
   - _Depends: 1.2, 1.4, 1.5_
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.7_
-- [ ] 3.4 (P) Configure exact `/channels` Cloudflare geo-routing and IndexNow channel URL priorities
+- [x] 3.4 (P) Configure exact `/channels` Cloudflare geo-routing and IndexNow channel URL priorities
   - Update `cloudflare/redirect-rules.json`: append `or http.request.uri.path eq "/channels" or http.request.uri.path eq "/channels/"` inside the path allowlist of all 8 country geo-routing rules (preserving bot exclusions; never matching `/channels/*`)
   - Update `scripts/indexnow.mjs`: add `"channels"` to `HUB_SEGMENTS` (priority `0`) and return priority `2` for `/{ed}/channels/{slug}/` (`tailLen > 1`) in `urlPriority()`
   - Update `scripts/test-indexnow.mjs`: add TDD unit assertions for `/channels/` (`0`), `/pt-br/channels/` (`0`), and `/pt-br/channels/ge-tv/` (`2`)

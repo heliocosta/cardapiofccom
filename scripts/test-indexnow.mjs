@@ -266,9 +266,12 @@ test("computeDiff detects added, modified, removed and sorts by priority", () =>
 
   assert.equal(urlPriority("/"), 0);
   assert.equal(urlPriority("/pt-br/leagues/"), 0);
+  assert.equal(urlPriority("/channels/"), 0);
+  assert.equal(urlPriority("/pt-br/channels/"), 0);
   assert.equal(urlPriority("/match/x/"), 1);
   assert.equal(urlPriority("/pt-br/match/x/"), 1);
   assert.equal(urlPriority("/leagues/premier-league/"), 2);
+  assert.equal(urlPriority("/pt-br/channels/ge-tv/"), 2);
   assert.equal(urlPriority("/team/arsenal/"), 3);
 
   assert.deepEqual(
@@ -280,6 +283,42 @@ test("computeDiff detects added, modified, removed and sorts by priority", () =>
       "/match/new-match/",
       "/match/old-match/",
       "/leagues/premier-league/",
+    ]
+  );
+});
+
+test("urlPriority and computeDiff prioritize channels hubs (0) and regional channel detail pages (2)", () => {
+  assert.equal(urlPriority("/channels/"), 0);
+  assert.equal(urlPriority("/pt-br/channels/"), 0);
+  assert.equal(urlPriority("/ja/channels/"), 0);
+  assert.equal(urlPriority("/pt-br/channels/ge-tv/"), 2);
+  assert.equal(urlPriority("/en-gb/channels/sky-sports/"), 2);
+  assert.equal(urlPriority("/about/"), 0);
+  assert.equal(urlPriority("/faq/"), 0);
+  assert.equal(urlPriority("/unknown/page/"), 4);
+
+  const diff = computeDiff(
+    {},
+    {
+      "/unknown/page/": "h0",
+      "/team/arsenal/": "h1",
+      "/pt-br/channels/ge-tv/": "h2",
+      "/pt-br/match/x/": "h3",
+      "/pt-br/channels/": "h4",
+      "/channels/": "h5",
+    },
+    { baseUrl: "https://cardapiofc.com/" }
+  );
+
+  assert.deepEqual(
+    diff.changes.map((c) => c.relPath),
+    [
+      "/channels/",
+      "/pt-br/channels/",
+      "/pt-br/match/x/",
+      "/pt-br/channels/ge-tv/",
+      "/team/arsenal/",
+      "/unknown/page/",
     ]
   );
 });
