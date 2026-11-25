@@ -37,7 +37,7 @@
   - _Depends: 1.1, 1.2, 2_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 3.2 Execute a guided one-shot verification run and lock scoped automation permissions
+- [x] 3.2 Execute a guided one-shot verification run and lock scoped automation permissions
   - Confirm upstream `editorial-blog` prerequisites are implemented on disk (nine-edition blog section, launch guide matching the seeded registry entry, and working blog contract, site, SEO, and static file-count validation scripts) before executing the supervised workflow
   - Execute the self-contained automation workflow once under operator supervision—verifying clean primary-branch synchronization, duplicate-free topic selection, live broadcaster verification, copyright-safe illustration creation, nine-edition regional authoring, and the full local Publishing Gate
   - Verify fail-closed cleanup behavior on simulated or actual gate failure (confirming the topic registry and working tree remain clean without partial commits or remote pushes), lock only the exact verified workspace and command permission grants in the paused automation configuration, and either commit/push with explicit operator confirmation or restore test artifacts cleanly before presenting the automation display name and Automations dashboard link for operator activation
@@ -50,4 +50,5 @@
 - Keep `sidecar.json` paused by default (`user_config.json` / `config.json` untouched) and never add wildcard grants (`command(*)`, `read_file(*)`, etc.) to `agent_permissions`.
 - Maintain strict schedule separation from `.github/workflows/deploy.yml` (`05:00 UTC` daily) and `daily-app-updates` (`09:00 Europe/London` daily) via `CRON_TZ=Europe/London 30 10 * * 1`.
 - Ensure `editorial-blog` tasks are implemented prior to running Task `3.2` so `validate:blog` and restored `check-file-count.mjs` are active on disk.
+- Task `3.2` runtime learnings: Hugo skips pages whose `date` is in the future (`date > now`), so `sidecar.json` Step 5 explicitly requires `date` and `lastmod` `<=` current UTC time (`date -u`); `image-generator` outputs `.jpg`, converted via `sips -s format png` to `>= 1200x630` PNG, and `agent_permissions.access_grants` locks exact non-wildcard prefixes (`command(sips)`, `command(rm -f content/)`, `command(rm -f assets/images/blog/)` plus git/pnpm grants).
 - Task-graph sanity review (`kiro-spec-tasks` Step 3.5) verdict: `PASS` (mode: `independent`).
