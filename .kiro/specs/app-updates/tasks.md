@@ -59,7 +59,7 @@
   - _Depends: 3.1, 3.2_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.6, 3.1, 3.2, 3.3, 7.1, 7.2, 7.3_
 
-- [ ] 4. Daily local Antigravity automation
+- [x] 4. Daily local Antigravity automation
 - [x] 4.1 Author the daily local Antigravity scheduled automation configuration and self-contained workflow prompt
   - Create the local Antigravity scheduled automation scheduled for 9:00 AM daily in `Europe/London` timezone on the operator's machine
   - Write a self-contained prompt that checks for a clean working tree on the primary branch before acting, fetches store updates, formats newly detected release notes clearly into the release-history dataset, runs build and verification checks, commits and pushes only the release-history dataset when changes exist, and leaves the repository untouched on no-change or failure runs
@@ -69,7 +69,7 @@
   - _Depends: 3.3_
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 4.2 Execute a supervised dry-run to verify and lock scoped automation permissions while keeping the automation paused for operator activation
+- [x] 4.2 Execute a supervised dry-run to verify and lock scoped automation permissions while keeping the automation paused for operator activation
   - Execute the automation's inspection, store-check, and verification workflow in dry-run mode within the workspace to confirm every required command and file path works unattended
   - Record only the exact, narrowly scoped workspace and command permission grants in the automation configuration (avoiding wildcard grants) and present the Automations dashboard link so the operator can enable it
   - Observable completion: Supervised dry-run completes cleanly, verified scoped permissions are saved in the automation configuration, and the automation remains paused ready for operator activation
