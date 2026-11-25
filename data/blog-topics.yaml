@@ -1,0 +1,17 @@
+schema_version: 1
+cadence: "weekly"
+pillars:
+  - "app-guides"
+  - "watch-guides"
+  - "rights-changes"
+  - "market-analysis"
+topics:
+  - slug: "where-to-watch-live-football-official-channels-guide"
+    published_at: "2026-11-24T12:00:00Z"
+    pillar: "watch-guides"
+    title: "Where to Watch Live Football: Official TV & Streaming Guide"
+    angles:
+      - "official live football tv channels and streaming guide"
+      - "territory-split football broadcast rights (free-to-air, pay-tv, streaming)"
+      - "verifying legitimate broadcasters by competition before kick-off"
+      - "cardapiofc regional editions, local time-zone schedules, and channel finder"

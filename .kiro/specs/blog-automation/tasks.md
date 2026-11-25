@@ -10,7 +10,7 @@
   - _Boundary: EditorialPlaybook_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 3.3, 3.4, 4.2_
 
-- [ ] 1.2 (P) Create the machine-readable published-topic registry seeded with the launch article
+- [x] 1.2 (P) Create the machine-readable published-topic registry seeded with the launch article
   - Define the structured published-topic history schema storing canonical slug, publication date, editorial pillar, concise topic title, and covered angles or keywords alongside pillar-rotation metadata
   - Seed the registry with the upstream launch guide article so the first automated run avoids repeating the launch topic and rotates away from its editorial pillar
   - Verify the registry parses cleanly as valid YAML and causes zero regressions in the static site build
