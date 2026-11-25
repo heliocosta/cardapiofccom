@@ -1,6 +1,6 @@
 ---
 title: "Where to Watch Live Football in the UK: Official TV & Streaming Guide"
-description: "A practical UK guide to watching live football legally across Sky Sports, TNT Sports, BBC Sport, ITV, and Amazon Prime Video with zero ads."
+description: "A practical UK guide to watching live football legally across Sky Sports, TNT Sports, BBC Sport, ITV, and Amazon Prime Video."
 date: "2026-11-24T12:00:00Z"
 lastmod: "2026-11-24T12:00:00Z"
 translationKey: "blog-where-to-watch-live-football-official-channels-guide"
@@ -44,4 +44,4 @@ If a Premier League or EFL match kicks off at 15:00 on a Saturday and does not a
 
 ## Official Coverage, Zero Clutter
 
-CardápioFC UK displays **only licensed UK television and streaming broadcasters**—no display ads, no pop-ups, and no unofficial links. Use the web guide or download the CardápioFC mobile app to set kick-off reminders for your clubs and never waste time searching for the right channel again.
+CardápioFC UK displays **only licensed UK television and streaming broadcasters**—no unofficial or pirated links. Use the web guide or download the CardápioFC mobile app to set kick-off reminders for your clubs and never waste time searching for the right channel again.

@@ -12,8 +12,8 @@ faq:
     a: "No Brasil, emissoras abertas como a TV Globo (inclusive pelo sinal gratuito no Globoplay) e canais digitais gratuitos oficiais como a GE TV e a CazéTV transmitem jogos licenciados ao vivo sem custo de assinatura."
   - q: "Onde passam os jogos do Brasileirão e da Copa do Brasil hoje?"
     a: "As transmissões do Brasileirão e da Copa do Brasil se dividem entre TV Globo, SporTV, Premiere, Amazon Prime Video e plataformas digitais parceiras conforme a rodada e o mandante. O CardápioFC mostra o canal confirmado jogo a jogo no horário de Brasília."
-  - q: "O CardápioFC exibe anúncios ou links piratas?"
-    a: "Não. O CardápioFC lista exclusivamente canais de TV aberta, TV por assinatura e serviços de streaming oficiais e licenciados no Brasil, sem publicidade."
+  - q: "O CardápioFC exibe links piratas?"
+    a: "Não. O CardápioFC lista exclusivamente canais de TV aberta, TV por assinatura e serviços de streaming oficiais e licenciados no Brasil."
 draft: false
 ---
 
@@ -39,6 +39,6 @@ No mercado brasileiro, os direitos das grandes competições nacionais, sul-amer
 2. **Acompanhe por campeonato**: Como a Copa do Brasil, o Brasileirão e os torneios da CONMEBOL e da UEFA têm donos de direitos diferentes, consulte os [campeonatos e copas](/pt-br/leagues/) antes de assinar qualquer pacote.
 3. **Verifique TV aberta, fechada e streaming gratuito**: No [diretório de canais oficiais](/pt-br/channels/), você vê rapidamente o que passa na TV aberta, no cabo ou gratuitamente no streaming oficial.
 
-## Programação Limpa, Oficial e Sem Anúncios
+## Programação Limpa e 100% Oficial
 
-O CardápioFC Brasil reúne **apenas emissoras e plataformas de streaming com direitos oficiais**, sem banners invasivos e sem links não autorizados. Baixe o aplicativo gratuito para iOS e Android para receber lembretes antes do pontapé inicial e ir direto ao canal certo.
+O CardápioFC Brasil reúne **apenas emissoras e plataformas de streaming com direitos oficiais**, sem links não autorizados. Baixe o aplicativo gratuito para iOS e Android para receber lembretes antes do pontapé inicial e ir direto ao canal certo.

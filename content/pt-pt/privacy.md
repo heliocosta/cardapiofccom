@@ -10,7 +10,7 @@ menus:
 
 ## O que recolhemos
 
-O CardápioFC não exige registo e não apresenta publicidade. Com o seu consentimento, medimos as visitas com o Google Analytics 4 para perceber que páginas são úteis. Podemos também utilizar o Cloudflare Web Analytics, que não utiliza cookies.
+O CardápioFC não exige registo. Com o seu consentimento, medimos as visitas com o Google Analytics 4 para perceber que páginas são úteis. Podemos também utilizar o Cloudflare Web Analytics, que não utiliza cookies.
 
 ## Base jurídica e conservação
 

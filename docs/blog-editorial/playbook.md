@@ -44,6 +44,7 @@ To capture high-intent comparison searches without turning the blog into repetit
    - Alternate `app-guides` slots between pure CardápioFC workflow guides and 1-on-1 competitor comparisons while continuing regular `watch-guides`, `rights-changes`, and `market-analysis` posts.
 4. **Factual, Fair, and IP-Safe Comparison Rules**:
    - **Live verification mandatory**: Verify each competitor's current features, platforms (iOS/Android/Web), monetization/ad model, TV & streaming channel coverage, and regional support via `search_web` before drafting; never guess or cite outdated facts.
+   - **Accurate CardápioFC monetization**: Never claim CardápioFC or the CardápioFC mobile app is ad-free or has "zero ads", as the mobile app includes ads.
    - **Balanced, objective tone**: Clearly acknowledge where the competitor excels (e.g., deep live match stats, multi-sport coverage, breaking editorial news) alongside where CardápioFC is purpose-built to win (fast official TV & streaming channel discovery per regional edition, automatic local kick-off times, focused matchday agenda/favourites, and a clean clutter-free interface).
    - **Structured comparison table & FAQs**: Include a clear Markdown comparison table (`Primary Focus`, `Official TV & Streaming Listings`, `Regional Editions & Time Zones`, `Matchday Agenda & Alerts`, `Platforms`, `Best For`) plus 2–4 plain-text `faq` items targeting "CardápioFC vs. [Competitor]" or "best football TV guide app" queries.
    - **Zero competitor trademarks/logos/screenshots in artwork**: Follow Section 3 strictly—cover illustrations (`assets/images/blog/{slug}.png`) must be abstract flat/geometric editorial comparison graphics with zero competitor app icons, logos, wordmarks, or UI screenshots.
@@ -82,7 +83,7 @@ Every edition of an article should be structured for both human skimmers and AI 
 ## 3. Editorial, Factual & IP Compliance
 
 ### Strict Editorial Rules
-- **Zero ads & zero sponsorships**: No sponsored content, affiliate pitches, betting/gambling promotions, display ad placeholders, or commercial endorsements.
+- **No sponsored content or ad placeholders in articles**: No sponsored posts, affiliate pitches, betting/gambling promotions, display ad placeholders, or commercial endorsements inside blog articles. Never claim CardápioFC or the CardápioFC mobile app is ad-free or has "zero ads", as the mobile app includes ads.
 - **100% official licensed broadcasters only**: Mention only legitimate free-to-air television channels, pay-TV networks, and official digital streaming platforms holding licensed rights. Never mention, link to, or hint at pirate streams, unofficial aggregators, or geo-bypass workarounds.
 - **Pre-draft dual verification (`data/cfc/broadcasters.yaml` + `search_web`)**:
   1. Cross-check regional broadcasters against `data/cfc/broadcasters.yaml` (which curates verified broadcasters for `BR`, `GB`, `IE`, `PT`, and `AR`).
@@ -168,7 +169,7 @@ draft: false
 - **Banned links**: Zero links to `/categories/`, `/tags/`, or `/authors/`.
 - **Banned icon/component classes**: Zero FontAwesome classes (`fa-*`, `fas`, `far`, `fab`, `fal`, `fad`) and zero match-card channel badges (`cfc-channel-badge`).
 - **Banned FAQ markup**: Zero HTML tags (`<...>`) inside `faq[].q` or `faq[].a`.
-- **Banned commercial/unofficial content**: Zero ads, sponsorships, tracking snippets, or unofficial/pirate stream links.
+- **Banned commercial/unofficial content**: No sponsorships, ad placeholders, tracking snippets, unofficial/pirate stream links, or inaccurate claims that CardápioFC or its mobile app is ad-free.
 
 ### Sequential Pre-Push Publishing Gate
 Before updating `data/blog-topics.yaml` or committing and pushing to `main`, execute all five Publishing Gate commands sequentially and fail closed on the first non-zero exit:

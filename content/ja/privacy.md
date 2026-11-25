@@ -10,7 +10,7 @@ menus:
 
 ## 収集する情報
 
-CardápioFC はアカウント登録不要で、ウェブサイト上に広告は掲載していません。同意いただいた場合に限り、サイト改善のため Google Analytics 4 でアクセス状況を計測します。Cookie を使用しない Cloudflare Web Analytics を利用する場合もあります。
+CardápioFC はアカウント登録不要です。同意いただいた場合に限り、サイト改善のため Google Analytics 4 でアクセス状況を計測します。Cookie を使用しない Cloudflare Web Analytics を利用する場合もあります。
 
 ## 保存期間
 

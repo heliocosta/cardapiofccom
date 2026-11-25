@@ -13,7 +13,7 @@ faq:
   - q: "Onde passam a Liga Portugal Betclic e a UEFA Champions League em Portugal?"
     a: "Em Portugal, a Liga Portugal Betclic é transmitida principalmente na Sport TV (e nos jogos em casa do Benfica na BTV), enquanto a UEFA Champions League, Premier League, LaLiga e Bundesliga estão na DAZN Portugal."
   - q: "O CardápioFC inclui apenas plataformas oficiais em Portugal?"
-    a: "Sim. O CardápioFC apresenta exclusivamente canais de sinal aberto, televisão por subscrição e serviços de streaming licenciados em Portugal, sem publicidade."
+    a: "Sim. O CardápioFC apresenta exclusivamente canais de sinal aberto, televisão por subscrição e serviços de streaming licenciados em Portugal."
 draft: false
 ---
 
@@ -36,6 +36,6 @@ As transmissões licenciadas em território português concentram-se nos seguint
 2. **Distinguir campeonato, taça e Europa**: Um clube português pode jogar na Sport TV ao fim de semana e na DAZN ou RTP1 a meio da semana. Acompanhe a divisão por competição na secção de [campeonatos e ligas](/pt-pt/leagues/).
 3. **Verifique televisão linear e streaming oficial**: Consulte o [diretório de canais oficiais em Portugal](/pt-pt/channels/) para saber em que operador ou aplicação digital cada transmissão está disponível.
 
-## Informação Fiável e Sem Anúncios
+## Informação Fiável e 100% Oficial
 
-O CardápioFC Portugal lista **exclusivamente emissoras e plataformas licenciadas**, sem publicidade intrusiva nem ligações não oficiais. Descarregue a aplicação CardápioFC para iOS e Android para ativar alertas antes do início dos jogos e confirmar o canal oficial em segundos.
+O CardápioFC Portugal lista **exclusivamente emissoras e plataformas licenciadas**, sem ligações não oficiais. Descarregue a aplicação CardápioFC para iOS e Android para ativar alertas antes do início dos jogos e confirmar o canal oficial em segundos.

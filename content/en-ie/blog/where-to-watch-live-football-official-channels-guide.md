@@ -41,6 +41,6 @@ Because the Republic of Ireland is a separate broadcast territory outside the UK
 2. **Track competitions individually**: European midweek fixtures and weekend league games often split across free-to-air and Sports Extra channels. Check [leagues and cups](/en-ie/leagues/) to follow each tournament.
 3. **Review official streaming apps**: Whether you stream free on RTÉ Player and Virgin Media Play or subscribe to NOW Sports and Sports Extra, browse the [Irish broadcasters directory](/en-ie/channels/) for verified channel details.
 
-## Zero Ads, Verified Broadcasters Only
+## Verified Broadcasters Only
 
-CardápioFC Ireland lists **only legitimate, licensed Irish broadcasters and streaming services**, keeping schedules fast, clean, and ad-free. Download the CardápioFC app on iOS or Android to receive kick-off reminders and channel alerts tailored to Ireland.
+CardápioFC Ireland lists **only legitimate, licensed Irish broadcasters and streaming services**, keeping schedules fast and clear. Download the CardápioFC app on iOS or Android to receive kick-off reminders and channel alerts tailored to Ireland.

@@ -10,7 +10,7 @@ menus:
 
 ## What we collect
 
-CardápioFC does not require an account and does not run any advertising. With your consent we measure visits using Google Analytics 4 to understand which pages are useful. We also may use Cloudflare Web Analytics, which does not use cookies.
+CardápioFC does not require an account. With your consent we measure visits using Google Analytics 4 to understand which pages are useful. We also may use Cloudflare Web Analytics, which does not use cookies.
 
 ## Legal basis and retention
 

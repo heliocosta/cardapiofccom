@@ -39,6 +39,6 @@ Because European leagues kick off early in the morning across US time zones whil
 2. **Track each league separately**: Since Champions League, Premier League, LaLiga, and MLS sit on different platforms, check [soccer leagues and cups](/en-us/leagues/) before the weekend begins.
 3. **Confirm TV vs. streaming-only fixtures**: Many marquee matches air on NBC, CBS, ABC, or FOX while simultaneous fixtures stream exclusively on Peacock, Paramount+, or ESPN+. Explore the [US broadcasters directory](/en-us/channels/) for official channel details.
 
-## Pure Schedule Clarity with Zero Ads
+## Pure Schedule Clarity, Official Broadcasters Only
 
-CardápioFC USA lists **100% official, licensed US TV channels and legal streaming platforms**, with zero display ads and zero shady stream links. Download the CardápioFC mobile app on iOS or Android to receive pre-kickoff alerts in your exact US time zone.
+CardápioFC USA lists **100% official, licensed US TV channels and legal streaming platforms**, with zero shady stream links. Download the CardápioFC mobile app on iOS or Android to receive pre-kickoff alerts in your exact US time zone.

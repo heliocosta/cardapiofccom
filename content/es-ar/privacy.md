@@ -10,7 +10,7 @@ menus:
 
 ## Qué recopilamos
 
-CardápioFC no requiere cuenta y no muestra publicidad. Con tu consentimiento, medimos las visitas con Google Analytics 4 para entender qué páginas resultan útiles. También podemos usar Cloudflare Web Analytics, que no utiliza cookies.
+CardápioFC no requiere cuenta. Con tu consentimiento, medimos las visitas con Google Analytics 4 para entender qué páginas resultan útiles. También podemos usar Cloudflare Web Analytics, que no utiliza cookies.
 
 ## Base legal y conservación
 

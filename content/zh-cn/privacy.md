@@ -10,7 +10,7 @@ menus:
 
 ## 我们收集的信息
 
-CardápioFC 无需注册账号，且网站本身不投放任何广告。经您同意后，我们使用 Google Analytics 4 统计访问量以改进页面内容；也可能使用不使用 Cookie 的 Cloudflare Web Analytics。
+CardápioFC 无需注册账号。经您同意后，我们使用 Google Analytics 4 统计访问量以改进页面内容；也可能使用不使用 Cookie 的 Cloudflare Web Analytics。
 
 ## 保留期限
 
