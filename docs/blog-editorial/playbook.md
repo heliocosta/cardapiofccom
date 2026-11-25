@@ -36,6 +36,7 @@ To capture high-intent comparison searches without turning the blog into repetit
      - `cardapiofc-vs-sofascore` (SofaScore)
      - `cardapiofc-vs-flashscore` (Flashscore)
      - `cardapiofc-vs-live-football-on-tv` (Live Football on TV)
+     - `cardapiofc-vs-wosti` (Wosti)
 2. **Phase 2 — Consolidated All-Competitors Roundup (`pillar: "market-analysis"`)**:
    - Once all individual 1-on-1 competitor posts in the active queue are recorded in `data/blog-topics.yaml`, publish one consolidated roundup post comparing CardápioFC against all covered competitors together (e.g., `best-football-tv-guide-apps-compared`), linking internally (with each edition's URL prefix) to every individual 1-on-1 post as a hub-and-spoke SEO cluster.
 3. **Cadence & Rotation Guardrails**:
