@@ -5,8 +5,57 @@
     "androidPackage": "br.com.cardapiofutebol"
   },
   "latest": {
-    "ios": null,
-    "android": null
+    "ios": {
+      "version": "1.60.0",
+      "releaseDate": "2026-11-17"
+    },
+    "android": {
+      "version": null,
+      "releaseDate": "2026-11-17"
+    }
   },
-  "releases": []
+  "releases": [
+    {
+      "id": "2026-11-17-1.60.0",
+      "version": "1.60.0",
+      "releaseDate": "2026-11-17",
+      "manual": false,
+      "platforms": {
+        "ios": {
+          "version": "1.60.0",
+          "releaseDate": "2026-11-17"
+        },
+        "android": {
+          "version": null,
+          "releaseDate": "2026-11-17"
+        }
+      },
+      "notes": {
+        "en": {
+          "summary": "Bug fixes and improvements",
+          "items": [
+            "Bug fixes and improvements"
+          ]
+        },
+        "pt-br": {
+          "summary": "Correções e melhorias",
+          "items": [
+            "Correções e melhorias"
+          ]
+        },
+        "pt-pt": {
+          "summary": "Correções e melhorias",
+          "items": [
+            "Correções e melhorias"
+          ]
+        },
+        "es-ar": {
+          "summary": "Corrección de errores y mejoras",
+          "items": [
+            "Corrección de errores y mejoras"
+          ]
+        }
+      }
+    }
+  ]
 }

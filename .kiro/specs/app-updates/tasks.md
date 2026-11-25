@@ -36,7 +36,7 @@
   - _Depends: 1.1, 1.2_
   - _Requirements: 1.1, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.2, 3.3, 3.4, 7.1_
 
-- [ ] 3. Testing, SEO wiring, and full-site verification
+- [x] 3. Testing, SEO wiring, and full-site verification
 - [x] 3.1 (P) Build offline fixture unit tests covering store parsing, deduplication, fallback, and fail-safe merge
   - Write offline test fixtures covering active Apple storefronts, empty unsupported storefronts, Google Play payloads with omitted version strings, malformed/consent-blocked responses, cross-platform release grouping, Android deduplication, manual-entry preservation, and no-op unchanged comparisons
   - Observable completion: Offline test suite executes via the package test command and all assertions pass without network access
@@ -51,7 +51,7 @@
   - _Depends: 2.2_
   - _Requirements: 1.4, 1.5, 3.4, 7.2_
 
-- [ ] 3.3 Seed live store history and run full site build and verification suite across all nine editions
+- [x] 3.3 Seed live store history and run full site build and verification suite across all nine editions
   - Seed the release-history dataset from the live Apple App Store and Google Play Store listings and verify an immediate second run reports no changes
   - Execute the full static site build and all site, SEO, deep-link, analytics, data-page, and offline unit checks across all nine editions, confirming footer-only navigation visibility, English fallback on unsupported locales, sharp-corner dark/light styling, and budget compliance
   - Observable completion: Full production build and every verification suite pass with zero errors and all nine edition `/updates/` pages verified in generated output
