@@ -44,7 +44,7 @@
   - _Depends: 2.1_
   - _Requirements: 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 7.3_
 
-- [ ] 3.2 (P) Register the updates route in indexing priority and SEO verification checks
+- [x] 3.2 (P) Register the updates route in indexing priority and SEO verification checks
   - Add the updates hub segment to indexing priority classification and SEO verification reporting while keeping all existing canonical, reciprocal alternate link, breadcrumb, sitemap, and social preview invariants intact
   - Observable completion: Indexing priority and SEO verification scripts recognize the updates route cleanly across all nine editions
   - _Boundary: NavigationSeoI18n_
