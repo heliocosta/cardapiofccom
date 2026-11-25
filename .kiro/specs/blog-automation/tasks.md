@@ -29,7 +29,7 @@
   - _Requirements: 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 5.5, 6.1, 6.2, 6.3, 6.4_
 
 - [ ] 3. Validation — structural audit and guided one-shot verification run
-- [ ] 3.1 Audit playbook completeness, topic registry parsing, and automation schema safety
+- [x] 3.1 Audit playbook completeness, topic registry parsing, and automation schema safety
   - Validate that the editorial playbook documents all four pillars, all nine editions, upstream frontmatter/media/validation rules, and official-broadcaster and copyright-safe illustration constraints
   - Verify the topic registry parses cleanly and confirm the weekly automation configuration parses as valid JSON with the expected schedule prefix, argument separator, non-colliding timing, paused global activation state, and zero wildcard permission grants
   - Observable completion: Structural audit confirms playbook completeness, valid registry YAML, valid automation JSON configuration, and non-enabled global state with zero findings
