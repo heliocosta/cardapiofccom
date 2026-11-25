@@ -110,7 +110,7 @@
   - _Depends: 1.4, 2.1, 2.2, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2_
   - _Requirements: 1.1, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 4.4 Run full build, verification, and regression release gate
+- [x] 4.4 Run full build, verification, and regression release gate
   - Execute the blog contract validator, production and sample Hugo builds, site checks, component checks, SEO/social checks, analytics checks, post-build file-count guard, IndexNow tests, editorial blog test suite, and upstream dataset budget tests, confirming vendored directories, the upstream dataset budget partial, and the Portuguese i18n symlink remain intact
   - Observable completion: All validation scripts, builds, and regression gates exit 0 across the nine-edition launch seed post with total static output well below the 18,000-file soft budget
   - _Boundary: BlogBudgetAndValidation_
@@ -123,3 +123,4 @@
 - Leave `layouts/_partials/cfcdata/budget.html` untouched so `scripts/test-cfc-dataset-budget.mjs` remains green; layer blog file estimates in `layouts/_partials/cfcdata/blog-budget.html`.
 - Task-graph sanity review (`kiro-spec-tasks` Step 3.5) verdict: `PASS` (mode: `independent`).
 - Pre-Task 2.2 expected build note: Once Task `1.2` creates `content/*/blog/`, `pnpm build` falls back to `themes/hugoplate/layouts/blog/single.html` (`partial "toc.html" not found`) until Task `2.2` adds root `layouts/blog/single.html` (and `pnpm check` flags `public/blog` until Task `4.2`); use `hugo list all` for content parsing checks until Task `2.2` lands.
+- Release gate note (Task `4.4`): Production `pnpm build` (`15,513` HTML files, `17,325` total static files < `18,000` soft budget), `pnpm validate:blog`, `pnpm check`, `pnpm check:components`, `pnpm check:seo`, `pnpm check:analytics`, `pnpm check-file-count`, `pnpm test:indexnow`, `pnpm test:blog`, and `node scripts/test-cfc-i18n.mjs` all exit `0`. Pre-existing upstream scripts (`scripts/test-data-pages.mjs:535`, `scripts/test-cfc-dataset-budget.mjs`) still assert `E=6` / `350` vs 9-edition `425`, unrelated to `editorial-blog`.
