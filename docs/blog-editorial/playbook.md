@@ -12,10 +12,10 @@ Every published post belongs to exactly one `pillar` enum value defined in the `
 
 | Pillar (`pillar`) | Core Subject Scope | Target Reader Intent | Example Topics |
 | --- | --- | --- | --- |
-| `app-guides` | CardápioFC mobile app and web guide workflows: following clubs in `/favourites/`, building kick-off alerts in `/my_agenda/`, filtering official channels, lineups, and time-zone sync. | **Product / Utility intent**: Supporters looking for a faster way to track match schedules, get pre-kick-off reminders, or find official channels on iOS/Android. | "How to Build a Custom Matchday Agenda with Kick-Off Alerts", "Tracking Multiple Leagues in One Local Time-Zone Schedule" |
+| `app-guides` | CardápioFC mobile app and web guide workflows: following clubs in `/favourites/`, building kick-off alerts in `/my_agenda/`, filtering official channels, lineups, time-zone sync, and 1-on-1 head-to-head app comparisons (`CardápioFC vs. <Competitor>`). | **Product / Utility intent**: Supporters looking for a faster way to track match schedules, get pre-kick-off reminders, find official channels on iOS/Android, or compare CardápioFC against an alternative app. | "How to Build a Custom Matchday Agenda with Kick-Off Alerts", "CardápioFC vs. LiveSoccerTV: Which Football TV Guide Fits Your Matchday?" |
 | `watch-guides` | Competition, tournament, derby, or matchday viewing guides grounded in verified fixture dates and official licensed broadcasters per edition. | **Transactional / Viewing intent**: Fans searching "where to watch [competition/match] on TV and streaming" in their territory. | "Where to Watch the UEFA Champions League Knockout Stage", "Domestic Cup Viewing Guide: Free-to-Air vs. Pay-TV Channels" |
 | `rights-changes` | Verified broadcast and streaming rights renewals, new market entrants, sublicensing deals, free-to-air packages, or platform transitions. | **Informational / News intent**: Subscribers and cord-cutters checking which network or app holds rights for an upcoming cycle or season. | "New Domestic League Broadcast Cycle: What Changes for Viewers", "How Sublicensing Splits Midweek European Matches" |
-| `market-analysis` | Sports broadcasting and streaming industry trends: distribution shifts, FTA vs. pay-TV reach, multi-service fragmentation, and kick-off scheduling economics. | **Analytical / Research intent**: Readers, journalists, and AI answer engines seeking clear, factual explanations of why football TV rights work the way they do. | "Why Football Broadcast Rights Split Across Multiple Streaming Apps", "The Economics of Free-to-Air National Team Coverage" |
+| `market-analysis` | Sports broadcasting and streaming industry trends: distribution shifts, FTA vs. pay-TV reach, multi-service fragmentation, kick-off scheduling economics, and consolidated multi-competitor app roundups (`Best Football TV Guide Apps Compared`). | **Analytical / Research intent**: Readers, journalists, and AI answer engines seeking clear, factual explanations of why football TV rights work the way they do and how football TV guide tools compare side by side. | "Why Football Broadcast Rights Split Across Multiple Streaming Apps", "Best Football TV Guide Apps Compared: CardápioFC vs. Top Alternatives" |
 
 ### Pillar Rotation & Topic Deduplication Rules
 
@@ -23,6 +23,30 @@ Every published post belongs to exactly one `pillar` enum value defined in the `
 2. **Exclude duplicates**: Reject any candidate topic, angle, keyword cluster, or `slug` that substantially overlaps an already-published entry in `data/blog-topics.yaml`.
 3. **Avoid consecutive repeats**: Do **not** select the same `pillar` as the most recent published entry in `data/blog-topics.yaml`, unless urgent major broadcast rights news justifies an exception.
 4. **Balance across the last 4 entries**: Prioritize the least-recently published (or missing) `pillar` across the last 4 entries in `data/blog-topics.yaml`, while weighing current football calendar relevance (upcoming tournament windows, seasonal kick-offs) and verified broadcasting developments.
+
+### Competitor Comparison Series (Hub-and-Spoke Strategy)
+
+To capture high-intent comparison searches without turning the blog into repetitive product promos, run competitor comparisons as a staggered two-phase hub-and-spoke series:
+
+1. **Phase 1 — Individual 1-on-1 Comparisons (`pillar: "app-guides"`)**:
+   - Publish one dedicated post per competitor using a clean slug pattern (`cardapiofc-vs-<competitor>`), selecting the next uncovered competitor from the starter queue below by checking `data/blog-topics.yaml`:
+     - `cardapiofc-vs-livesoccertv` (LiveSoccerTV)
+     - `cardapiofc-vs-fotmob` (FotMob)
+     - `cardapiofc-vs-onefootball` (OneFootball)
+     - `cardapiofc-vs-sofascore` (SofaScore)
+     - `cardapiofc-vs-flashscore` (Flashscore)
+     - `cardapiofc-vs-live-football-on-tv` (Live Football on TV)
+2. **Phase 2 — Consolidated All-Competitors Roundup (`pillar: "market-analysis"`)**:
+   - Once all individual 1-on-1 competitor posts in the active queue are recorded in `data/blog-topics.yaml`, publish one consolidated roundup post comparing CardápioFC against all covered competitors together (e.g., `best-football-tv-guide-apps-compared`), linking internally (with each edition's URL prefix) to every individual 1-on-1 post as a hub-and-spoke SEO cluster.
+3. **Cadence & Rotation Guardrails**:
+   - Interleave competitor posts inside the normal 4-pillar rotation—**never** publish two competitor comparison posts back-to-back.
+   - Alternate `app-guides` slots between pure CardápioFC workflow guides and 1-on-1 competitor comparisons while continuing regular `watch-guides`, `rights-changes`, and `market-analysis` posts.
+4. **Factual, Fair, and IP-Safe Comparison Rules**:
+   - **Live verification mandatory**: Verify each competitor's current features, platforms (iOS/Android/Web), monetization/ad model, TV & streaming channel coverage, and regional support via `search_web` before drafting; never guess or cite outdated facts.
+   - **Balanced, objective tone**: Clearly acknowledge where the competitor excels (e.g., deep live match stats, multi-sport coverage, breaking editorial news) alongside where CardápioFC is purpose-built to win (fast official TV & streaming channel discovery per regional edition, automatic local kick-off times, focused matchday agenda/favourites, and a clean clutter-free interface).
+   - **Structured comparison table & FAQs**: Include a clear Markdown comparison table (`Primary Focus`, `Official TV & Streaming Listings`, `Regional Editions & Time Zones`, `Matchday Agenda & Alerts`, `Platforms`, `Best For`) plus 2–4 plain-text `faq` items targeting "CardápioFC vs. [Competitor]" or "best football TV guide app" queries.
+   - **Zero competitor trademarks/logos/screenshots in artwork**: Follow Section 3 strictly—cover illustrations (`assets/images/blog/{slug}.png`) must be abstract flat/geometric editorial comparison graphics with zero competitor app icons, logos, wordmarks, or UI screenshots.
+   - **Regional nuance across 9 editions**: Adapt examples to each market (e.g., Live Football on TV is primarily UK/Ireland-focused for `en-gb`/`en-ie`, US streaming terminology for `en-us`, and local football schedule habits across `pt-br`, `pt-pt`, `es-ar`, `zh-cn`, and `ja`) while keeping verified product facts accurate.
 
 ---
 
