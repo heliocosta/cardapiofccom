@@ -25,8 +25,14 @@
       </svg>
     </label>
 
-    <!-- right-side utilities: App Links, Edition Switcher, Theme Switcher -->
+    <!-- right-side utilities: Search, App Links, Edition Switcher, Theme Switcher -->
     <div class="cfc-header__utils">
+      {{ $searchURL := "search/" | relLangURL }}
+      {{ $isSearch := eq .Section "search" }}
+      {{ $searchLabel := i18n "menu_search" | default "Search" }}
+      <a href="{{ $searchURL }}" class="cfc-header__search{{ if $isSearch }} is-active{{ end }}" aria-label="{{ $searchLabel }}" title="{{ $searchLabel }}"{{ if $isSearch }} aria-current="page"{{ end }}>
+        {{ partial "cfc/icon.html" (dict "name" "search" "class" "w-5 h-5") }}
+      </a>
       <div class="cfc-header__stores">
         <a href="{{ $appLinks.ios }}" target="_blank" rel="noopener noreferrer" class="cfc-header__store" aria-label="{{ i18n "app_badge_ios_alt" | default "Download on the App Store" }}">
           {{ partial "cfc/icon.html" (dict "name" "apple" "class" "w-5 h-5") }}

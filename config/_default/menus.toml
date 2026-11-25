@@ -1,7 +1,7 @@
 [[main]]
-identifier = "home"
-name = "Home"
-url = "/"
+identifier = "matches"
+name = "Matches"
+url = "/matches/"
 weight = 1
 
 [[main]]
@@ -17,34 +17,16 @@ url = "/teams/"
 weight = 3
 
 [[main]]
-identifier = "matches"
-name = "Matches"
-url = "/matches/"
-weight = 4
-
-[[main]]
 identifier = "channels"
 name = "Channels"
 url = "/channels/"
-weight = 5
+weight = 4
 
 [[main]]
 identifier = "blog"
 name = "Blog"
 url = "/blog/"
-weight = 6
-
-[[main]]
-identifier = "faq"
-name = "FAQ"
-url = "/faq/"
-weight = 7
-
-[[main]]
-identifier = "about"
-name = "About"
-url = "/about/"
-weight = 8
+weight = 5
 
 [[footer]]
 identifier = "home"

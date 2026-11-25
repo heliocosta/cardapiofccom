@@ -16,7 +16,7 @@
       data-label-count="{{ i18n "search_results_count" (dict "Count" "{count}") }}"
       data-edition-tz="{{ $ed.timeZone }}">
       <label class="sr-only" for="cfc-search-input">{{ i18n "search_title" }}</label>
-      <input id="cfc-search-input" class="cfc-search-input" type="search" name="q" autocomplete="off" placeholder="{{ i18n "search_placeholder" }}" />
+      <input id="cfc-search-input" class="cfc-search-input" type="search" name="q" autocomplete="off" autofocus placeholder="{{ i18n "search_placeholder" }}" />
     </form>
 
     <div id="cfc-search-status" class="cfc-search-status" role="status" aria-live="polite"></div>

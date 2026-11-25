@@ -12,8 +12,4 @@ sites:
 outputs:
   - HTML
   - SearchIndex
-menus:
-  main:
-    identifier: search
-    weight: 20
 ---
