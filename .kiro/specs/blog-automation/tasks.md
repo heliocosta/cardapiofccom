@@ -18,7 +18,7 @@
   - _Boundary: TopicRegistry_
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 2. Configure the weekly scheduled automation and self-contained execution prompt
+- [x] 2. Configure the weekly scheduled automation and self-contained execution prompt
   - Create the local scheduled automation configuration set to run once weekly on Monday mid-morning in the operator's local timezone (`Europe/London`), avoiding both the daily site deployment window and the daily app-updates check window, and relying on host schedule behavior to skip missed sleep or closed windows cleanly
   - Author a self-contained execution instruction referencing the editorial playbook, published-topic registry, curated broadcaster reference data, and local validation commands so fresh runs require zero prior conversation memory
   - Encode the end-to-end run protocol: clean primary-branch and remote-sync guard before editing, duplicate-excluding topic selection prioritizing underrepresented pillars, live factual and official-broadcaster verification (omitting unverified claims or switching topics if inconclusive), single copyright-safe widescreen editorial illustration generation, nine-edition regional adaptation with plain-text FAQs and zero prohibited links or icon classes, fail-closed execution of all build, blog contract, site quality, SEO/social, and static file-count checks with working-tree rollback on any failure, and deferred registry update plus single conventional commit and push only on full pass
